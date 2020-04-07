@@ -1,7 +1,6 @@
 module Keylogger {
-    requires javafx.controls;
     requires javafx.fxml;
-    requires jnativehook;
+    requires javafx.controls;
 
     opens keylogger;
 }
