@@ -1,4 +1,4 @@
-package sample;
+package keylogger;
 
 public class Controller {
 }
