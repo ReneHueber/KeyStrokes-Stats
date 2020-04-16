@@ -12,13 +12,33 @@ public class ControllerMainWindow {
 
 
     public void initialize(){
-        int sum = dbConn.getSum();
-        key_strokes.setText(Integer.toString(sum));
+        setLabels();
     }
 
 
     public void refreshClicked(){
+        setLabels();
+    }
+
+    private void setLabels(){
+        int sum = setKeyStrokes();
+        setKeyTravel(sum);
+        setKeyPushForce(sum);
+    }
+
+    private int setKeyStrokes(){
         int sum = dbConn.getSum();
         key_strokes.setText(Integer.toString(sum));
+        return sum;
+    }
+
+    private void setKeyTravel(int sum){
+        float keyTravel = (float) sum * 0.003f;
+        key_travel.setText(keyTravel + " M");
+    }
+
+    private void setKeyPushForce(int sum){
+        int pushForce = sum * 50;
+        key_push_force.setText(pushForce + " cN");
     }
 }
