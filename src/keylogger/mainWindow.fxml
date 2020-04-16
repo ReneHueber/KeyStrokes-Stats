@@ -11,27 +11,19 @@
       <Label layoutX="60.0" layoutY="169.0" style="-fx-text-fill: #4287f5;" text="KEY" />
       <Separator layoutX="53.0" layoutY="117.0" orientation="VERTICAL" prefHeight="67.0" prefWidth="0.0" />
       <Label layoutX="90.0" layoutY="169.0" style="-fx-text-fill: white;" text="STROKES" />
-      <Label fx:id="key_strokes" layoutX="61.0" layoutY="117.0" style="-fx-text-fill: #4287f5;">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </Label>
+      <Label fx:id="key_strokes" layoutX="62.0" layoutY="128.0" style="-fx-text-fill: #4287f5;" />
       <Label layoutX="60.0" layoutY="256.0" style="-fx-text-fill: #4287f5;" text="KEY" />
       <Separator layoutX="53.0" layoutY="204.0" orientation="VERTICAL" prefHeight="67.0" prefWidth="0.0" />
       <Label layoutX="89.0" layoutY="256.0" style="-fx-text-fill: white;" text="TRAVEL" />
-      <Label fx:id="key_travel" layoutX="61.0" layoutY="204.0" style="-fx-text-fill: #4287f5;">
+      <Label fx:id="key_travel" layoutX="61.0" layoutY="215.0" style="-fx-text-fill: #4287f5;">
          <font>
-            <Font size="12.0" />
+            <Font name="System Bold" size="13.0" />
          </font>
       </Label>
       <Label layoutX="60.0" layoutY="343.0" style="-fx-text-fill: #4287f5;" text="PUSH" />
       <Separator layoutX="53.0" layoutY="291.0" orientation="VERTICAL" prefHeight="67.0" prefWidth="0.0" />
       <Label layoutX="100.0" layoutY="343.0" style="-fx-text-fill: white;" text="FORCE" />
-      <Label fx:id="key_push_force" layoutX="61.0" layoutY="291.0" style="-fx-text-fill: #4287f5;">
-         <font>
-            <Font size="12.0" />
-         </font>
-      </Label>
+      <Label fx:id="key_push_force" layoutX="61.0" layoutY="302.0" style="-fx-text-fill: #4287f5;" />
       <Label layoutX="72.0" layoutY="78.0" style="-fx-text-fill: #ffffff;" text="SHOWING" />
       <ComboBox layoutX="150.0" layoutY="73.0" prefHeight="26.0" prefWidth="169.0" style="-fx-background-color: #303030;" />
       <Label fx:id="refresh" layoutX="311.0" layoutY="359.0" onMouseClicked="#refreshClicked" style="-fx-text-fill: #4287f5;" text="REFRESH">

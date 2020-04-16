@@ -11,7 +11,14 @@ public class ControllerMainWindow {
     DbConnection dbConn = new DbConnection("/home/ich/Database/Keylogger/KeyStrokes.db");
 
 
+    public void initialize(){
+        int sum = dbConn.getSum();
+        key_strokes.setText(Integer.toString(sum));
+    }
+
+
     public void refreshClicked(){
-        dbConn.selectAll();
+        int sum = dbConn.getSum();
+        key_strokes.setText(Integer.toString(sum));
     }
 }

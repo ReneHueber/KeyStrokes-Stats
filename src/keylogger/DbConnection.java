@@ -22,20 +22,21 @@ public class DbConnection {
         return conn;
     }
 
-    public void selectAll(){
-        String sql = "SELECT keystrokes FROM KeyLogs";
+    public int getSum(){
+        String sql = "SELECT SUM(keystrokes) FROM KeyLogs";
+        int result = 0;
 
         try (Connection conn = this.connect()){
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet sum = stmt.executeQuery(sql);
 
-            while(rs.next()){
-                System.out.println(rs.getInt("keystrokes"));
-            }
+            result = sum.getInt(1);
 
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
+
+        return result;
     }
 
 }
