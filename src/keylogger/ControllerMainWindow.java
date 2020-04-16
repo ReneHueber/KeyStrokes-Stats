@@ -5,6 +5,13 @@ import javafx.scene.control.Label;
 
 public class ControllerMainWindow {
 
-    @FXML Label overview, stats, refresh;
-    @FXML Label key_press_time, key_strokes, key_travel, key_push_force;
+    @FXML Label refresh;
+    @FXML Label key_strokes, key_travel, key_push_force;
+
+    DbConnection dbConn = new DbConnection("/home/ich/Database/Keylogger/KeyStrokes.db");
+
+
+    public void refreshClicked(){
+        dbConn.selectAll();
+    }
 }
