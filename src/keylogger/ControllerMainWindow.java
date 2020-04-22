@@ -20,6 +20,10 @@ public class ControllerMainWindow {
         setLabels();
     }
 
+    public void startKeyLogger(){
+        KeyLogger.setupKeyListener();
+    }
+
     private void setLabels(){
         int sum = setKeyStrokes();
         setKeyTravel(sum);

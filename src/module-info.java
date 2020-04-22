@@ -3,6 +3,7 @@ module Keylogger {
     requires javafx.controls;
     requires java.sql;
     requires java.desktop;
+    requires jnativehook;
 
     opens keylogger;
 }
