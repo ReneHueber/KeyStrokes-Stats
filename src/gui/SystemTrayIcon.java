@@ -15,7 +15,10 @@ public class SystemTrayIcon {
     }
 
     /**
-     * creates the Image for the System Tray
+     * Creates the Image for the System Tray.
+     * @param path the relative path to the file
+     * @param desc the description of the image
+     * @return Image Icon
      */
     protected static Image createIcon(String path, String desc){
         URL ImageURL = SystemTrayIcon.class.getResource(path);

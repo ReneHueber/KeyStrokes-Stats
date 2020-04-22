@@ -5,17 +5,25 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Logs all the key strokes and the time of the key strokes **/
+/**
+ * Logs all the key strokes and the time of the key strokes.
+ * If you got a Keyboard with layers, the time you hold der layer switch down,
+ * is not recorded correct.
+ */
 public class KeyLogger implements NativeKeyListener {
-    private KeyLogData keyLogData = new KeyLogData();
-    Map<Integer, Long> keyStrokes = new HashMap<>();
+    private static KeyLogData keyLogData;
+    // to calculate the length of the key pressed
+    private static Map<Integer, Long> keyStrokes;
 
-    /** setup and starts the key listener **/
+    /**
+     * setup and starts the key listener
+     */
     public static void setupKeyListener(){
         try {
             GlobalScreen.registerNativeHook();
@@ -30,13 +38,27 @@ public class KeyLogger implements NativeKeyListener {
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
         logger.setLevel(Level.OFF);
         logger.setUseParentHandlers(false);
+
+        // initialize the Hash map
+        keyStrokes = new HashMap<>();
+        // initialize the object
+        keyLogData = new KeyLogData();
     }
 
-    @Override
-    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
+    /**
+     * Saves how often every specific key is pressed
+     * @param key the pressed key
+     */
+    public void nativeKeyTyped(NativeKeyEvent key) {
+        System.out.println("Key Typed: " + key.getKeyChar());
+        keyLogData.addKeyValue(String.valueOf(key.getKeyChar()), key.getRawCode());
     }
 
-    /** a Key is pressed **/
+    /**
+     * Saves the time once the key is pressed,d
+     * so the time difference at the release function can be calculated
+     * @param key the pressed key
+     */
     public void nativeKeyPressed(NativeKeyEvent key) {
         // get's the keycode an the time, stores it in an hash map
         int keyCode = key.getKeyCode();
@@ -44,17 +66,26 @@ public class KeyLogger implements NativeKeyListener {
         keyStrokes.put(keyCode, keyPressedMillis);
     }
 
-    /** a Key is released **/
+    /**
+     * Calculates the time of the key strokes
+     * increases the total key strokes and total key pressed time
+     * @param key the pressed key
+     */
     public void nativeKeyReleased(NativeKeyEvent key) {
         // get's the keycode
         int keyCode = key.getKeyCode();
         float timeSec = calculateSecondsPressed(keyCode);
 
-        System.out.println(timeSec);
+        // increases the total values
+        keyLogData.increaseKeyPressedTime(timeSec);
+        keyLogData.increaseKeyStroke();
     }
 
-    /** calculate the difference between the pressed and released time
-     * returns the time the key is pressed in seconds **/
+    /**
+     * Calculate the difference between the pressed and released time
+     * @param keyCode the keycode of the clicked key
+     * @return time the key is pressed in seconds
+     */
     private float calculateSecondsPressed(int keyCode){
         Long keyReleasedMillis = System.currentTimeMillis();
         int timeMilli = (int) (keyReleasedMillis - keyStrokes.get(keyCode));

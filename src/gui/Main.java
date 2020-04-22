@@ -1,3 +1,5 @@
+package gui;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +26,7 @@ public class Main extends Application {
             }
         });
 
-        Parent root = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainWindow.fxml"));
         stage.setTitle("Key Strokes");
         stage.setScene(new Scene(root, 390, 395));
         stage.show();

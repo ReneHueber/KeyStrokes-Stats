@@ -2,10 +2,10 @@ package database;
 
 import java.sql.*;
 
-public class DbConnection {
-    private String dbPath;
+public class ReadDb {
+    private final String dbPath;
 
-    public DbConnection(String dbPath){
+    public ReadDb(String dbPath){
         this.dbPath = dbPath;
     }
 

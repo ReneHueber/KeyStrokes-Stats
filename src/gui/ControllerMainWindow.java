@@ -1,6 +1,7 @@
 package gui;
 
-import database.DbConnection;
+import database.ReadDb;
+import keylogger.DbUpdateSchedule;
 import keylogger.KeyLogger;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,7 +11,7 @@ public class ControllerMainWindow {
     @FXML Label refresh;
     @FXML Label key_strokes, key_travel, key_push_force;
 
-    DbConnection dbConn = new DbConnection("/home/ich/Database/Keylogger/KeyStrokes.db");
+    ReadDb dbConn = new ReadDb("/home/ich/Database/Keylogger/KeyStrokes.db");
 
 
     public void initialize(){
@@ -24,6 +25,7 @@ public class ControllerMainWindow {
 
     public void startKeyLogger(){
         KeyLogger.setupKeyListener();
+        DbUpdateSchedule.startSchedule();
     }
 
     private void setLabels(){
