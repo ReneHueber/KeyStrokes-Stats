@@ -1,5 +1,7 @@
-package keylogger;
+package gui;
 
+import database.DbConnection;
+import keylogger.KeyLogger;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 

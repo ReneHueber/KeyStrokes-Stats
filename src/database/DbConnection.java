@@ -1,4 +1,4 @@
-package keylogger;
+package database;
 
 import java.sql.*;
 

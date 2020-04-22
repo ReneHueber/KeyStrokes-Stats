@@ -1,4 +1,4 @@
-package keylogger;
+package gui;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -18,14 +18,14 @@ public class SystemTrayIcon {
      * creates the Image for the System Tray
      */
     protected static Image createIcon(String path, String desc){
-        URL ImageURL = Main.class.getResource(path);
+        URL ImageURL = SystemTrayIcon.class.getResource(path);
         return (new ImageIcon(ImageURL, desc)).getImage();
     }
 
     /**
      * Sets up a system tray icon for the application.
      */
-    protected void addAppToTray() {
+    public void addAppToTray() {
         try {
             // ensure awt toolkit is initialized.
             java.awt.Toolkit.getDefaultToolkit();
@@ -91,4 +91,3 @@ public class SystemTrayIcon {
         }
     }
 }
-

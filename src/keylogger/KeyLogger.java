@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /** Logs all the key strokes and the time of the key strokes **/
 public class KeyLogger implements NativeKeyListener {
+    private KeyLogData keyLogData = new KeyLogData();
     Map<Integer, Long> keyStrokes = new HashMap<>();
 
     /** setup and starts the key listener **/
@@ -49,6 +49,7 @@ public class KeyLogger implements NativeKeyListener {
         // get's the keycode
         int keyCode = key.getKeyCode();
         float timeSec = calculateSecondsPressed(keyCode);
+
         System.out.println(timeSec);
     }
 

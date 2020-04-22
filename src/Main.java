@@ -1,15 +1,9 @@
-package keylogger;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import javax.swing.*;
-import java.awt.*;
-import java.net.URL;
 
 
 public class Main extends Application {
@@ -18,7 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         this.stage = primaryStage;
-        SystemTrayIcon systemTray = new SystemTrayIcon(stage);
+        gui.SystemTrayIcon systemTray = new gui.SystemTrayIcon(stage);
         
         // instructs the javafx system not to exit implicitly when the last application window is shut.
         Platform.setImplicitExit(false);
