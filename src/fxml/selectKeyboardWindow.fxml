@@ -28,7 +28,7 @@
       </HBox>
       <ListView fx:id="keyboardLv" stylesheets="@../css/style.css">
          <padding>
-            <Insets bottom="15.0" left="15.0" />
+            <Insets bottom="10.0" left="15.0" top="10.0" />
          </padding>
       </ListView>
    </children>

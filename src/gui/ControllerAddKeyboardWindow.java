@@ -26,4 +26,12 @@ public class ControllerAddKeyboardWindow {
         stage.close();
     }
 
+    public void splitLayoutClicked(){
+        System.out.println("split clicked");
+    }
+
+    public void standardLayoutClicked(){
+        System.out.println("standard clicked");
+    }
+
 }

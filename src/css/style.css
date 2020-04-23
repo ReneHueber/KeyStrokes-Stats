@@ -1,12 +1,20 @@
+/* list view and list elements */
+
 .list-view .scroll-bar:vertical {
     -fx-scale-x: 0;
 }
 
 .list-view {
    -fx-background-insets: 0;
-   -fx-background-color: #3d3d3d;
+   -fx-background-color: #d9d9d9;
 }
 
 .list-cell {
     -fx-background-insets: 0;
+}
+
+
+/* horizontal the two nodes are placed to the left/right of each other. */
+.split-pane-divider {
+    -fx-background-color: transparent;
 }

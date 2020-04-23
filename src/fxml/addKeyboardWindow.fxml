@@ -1,14 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerAddKeyboardWindow">
+<AnchorPane prefHeight="275.0" prefWidth="478.0" style="-fx-background-insets: 0;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerAddKeyboardWindow">
    <children>
-      <TextField fx:id="input1" layoutX="36.0" layoutY="33.0" />
-      <TextField fx:id="input2" layoutX="36.0" layoutY="113.0" />
-      <Button layoutX="461.0" layoutY="339.0" mnemonicParsing="false" onAction="#passValues" text="Pass" />
+      <HBox alignment="CENTER" prefHeight="275.0" prefWidth="440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="75.0" style="-fx-background-color: #3d3d3d;">
+               <children>
+                  <Label text="Split Style Keyboard" textFill="#fbfbfb">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font></Label>
+                  <ImageView fitHeight="74.0" fitWidth="206.0" onMouseClicked="#splitLayoutClicked" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/ergodox.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <padding>
+                  <Insets left="15.0" right="15.0" top="35.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="275.0" prefWidth="245.0" spacing="75.0" style="-fx-background-color: #fbfbfb;">
+               <children>
+                  <Label text="Standard Style Keyboard" textFill="#3d3d3d">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font></Label>
+                  <ImageView fitHeight="54.0" fitWidth="188.0" onMouseClicked="#standardLayoutClicked" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/plank.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <padding>
+                  <Insets left="15.0" right="15.0" top="35.0" />
+               </padding>
+            </VBox>
+         </children>
+      </HBox>
    </children>
 </AnchorPane>
