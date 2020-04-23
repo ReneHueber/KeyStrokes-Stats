@@ -7,6 +7,8 @@ public class Keyboards {
     private String keyboardName;
     private int totalKeyStrokes;
     private float totalTimeKeyPressed;
+    private String lastUsed;
+    private String inUseSince;
 
     /**
      * Initialize the Object with Values.
@@ -15,11 +17,13 @@ public class Keyboards {
      * @param totalKeyStrokes Total Key Strokes
      * @param totalTimeKeyPressed Total time key pressed
      */
-    public Keyboards(Image keyboardImage, String keyboardName, int totalKeyStrokes, float totalTimeKeyPressed) {
+    public Keyboards(Image keyboardImage, String keyboardName, int totalKeyStrokes, float totalTimeKeyPressed, String lastUsed, String inUseSince) {
         this.keyboardImage = keyboardImage;
         this.keyboardName = keyboardName;
         this.totalKeyStrokes = totalKeyStrokes;
         this.totalTimeKeyPressed = totalTimeKeyPressed;
+        this.lastUsed = lastUsed;
+        this.inUseSince = inUseSince;
     }
 
     public Image getKeyboardImage() {
@@ -36,5 +40,13 @@ public class Keyboards {
 
     public float getTotalTimeKeyPressed() {
         return totalTimeKeyPressed;
+    }
+
+    public String getLastUsed() {
+        return lastUsed;
+    }
+
+    public String getInUseSince() {
+        return inUseSince;
     }
 }

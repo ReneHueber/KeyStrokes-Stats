@@ -28,6 +28,12 @@ public class KeyboardsListViewCell extends ListCell<Keyboards> {
     private Label labelTimePressed;
 
     @FXML
+    private Label labelLastUsed;
+
+    @FXML
+    private Label labelInUseSince;
+
+    @FXML
     private VBox vBox;
 
     private FXMLLoader fxmlLoader;
@@ -61,9 +67,11 @@ public class KeyboardsListViewCell extends ListCell<Keyboards> {
             }
 
             // set's the values for the gui elements
-            labelKeyboardName.setText(String.valueOf(keyboard.getKeyboardName()));
+            labelKeyboardName.setText(keyboard.getKeyboardName());
             labelKeyStrokes.setText(String.valueOf(keyboard.getTotalKeyStrokes()));
             labelTimePressed.setText(String.valueOf(keyboard.getTotalTimeKeyPressed()));
+            labelLastUsed.setText(keyboard.getLastUsed());
+            labelInUseSince.setText(keyboard.getInUseSince());
             imageViewKeyboard.setImage(keyboard.getKeyboardImage());
 
             // set the custom layout

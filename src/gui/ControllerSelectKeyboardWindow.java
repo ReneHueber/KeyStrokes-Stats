@@ -28,9 +28,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
 
         keyboardsObservableList.addAll(
-                new Keyboards(ergoDox, "ErgoDox-Ez", 10000, 300.50f),
-                new Keyboards(plank, "Planke", 6000, 100.50f),
-                new Keyboards(ergoDox, "ErgoDox-Ez Work", 35000, 1000.50f)
+                new Keyboards(ergoDox, "ErgoDox-Ez", 10000, 300.50f, "23.04.2020", "01.03.2020"),
+                new Keyboards(plank, "Planke", 6000, 100.50f, "18.04.2020", "01.01.2020"),
+                new Keyboards(ergoDox, "ErgoDox-Ez Work", 35000, 1000.50f, "21.04.2020", "01.06.2019")
         );
     }
 
