@@ -1,12 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
    <children>
-      <Button layoutX="30.0" layoutY="353.0" mnemonicParsing="false" text="Add" />
-      <ListView fx:id="keyboardLv" layoutX="52.0" layoutY="27.0" prefHeight="311.0" prefWidth="507.0" />
+      <HBox spacing="30.0" style="-fx-background-color: #3d3d3d;">
+         <children>
+            <Label onMouseClicked="#addKeyboardClicked" style="-fx-text-fill: #e3e3e3;" text="Add Keyboard">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label style="-fx-text-fill: #e3e3e3;" text="Übersicht">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets bottom="8.0" left="15.0" top="8.0" />
+         </padding>
+      </HBox>
+      <ListView fx:id="keyboardLv" stylesheets="@../css/style.css">
+         <padding>
+            <Insets bottom="15.0" left="15.0" />
+         </padding>
+      </ListView>
    </children>
-</AnchorPane>
+</VBox>

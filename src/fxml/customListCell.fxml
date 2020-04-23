@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="vBox" alignment="CENTER" prefHeight="166.0" prefWidth="430.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="vBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="labelKeyboardName" text="Label">
          <font>
@@ -17,7 +17,7 @@
             <Insets top="10.0" />
          </VBox.margin>
       </Label>
-      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
          <children>
             <ImageView fx:id="imageViewKeyboard" fitHeight="144.0" fitWidth="171.0" pickOnBounds="true" preserveRatio="true">
                <HBox.margin>
