@@ -1,10 +1,21 @@
 package gui;
 
 import database.ReadDb;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import keylogger.DbUpdateSchedule;
 import keylogger.KeyLogger;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class ControllerMainWindow {
 
@@ -23,9 +34,19 @@ public class ControllerMainWindow {
         setLabels();
     }
 
-    public void startKeyLogger(){
-        KeyLogger.setupKeyListener();
-        DbUpdateSchedule.startSchedule();
+    public void startKeyLogger(ActionEvent event) throws IOException {
+        // KeyLogger.setupKeyListener();
+        // DbUpdateSchedule.startSchedule();
+
+        Parent root = FXMLLoader.load(getClass().getResource("../fxml/selectKeyboardWindow.fxml"));
+        Scene scene = new Scene(root);
+
+        Stage window = (Stage) ((Node)event.getSource()).getScene().getWindow();
+
+        window.setScene(scene);
+        window.show();
+        // Image ergoDox = new Image(getClass().getResource("../images/ergodox.png").toExternalForm());
+        // System.out.println(ergoDox);
     }
 
     private void setLabels(){
