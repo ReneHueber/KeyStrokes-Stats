@@ -1,74 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="275.0" prefWidth="574.0" style="-fx-background-insets: 0;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSplitSelectedWindow">
-    <children>
-        <HBox alignment="CENTER" prefHeight="275.0" prefWidth="589.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<SplitPane dividerPositions="0.5516666666666666" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSplitSelectedWindow">
+    <items>
+        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="309.0" spacing="30.0" style="-fx-background-color: #3d3d3d;">
             <children>
-                <VBox alignment="TOP_CENTER" prefHeight="275.0" prefWidth="258.0" spacing="70.0" style="-fx-background-color: #3d3d3d;">
-                    <children>
-                        <Label text="Split Style Keyboard" textFill="#fbfbfb">
-                            <font>
-                                <Font name="System Bold" size="15.0" />
-                            </font>
-                  </Label>
-                        <ImageView fitHeight="74.0" fitWidth="206.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/ergodox.png" />
-                            </image>
-                        </ImageView>
-                    </children>
-                    <padding>
-                        <Insets left="15.0" right="15.0" top="35.0" />
-                    </padding>
-                </VBox>
-                <VBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #fbfbfb;">
-                    <padding>
-                        <Insets left="15.0" right="15.0" top="35.0" />
-                    </padding>
+                <Label text="Split Style Keyboard" textFill="#fbfbfb">
+                    <font>
+                        <Font name="System Bold" size="17.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="136.0" fitWidth="263.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/ergodox.png" />
+                    </image>
+               <VBox.margin>
+                  <Insets top="60.0" />
+               </VBox.margin>
+                </ImageView>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                <children>
-                  <HBox alignment="CENTER" spacing="10.0">
+                  <HBox alignment="CENTER_LEFT" spacing="15.0">
                      <children>
-                        <Label text="Keyboard Name" />
+                        <Label style="-fx-text-fill: #fbfbfb;" text="Keyboard Name" />
                         <TextField />
                      </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
                   </HBox>
-                  <HBox alignment="CENTER" spacing="10.0">
+                  <HBox alignment="CENTER_LEFT" spacing="40.0">
                      <children>
-                        <Label text="Key Strokes" />
-                        <TextField />
+                        <Label style="-fx-text-fill: #fbfbfb;" text="In Use Since" />
+                        <DatePicker prefHeight="26.0" prefWidth="171.0" />
                      </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
                   </HBox>
-                  <HBox alignment="CENTER" spacing="10.0">
-                     <children>
-                        <Label text="Time Pressed" />
-                        <TextField />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" spacing="10.0">
-                     <children>
-                        <Label text="Used Since" />
-                        <TextField />
-                     </children>
-                  </HBox>
-                  <HBox>
-                     <children>
-                        <Button mnemonicParsing="false" text="Button" />
-                     </children>
-                  </HBox>
+                  <Label text="Confrim" textFill="#fbfbfb">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
                </children>
-                </VBox>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
             </children>
-        </HBox>
-    </children>
-</AnchorPane>
+            <padding>
+                <Insets top="40.0" />
+            </padding>
+        </VBox>
+        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="281.0" spacing="100.0" style="-fx-background-color: #fbfbfb;">
+            <children>
+                <Label text="Standard Style Keyboard" textFill="#3d3d3d">
+                    <font>
+                        <Font name="System Bold" size="17.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="67.0" fitWidth="234.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/plank.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <padding>
+                <Insets top="40.0" />
+            </padding>
+        </VBox>
+    </items>
+</SplitPane>

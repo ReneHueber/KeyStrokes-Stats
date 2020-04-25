@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<SplitPane dividerPositions="0.5233333333333333" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerStandardSelectedWindow">
+    <items>
+        <VBox alignment="TOP_CENTER" minWidth="309.0" prefHeight="200.0" prefWidth="309.0" spacing="100.0" style="-fx-background-color: #3d3d3d;">
+            <children>
+                <Label text="Split Style Keyboard" textFill="#fbfbfb">
+                    <font>
+                        <Font name="System Bold" size="17.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="136.0" fitWidth="263.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/ergodox.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <padding>
+                <Insets top="40.0" />
+            </padding>
+        </VBox>
+        <VBox alignment="TOP_CENTER" minWidth="281.0" prefHeight="200.0" prefWidth="281.0" spacing="100.0" style="-fx-background-color: #fbfbfb;">
+            <children>
+                <Label text="Standard Style Keyboard" textFill="#3d3d3d">
+                    <font>
+                        <Font name="System Bold" size="17.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="67.0" fitWidth="234.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/plank.png" />
+                    </image>
+                </ImageView>
+            </children>
+            <padding>
+                <Insets top="40.0" />
+            </padding>
+        </VBox>
+    </items>
+</SplitPane>

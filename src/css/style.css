@@ -16,5 +16,13 @@
 
 /* horizontal the two nodes are placed to the left/right of each other. */
 .split-pane-divider {
-    -fx-background-color: transparent;
+    -fx-border-color: #fbfbfb;
+    -fx-background-color: #fbfbfb;
+    -fx-background-insets: 0;
+}
+
+.split-pane {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
 }

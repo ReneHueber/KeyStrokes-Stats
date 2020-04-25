@@ -1,19 +1,39 @@
 package gui;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import objects.Keyboards;
 
 import java.io.IOException;
 
 public class ControllerAddKeyboardWindow {
     @FXML
-    private TextField input1, input2;
+    ImageView splitLayoutIv, standardLayoutIv;
 
+    public void initialize() {
+        // change the layout if you click the image view
+        splitLayoutIv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml");
+            }
+        });
+
+        // change the layout if you click the image view
+        standardLayoutIv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml");
+            }
+        });
+    }
 
     // passes the values pack to the select keyboard class and get's closed
     public void passValues(ActionEvent event) throws IOException {
@@ -26,12 +46,22 @@ public class ControllerAddKeyboardWindow {
         stage.close();
     }
 
-    public void splitLayoutClicked(){
-        System.out.println("split clicked");
-    }
-
-    public void standardLayoutClicked(){
-        System.out.println("standard clicked");
+    /**
+     * Changes the Scenes in the current window
+     * @param event The Mouse click event of the Image View
+     * @param fxmlLayout Path to fxml file that should be loaded
+     */
+    public void changesScenes(MouseEvent event, String fxmlLayout) {
+        // get's the current stage and changes the scene
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlLayout));
+            Parent rootSplitSelected = fxmlLoader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(rootSplitSelected));
+            stage.show();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
 }
