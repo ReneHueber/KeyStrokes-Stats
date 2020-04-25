@@ -55,7 +55,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      */
     public void addKeyboardClicked() throws IOException {
         // loads the fxml file
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/addKeyboardWindow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
         Parent rootAddKeyboard = (Parent) fxmlLoader.load();
 
         // creates the stage and set's the property's
