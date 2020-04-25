@@ -21,13 +21,14 @@ import java.time.format.DateTimeFormatter;
 
 public class ControllerAddKeyboardWindow {
     @FXML
-    ImageView splitLayoutIv, standardLayoutIv;
+    private ImageView splitLayoutIv, standardLayoutIv;
     @FXML
-    TextField name;
+    private TextField name;
     @FXML
-    DatePicker datePicker;
+    private DatePicker datePicker;
     @FXML
-    Label confirm;
+    private Label confirm;
+
 
     /**
      * Setup the Image View click Listeners, and the date picker.
@@ -52,8 +53,13 @@ public class ControllerAddKeyboardWindow {
         confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                // keyboardConfirmed(mouseEvent);
-                checkInputs();
+                // keyboard name okay
+                if (!name.getText().isEmpty() && !name.getText().equals("Enter a Name")){
+                    // keyboardConfirmed(mouseEvent);
+                }
+                else{
+                    name.setText("Enter a Name");
+                }
             }
         });
 
@@ -129,14 +135,12 @@ public class ControllerAddKeyboardWindow {
         datePicker.setEditable(false);
     }
 
-    // TODO finish this function
-    private void checkInputs(){
-        String keyboardName = name.getText();
-        if (keyboardName.isEmpty()){
-            System.out.println("False");
+    public void resetTextFieldText(){
+        if (name.getText().equals("Enter a Name")){
+            name.setText("");
         }
-        LocalDate useDate = datePicker.getValue();
-        System.out.println(String.format("%d.%d.%d", useDate.getDayOfMonth(), useDate.getMonthValue(), useDate.getYear()));
+        else if (name.getText().isEmpty()){
+            name.setText("Enter a Name");
+        }
     }
-
 }
