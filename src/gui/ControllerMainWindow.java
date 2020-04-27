@@ -1,6 +1,7 @@
 package gui;
 
 import database.ReadDb;
+import database.WriteDb;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -27,6 +28,7 @@ public class ControllerMainWindow {
 
     public void initialize(){
         setLabels();
+        WriteDb.createNewDb("KeyLoggerData.db", "/home/ich/Database/Keylogger/");
     }
 
 
