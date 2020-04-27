@@ -45,15 +45,24 @@
                         <Image url="@../images/plank.png" />
                     </image>
                <VBox.margin>
-                  <Insets top="60.0" />
+                  <Insets top="25.0" />
                </VBox.margin>
                 </ImageView>
                 <VBox alignment="TOP_CENTER" spacing="20.0">
                     <children>
+                  <HBox alignment="CENTER_LEFT" spacing="15.0">
+                     <children>
+                        <Label text="Keyboard Name" textFill="#3d3d3d" />
+                        <TextField fx:id="type" />
+                     </children>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                             <children>
                                 <Label text="Keyboard Name" textFill="#3d3d3d" />
-                                <TextField fx:id="name" onKeyPressed="#clearTextField" onKeyTyped="#errorTextField" onMouseClicked="#clearTextField" />
+                                <TextField fx:id="name" />
                             </children>
                             <padding>
                                 <Insets left="5.0" />
@@ -75,7 +84,7 @@
                         </Label>
                     </children>
                     <padding>
-                        <Insets top="10.0" />
+                        <Insets top="5.0" />
                     </padding>
                <VBox.margin>
                   <Insets top="20.0" />

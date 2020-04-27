@@ -11,6 +11,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -25,6 +26,8 @@ public class ControllerAddKeyboardWindow {
     @FXML
     private TextField name;
     @FXML
+    private TextField type;
+    @FXML
     private DatePicker datePicker;
     @FXML
     private Label confirm;
@@ -35,33 +38,33 @@ public class ControllerAddKeyboardWindow {
      */
     public void initialize() {
         // change the layout if the split Layout image is clicked
-        splitLayoutIv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml");
-            }
-        });
+        splitLayoutIv.setOnMouseClicked(mouseEvent -> changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml"));
 
         // change the layout if you standard Layout image is clicked
-        standardLayoutIv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml");
+        standardLayoutIv.setOnMouseClicked(mouseEvent -> changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml"));
+
+        confirm.setOnMouseClicked(mouseEvent -> {
+            // keyboard name okay
+            boolean nameOkay = checkTextFieldInput(name, "Enter a Keyboard Name");
+            boolean typeOkay = checkTextFieldInput(type, "Enter a Keyboard Type");
+            if (nameOkay && typeOkay){
+                // TODO werte in datenbank schreiben
             }
         });
 
-        confirm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                // keyboard name okay
-                if (!name.getText().isEmpty() && !name.getText().equals("Enter a Name")){
-                    // keyboardConfirmed(mouseEvent);
-                }
-                else{
-                    name.setText("Enter a Name");
-                }
-            }
-        });
+        // gui handling for the name text field
+        name.setOnMouseClicked(mouseEvent -> clearTextField(name, "Enter a Keyboard Name"));
+
+        name.setOnKeyPressed(keyEvent -> clearTextField(name, "Enter a Keyboard Name"));
+
+        name.setOnKeyReleased(keyEvent -> errorTextField(name, "Enter a Keyboard Name"));
+
+        // Gui handling for the type text field
+        type.setOnMouseClicked(mouseEvent -> clearTextField(type, "Enter a Keyboard Type"));
+
+        type.setOnKeyPressed(keyEvent -> clearTextField(type, "Enter a Keyboard Type"));
+
+        type.setOnKeyReleased(keyEvent -> errorTextField(type, "Enter a Keyboard Type"));
 
         setupDatePicker();
     }
@@ -137,19 +140,31 @@ public class ControllerAddKeyboardWindow {
 
     /**
      * Clear the text Field from the error massage
+     * @param clearMassage Text ah with the Text Field should be cleared
      */
-    public void clearTextField(){
-        if (name.getText().equals("Enter a Name")) {
-            name.setText("");
+    private void clearTextField(TextField field, String clearMassage){
+        // TODO not only name
+        if (field.getText().equals(clearMassage)) {
+            field.setText("");
         }
     }
 
     /**
      * Set's the Error massage for the text Field
+     * @param errorMassage Massage that should be displayed in the Text Field
      */
-    public void errorTextField(){
-        if (name.getText().isEmpty()) {
-            name.setText("Enter a Name");
+    private void errorTextField(TextField field, String errorMassage){
+        if (field.getText().isEmpty()) {
+            field.setText(errorMassage);
+        }
+    }
+
+    private boolean checkTextFieldInput(TextField filed, String errorText){
+        if (!filed.getText().isEmpty() && filed.getText().equals(errorText))
+            return true;
+        else{
+            filed.setText(errorText);
+            return false;
         }
     }
 }

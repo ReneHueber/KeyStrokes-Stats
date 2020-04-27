@@ -25,15 +25,24 @@
                         <Image url="@../images/ergodox.png" />
                     </image>
                <VBox.margin>
-                  <Insets top="60.0" />
+                  <Insets top="25.0" />
                </VBox.margin>
                 </ImageView>
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
                <children>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                     <children>
+                        <Label style="-fx-text-fill: #fbfbfb;" text="Keyboard Type" />
+                        <TextField fx:id="type" />
+                     </children>
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="15.0">
                      <children>
                         <Label style="-fx-text-fill: #fbfbfb;" text="Keyboard Name" />
-                        <TextField fx:id="name" onKeyPressed="#clearTextField" onKeyTyped="#clearTextField" onMouseClicked="#clearTextField" />
+                        <TextField fx:id="name" />
                      </children>
                      <padding>
                         <Insets left="10.0" />
@@ -55,7 +64,7 @@
                   </Label>
                </children>
                <padding>
-                  <Insets top="10.0" />
+                  <Insets top="5.0" />
                </padding>
             </VBox>
             </children>
