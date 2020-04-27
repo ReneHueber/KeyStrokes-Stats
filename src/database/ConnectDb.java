@@ -11,19 +11,31 @@ public class ConnectDb {
 
     /**
      * Creates the Connection to the Database
-     * @param dbPath Path to the Database
-     * @return Connection from the Database
+     * @param url SQLite connection String
+     * @return Connection to the Database
      */
-    public static Connection connect(String dbPath){
+    public static Connection connect(String url){
         Connection conn = null;
-        String url = "jdbc:sqlite:" + dbPath;
-        try{
 
+        try{
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         return conn;
+    }
+
+    /**
+     * Closes the Connection to the Db
+     * @param conn Connection that should be closed
+     */
+    public static void closeConnection(Connection conn){
+        try{
+            conn.close();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }

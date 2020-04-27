@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ControllerMainWindow {
 
@@ -27,8 +28,10 @@ public class ControllerMainWindow {
 
 
     public void initialize(){
-        setLabels();
+        // Creates a new Db if it is not existing
         WriteDb.createNewDb("KeyLoggerData.db", "/home/ich/Database/Keylogger/");
+        // setLabels();
+        createTables();
     }
 
 
@@ -71,5 +74,25 @@ public class ControllerMainWindow {
     private void setKeyPushForce(int sum){
         int pushForce = sum * 50;
         key_push_force.setText(pushForce + " cN");
+    }
+
+    /**
+     * Creates all the needed Tables
+     */
+    private void createTables(){
+        ArrayList<String> tables = new ArrayList<>();
+        String keyboardTables = "CREATE TABLE IF NOT EXISTS keyboards (\n"
+                + "     id integer PRIMARY KEY,\n"
+                + "     keyboardName text NOT NULL,\n"
+                + "     keyboardType text NOT NULL,\n"
+                + "     layout text NOT NULL,\n"
+                + "     usedSince Date NOT NULL\n"
+                + ");";
+        tables.add(keyboardTables);
+
+        // creates all the tables in a loop
+        for (String table : tables){
+            WriteDb.createNewTable(table);
+        }
     }
 }

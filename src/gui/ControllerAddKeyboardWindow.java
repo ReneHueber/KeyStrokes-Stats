@@ -1,7 +1,6 @@
 package gui;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import database.WriteDb;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -11,7 +10,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -21,6 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class ControllerAddKeyboardWindow {
+    private String layoutChosen = "split";
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
     @FXML
@@ -34,38 +33,62 @@ public class ControllerAddKeyboardWindow {
 
 
     /**
-     * Setup the Image View click Listeners, and the date picker.
+     * Setup the Image View, click Listeners, and the date picker.
      */
     public void initialize() {
         // change the layout if the split Layout image is clicked
-        splitLayoutIv.setOnMouseClicked(mouseEvent -> changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml"));
+        splitLayoutIv.setOnMouseClicked(mouseEvent -> {
+            changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml");
+            layoutChosen = "split";
+        });
 
         // change the layout if you standard Layout image is clicked
-        standardLayoutIv.setOnMouseClicked(mouseEvent -> changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml"));
+        standardLayoutIv.setOnMouseClicked(mouseEvent -> {
+            changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml");
+            layoutChosen = "standard";
+        });
 
+
+        // label to add the keyboard to the list
         confirm.setOnMouseClicked(mouseEvent -> {
             // keyboard name okay
             boolean nameOkay = checkTextFieldInput(name, "Enter a Keyboard Name");
             boolean typeOkay = checkTextFieldInput(type, "Enter a Keyboard Type");
             if (nameOkay && typeOkay){
-                // TODO werte in datenbank schreiben
+                // creates a new database entrance for the keyboard
+                LocalDate chosenDate = datePicker.getValue();
+                String date = chosenDate.toString();
+                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, usedSince) " +
+                        "VALUES(?,?,?,?)";
+                WriteDb.insertIntoTable(sqlStatement, name.getText(), type.getText(), layoutChosen,
+                date);
             }
         });
 
+
         // gui handling for the name text field
-        name.setOnMouseClicked(mouseEvent -> clearTextField(name, "Enter a Keyboard Name"));
+        name.setOnMouseClicked(mouseEvent -> {
+            clearTextField(name, "Enter a Keyboard Name");
+            errorTextField(type, "Enter a Keyboard Type");
+        });
 
         name.setOnKeyPressed(keyEvent -> clearTextField(name, "Enter a Keyboard Name"));
 
         name.setOnKeyReleased(keyEvent -> errorTextField(name, "Enter a Keyboard Name"));
 
+
         // Gui handling for the type text field
-        type.setOnMouseClicked(mouseEvent -> clearTextField(type, "Enter a Keyboard Type"));
+        type.setOnMouseClicked(mouseEvent -> {
+            clearTextField(type, "Enter a Keyboard Type");
+            errorTextField(name, "Enter a Keyboard Name");
+        });
 
         type.setOnKeyPressed(keyEvent -> clearTextField(type, "Enter a Keyboard Type"));
 
         type.setOnKeyReleased(keyEvent -> errorTextField(type, "Enter a Keyboard Type"));
 
+
+        // setup the appearance of the date picker
         setupDatePicker();
     }
 
@@ -139,7 +162,7 @@ public class ControllerAddKeyboardWindow {
     }
 
     /**
-     * Clear the text Field from the error massage
+     * Clear the text Field from the error massage.
      * @param clearMassage Text ah with the Text Field should be cleared
      */
     private void clearTextField(TextField field, String clearMassage){
@@ -150,7 +173,7 @@ public class ControllerAddKeyboardWindow {
     }
 
     /**
-     * Set's the Error massage for the text Field
+     * Set's the Error massage for the text Field.
      * @param errorMassage Massage that should be displayed in the Text Field
      */
     private void errorTextField(TextField field, String errorMassage){
@@ -159,8 +182,14 @@ public class ControllerAddKeyboardWindow {
         }
     }
 
+    /**
+     * Checks if the text Field is not empty or the error massage is showed.
+     * @param filed Text Field to check
+     * @param errorText The error Massage for the text Field
+     * @return Input of the text Field is okay
+     */
     private boolean checkTextFieldInput(TextField filed, String errorText){
-        if (!filed.getText().isEmpty() && filed.getText().equals(errorText))
+        if (!filed.getText().isEmpty() && !filed.getText().equals(errorText))
             return true;
         else{
             filed.setText(errorText);
