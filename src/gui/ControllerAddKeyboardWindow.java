@@ -112,7 +112,7 @@ public class ControllerAddKeyboardWindow {
             final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             @Override
             public String toString(LocalDate localDate) {
-                if (localDate != null){
+                if (localDate != null) {
                     return dateFormatter.format(localDate);
                 } else{
                     return "";
@@ -135,11 +135,20 @@ public class ControllerAddKeyboardWindow {
         datePicker.setEditable(false);
     }
 
-    public void resetTextFieldText(){
-        if (name.getText().equals("Enter a Name")){
+    /**
+     * Clear the text Field from the error massage
+     */
+    public void clearTextField(){
+        if (name.getText().equals("Enter a Name")) {
             name.setText("");
         }
-        else if (name.getText().isEmpty()){
+    }
+
+    /**
+     * Set's the Error massage for the text Field
+     */
+    public void errorTextField(){
+        if (name.getText().isEmpty()) {
             name.setText("Enter a Name");
         }
     }

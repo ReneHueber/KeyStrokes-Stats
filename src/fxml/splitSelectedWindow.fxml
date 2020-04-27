@@ -33,7 +33,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="15.0">
                      <children>
                         <Label style="-fx-text-fill: #fbfbfb;" text="Keyboard Name" />
-                        <TextField fx:id="name" onKeyPressed="#resetTextFieldText" onMouseClicked="#resetTextFieldText" />
+                        <TextField fx:id="name" onKeyPressed="#clearTextField" onKeyTyped="#clearTextField" onMouseClicked="#clearTextField" />
                      </children>
                      <padding>
                         <Insets left="10.0" />

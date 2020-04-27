@@ -53,7 +53,7 @@
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                             <children>
                                 <Label text="Keyboard Name" textFill="#3d3d3d" />
-                                <TextField fx:id="name" onKeyPressed="#resetTextFieldText" onMouseClicked="#resetTextFieldText" />
+                                <TextField fx:id="name" onKeyPressed="#clearTextField" onKeyTyped="#errorTextField" onMouseClicked="#clearTextField" />
                             </children>
                             <padding>
                                 <Insets left="5.0" />
