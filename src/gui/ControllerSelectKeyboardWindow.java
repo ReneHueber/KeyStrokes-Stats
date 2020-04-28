@@ -68,6 +68,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectValuesKeyboard(sqlStmt);
         keyboardLv.setItems(keyboardsObservableList);
+        keyboardLv.setPlaceholder(new Label("No Keyboards added"));
     }
 
     /**

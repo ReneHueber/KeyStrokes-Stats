@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="389.0" minWidth="500.0" prefHeight="389.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
    <children>
       <HBox spacing="30.0" style="-fx-background-color: #3d3d3d;">
          <children>
@@ -27,9 +27,6 @@
          </padding>
       </HBox>
       <ListView fx:id="keyboardLv" stylesheets="@../css/style.css">
-         <padding>
-            <Insets bottom="10.0" left="15.0" top="10.0" />
-         </padding>
       </ListView>
    </children>
 </VBox>
