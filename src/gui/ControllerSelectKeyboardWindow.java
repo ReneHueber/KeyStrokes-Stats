@@ -1,6 +1,7 @@
 package gui;
 
 import database.ReadDb;
+import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -19,6 +20,7 @@ import objects.Keyboards;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 
@@ -32,6 +34,10 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private ObservableList<Keyboards> keyboardsObservableList;
 
     public ControllerSelectKeyboardWindow(){
+        // creates a new Db if it is not existing
+        WriteDb.createNewDb("KeyLoggerData.db", "/home/ich/Database/Keylogger/");
+        // crates the needed tables
+        createTables();
         // initialize List
         keyboardsObservableList = FXCollections.observableArrayList();
     }
@@ -47,27 +53,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         addKeyboardLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    // loads the fxml file
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
-                    Parent rootAddKeyboard = (Parent) fxmlLoader.load();
-                    /*
-                     * get's the controller and passes the stage,
-                     * so the select keyboard stage can be reloaded from the add keyboard controller.
-                     * After a keyboard is added to the database
-                    */
-                    ControllerAddKeyboardWindow controller = fxmlLoader.getController();
-                    controller.parentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-
-                    // creates the stage and set's the property's
-                    Stage stage = new Stage();
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.setTitle("Add Keyboard");
-                    stage.setScene(new Scene(rootAddKeyboard));
-                    stage.show();
-                } catch (IOException e){
-                    System.out.println(e.getMessage());
-                }
+                openAddKeyboardWindow(mouseEvent);
             }
         });
     }
@@ -82,5 +68,57 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectValuesKeyboard(sqlStmt);
         keyboardLv.setItems(keyboardsObservableList);
+    }
+
+    /**
+     * Opens the Window to add a new Keyboard.
+     * Passes the Stage of the current Window to reload the fxml file from the new Controller.
+     * @param mouseEvent Source of the Mouse Click to pass the current Stage
+     */
+    private void openAddKeyboardWindow(MouseEvent mouseEvent){
+        try {
+            // loads the fxml file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
+            Parent rootAddKeyboard = (Parent) fxmlLoader.load();
+            /*
+             * get's the controller and passes the stage,
+             * so the select keyboard stage can be reloaded from the add keyboard controller.
+             * After a keyboard is added to the database
+             */
+            ControllerAddKeyboardWindow controller = fxmlLoader.getController();
+            controller.parentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+
+            // creates the stage and set's the property's
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Add Keyboard");
+            stage.setScene(new Scene(rootAddKeyboard));
+            stage.show();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Creates all the needed Tables
+     */
+    private void createTables(){
+        ArrayList<String> tables = new ArrayList<>();
+        String keyboardTables = "CREATE TABLE IF NOT EXISTS keyboards (\n"
+                + "     id INTEGER PRIMARY KEY,\n"
+                + "     keyboardName TEXT NOT NULL,\n"
+                + "     keyboardType TEXT NOT NULL,\n"
+                + "     layout TEXT NOT NULL,\n"
+                + "     totKeystrokes INTEGER NOT NULL,\n"
+                + "     totTimePressed REAL NOT NULL,\n"
+                + "     usedSince DATE NOT NULL,\n"
+                + "     lastUsed DATE NUT NULL\n"
+                + ");";
+        tables.add(keyboardTables);
+
+        // creates all the tables in a loop
+        for (String table : tables){
+            WriteDb.createNewTable(table);
+        }
     }
 }

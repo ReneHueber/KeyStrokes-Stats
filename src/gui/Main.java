@@ -27,9 +27,9 @@ public class Main extends Application {
             }
         });
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/selectKeyboardWindow.fxml"));
         stage.setTitle("Key Strokes");
-        stage.setScene(new Scene(root, 390, 395));
+        stage.setScene(new Scene(root));
         stage.show();
     }
 

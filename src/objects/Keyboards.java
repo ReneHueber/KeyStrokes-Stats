@@ -1,11 +1,10 @@
 package objects;
 
-import gui.ControllerMainWindow;
 import javafx.scene.image.Image;
 
 public class Keyboards {
-    private final Image splitImage = new Image(ControllerMainWindow.class.getResource("../images/ergodox.png").toExternalForm());
-    private final Image standardImage = new Image(ControllerMainWindow.class.getResource("../images/plank.png").toExternalForm());
+    private final Image splitImage = new Image(getClass().getResource("../images/ergodox.png").toExternalForm());
+    private final Image standardImage = new Image(getClass().getResource("../images/plank.png").toExternalForm());
 
     private Image keyboardImage;
     private String keyboardName;
