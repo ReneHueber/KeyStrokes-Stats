@@ -2,6 +2,8 @@ package gui;
 
 import database.ReadDb;
 import database.WriteDb;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -22,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class ControllerSelectKeyboardWindow implements Initializable {
@@ -30,6 +34,12 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private ListView<Keyboards> keyboardLv;
     @FXML
     private Label addKeyboardLb;
+
+    private Timer timer;
+    private boolean timerStarted = false;
+    private int changedSelectedIndex;
+    private int clickedSelectedIndex;
+    private int clicked = 0;
 
     private ObservableList<Keyboards> keyboardsObservableList;
 
@@ -56,7 +66,63 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 openAddKeyboardWindow(mouseEvent);
             }
         });
+
+        // register a selection change
+       /* keyboardLv.getSelectionModel().selectedItemProperty()
+                .addListener(new ChangeListener<Keyboards>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards keyboards, Keyboards t1) {
+                        // cancels the timer if it has started
+                        if (timerStarted)
+                            timer.cancel();
+                        System.out.println("selection changed");
+                        changedSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
+                        // starts the timer
+                        timerStarted = true;
+                        timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                timerStarted = false;
+                                clicked = 0;
+                            }
+                        }, 250);
+                    }
+                });
+
+        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                int newSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
+                if (newSelectedIndex == changedSelectedIndex && timerStarted){
+                    ++clicked;
+                    if (clicked == 2){
+                        System.out.println("Double Clicked");
+                        clicked = 0;
+                    }
+                }
+            }
+        }); */
+
+        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if (clicked == 0){
+                    clickedSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
+                    clicked++;
+                }
+                else {
+                    int newSelectedItem = keyboardLv.getSelectionModel().getSelectedIndex();
+                    if (newSelectedItem == clickedSelectedIndex){
+                        System.out.println("Double Clicked");
+                    }
+                    clicked = 0;
+                }
+            }
+        });
     }
+
+
 
 
     /**
