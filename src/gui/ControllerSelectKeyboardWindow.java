@@ -37,13 +37,13 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     }
 
     /**
-     * Set's the Custom Items for the list view.
+     * Set's the Custom Items for the list view and the click Listeners.
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        keyboardLv.setCellFactory(KeyboardsListViewCell -> new KeyboardsListViewCell());
-        readKeyboardValues();
+        setupListView();
 
+        // mouse click listener for the add keyboard label
         addKeyboardLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -51,6 +51,11 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                     // loads the fxml file
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
                     Parent rootAddKeyboard = (Parent) fxmlLoader.load();
+                    /*
+                     * get's the controller and passes the stage,
+                     * so the select keyboard stage can be reloaded from the add keyboard controller.
+                     * After a keyboard is added to the database
+                    */
                     ControllerAddKeyboardWindow controller = fxmlLoader.getController();
                     controller.parentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
@@ -68,8 +73,11 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     }
 
 
-    public void readKeyboardValues(){
-        keyboardLv.getItems().clear();
+    /**
+     * Setup the list view and set's the values from the db.
+     */
+    public void setupListView(){
+        keyboardLv.setCellFactory(KeyboardsListViewCell -> new KeyboardsListViewCell());
         String sqlStmt = "SELECT keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectValuesKeyboard(sqlStmt);

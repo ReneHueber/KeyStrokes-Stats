@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
     protected Stage parentStage;
+
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
     @FXML

@@ -5,7 +5,6 @@ import javafx.collections.ObservableList;
 import objects.Keyboards;
 
 import java.sql.*;
-import java.util.List;
 
 public class ReadDb {
     private static final String url = WriteDb.url;
@@ -30,6 +29,11 @@ public class ReadDb {
         return result;
     }
 
+    /**
+     * Reads the values for the keyboards Table.
+     * @param sqlStatements What values should be read
+     * @return An ObservableList<Keyboards> with all the Keyboards from the Db
+     */
     public static ObservableList<Keyboards> selectValuesKeyboard(String sqlStatements){
         try (Connection conn = ConnectDb.connect(WriteDb.url);
             Statement stmt = conn.createStatement();
