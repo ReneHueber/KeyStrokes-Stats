@@ -82,11 +82,14 @@ public class ControllerMainWindow {
     private void createTables(){
         ArrayList<String> tables = new ArrayList<>();
         String keyboardTables = "CREATE TABLE IF NOT EXISTS keyboards (\n"
-                + "     id integer PRIMARY KEY,\n"
-                + "     keyboardName text NOT NULL,\n"
-                + "     keyboardType text NOT NULL,\n"
-                + "     layout text NOT NULL,\n"
-                + "     usedSince Date NOT NULL\n"
+                + "     id INTEGER PRIMARY KEY,\n"
+                + "     keyboardName TEXT NOT NULL,\n"
+                + "     keyboardType TEXT NOT NULL,\n"
+                + "     layout TEXT NOT NULL,\n"
+                + "     totalKeystrokes INTEGER NOT NULL,\n"
+                + "     totalTimePressed REAL NOT NULL,\n"
+                + "     usedSince DATE NOT NULL,\n"
+                + "     lastUsed DATE NUT NULL\n"
                 + ");";
         tables.add(keyboardTables);
 

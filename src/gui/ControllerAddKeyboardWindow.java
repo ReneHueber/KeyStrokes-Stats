@@ -18,8 +18,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+
 public class ControllerAddKeyboardWindow {
-    private String layoutChosen = "split";
+    private String keyboardStyle = "split";
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
     @FXML
@@ -38,14 +39,14 @@ public class ControllerAddKeyboardWindow {
     public void initialize() {
         // change the layout if the split Layout image is clicked
         splitLayoutIv.setOnMouseClicked(mouseEvent -> {
+            keyboardStyle = "split";
             changesScenes(mouseEvent, "../fxml/splitSelectedWindow.fxml");
-            layoutChosen = "split";
         });
 
         // change the layout if you standard Layout image is clicked
         standardLayoutIv.setOnMouseClicked(mouseEvent -> {
+            keyboardStyle = "standard";
             changesScenes(mouseEvent, "../fxml/standardSelectedWindow.fxml");
-            layoutChosen = "standard";
         });
 
 
@@ -55,13 +56,20 @@ public class ControllerAddKeyboardWindow {
             boolean nameOkay = checkTextFieldInput(name, "Enter a Keyboard Name");
             boolean typeOkay = checkTextFieldInput(type, "Enter a Keyboard Type");
             if (nameOkay && typeOkay){
-                // creates a new database entrance for the keyboard
+                // get's the selected Date
                 LocalDate chosenDate = datePicker.getValue();
                 String date = chosenDate.toString();
-                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, usedSince) " +
-                        "VALUES(?,?,?,?)";
-                WriteDb.insertIntoTable(sqlStatement, name.getText(), type.getText(), layoutChosen,
-                date);
+
+                // creates a new database entrance for the keyboard
+                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totalKeystrokes," +
+                        "totalTimePressed, usedSince, lastUsed) " +
+                        "VALUES(?,?,?,?,?,?,?)";
+                WriteDb.insertIntoTable(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
+                "0.0", date, "0000-00-00");
+
+                // closes the stage after the values are saved
+                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                stage.close();
             }
         });
 
@@ -104,8 +112,7 @@ public class ControllerAddKeyboardWindow {
 
             ControllerSelectKeyboardWindow controller = fxmlLoader.getController();
             controller.getKeyboardObject("Test", "Text");
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
+
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -113,6 +120,7 @@ public class ControllerAddKeyboardWindow {
 
     /**
      * Changes the Scenes in the current window.
+     * Passes the Keyboard Style String
      * @param event The Mouse click event of the Image View
      * @param fxmlLayout Path to fxml file that should be loaded
      */
@@ -121,6 +129,10 @@ public class ControllerAddKeyboardWindow {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlLayout));
             Parent rootSplitSelected = fxmlLoader.load();
+            // passes the keyboard Style Value to the new controller to save the value
+            ControllerAddKeyboardWindow controller = fxmlLoader.getController();
+            controller.keyboardStyle = this.keyboardStyle;
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(rootSplitSelected));
             stage.show();
