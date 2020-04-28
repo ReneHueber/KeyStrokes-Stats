@@ -11,7 +11,7 @@
    <children>
       <HBox spacing="30.0" style="-fx-background-color: #3d3d3d;">
          <children>
-            <Label onMouseClicked="#addKeyboardClicked" style="-fx-text-fill: #e3e3e3;" text="Add Keyboard">
+            <Label fx:id="addKeyboardLb" style="-fx-text-fill: #e3e3e3;" text="Add Keyboard">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

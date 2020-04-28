@@ -21,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 
 public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
+    protected Stage parentStage;
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
     @FXML
@@ -61,12 +62,13 @@ public class ControllerAddKeyboardWindow {
                 String date = chosenDate.toString();
 
                 // creates a new database entrance for the keyboard
-                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totalKeystrokes," +
-                        "totalTimePressed, usedSince, lastUsed) " +
+                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totKeystrokes," +
+                        "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
                 WriteDb.insertIntoTable(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
                 "0.0", date, "0000-00-00");
 
+                reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 stage.close();
@@ -101,17 +103,15 @@ public class ControllerAddKeyboardWindow {
     }
 
     /**
-     * Passes the entered Values to the SelectKeyboard Controller
-     * Closes the Window if finished
-     * @param event The Mouse Click event of the confirm label
+     * Updates the Keyboard List after a Keyboard is added.
      */
-    public void keyboardConfirmed(MouseEvent event) {
+    public void reloadSelectKeyboardWindow() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/selectKeyboardWindow.fxml"));
-            fxmlLoader.load();
+            Parent root = (Parent) fxmlLoader.load();
 
-            ControllerSelectKeyboardWindow controller = fxmlLoader.getController();
-            controller.getKeyboardObject("Test", "Text");
+            parentStage.setScene(new Scene(root));
+            parentStage.show();
 
         } catch (IOException e){
             e.printStackTrace();
@@ -132,6 +132,7 @@ public class ControllerAddKeyboardWindow {
             // passes the keyboard Style Value to the new controller to save the value
             ControllerAddKeyboardWindow controller = fxmlLoader.getController();
             controller.keyboardStyle = this.keyboardStyle;
+            controller.parentStage = this.parentStage;
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(rootSplitSelected));

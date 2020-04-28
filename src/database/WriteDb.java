@@ -3,7 +3,7 @@ package database;
 import java.sql.*;
 
 public class WriteDb {
-    private static String url;
+    protected static String url;
     /**
      * Creates a new Database
      * @param dbName Name of the new Db

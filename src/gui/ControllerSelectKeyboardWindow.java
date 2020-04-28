@@ -1,14 +1,18 @@
 package gui;
 
+import database.ReadDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import objects.Keyboards;
@@ -22,22 +26,14 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
     @FXML
     private ListView<Keyboards> keyboardLv;
+    @FXML
+    private Label addKeyboardLb;
 
     private ObservableList<Keyboards> keyboardsObservableList;
 
     public ControllerSelectKeyboardWindow(){
         // initialize List
         keyboardsObservableList = FXCollections.observableArrayList();
-        // load images
-        Image ergoDox = new Image(ControllerMainWindow.class.getResource("../images/ergodox.png").toExternalForm());
-        Image plank = new Image(ControllerMainWindow.class.getResource("../images/plank.png").toExternalForm());
-
-
-        keyboardsObservableList.addAll(
-                new Keyboards(ergoDox, "ErgoDox-Ez", 10000, 300.50f, "23.04.2020", "01.03.2020"),
-                new Keyboards(plank, "Plank", 6000, 100.50f, "18.04.2020", "01.01.2020"),
-                new Keyboards(ergoDox, "ErgoDox-Ez Work", 35000, 1000.50f, "21.04.2020", "01.06.2019")
-        );
     }
 
     /**
@@ -45,29 +41,38 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setCellFactory(KeyboardsListViewCell -> new KeyboardsListViewCell());
+        readKeyboardValues();
+
+        addKeyboardLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    // loads the fxml file
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
+                    Parent rootAddKeyboard = (Parent) fxmlLoader.load();
+                    ControllerAddKeyboardWindow controller = fxmlLoader.getController();
+                    controller.parentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+
+                    // creates the stage and set's the property's
+                    Stage stage = new Stage();
+                    stage.initModality(Modality.APPLICATION_MODAL);
+                    stage.setTitle("Add Keyboard");
+                    stage.setScene(new Scene(rootAddKeyboard));
+                    stage.show();
+                } catch (IOException e){
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
     }
 
-    /**
-     * Open a new Window to add a new Keyboard
-     * @throws IOException If the is problem with the fxml loader
-     */
-    public void addKeyboardClicked() throws IOException {
-        // loads the fxml file
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
-        Parent rootAddKeyboard = (Parent) fxmlLoader.load();
 
-        // creates the stage and set's the property's
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Add Keyboard");
-        stage.setScene(new Scene(rootAddKeyboard));
-        stage.show();
-    }
-
-    public void getKeyboardObject(String test, String text){
-        System.out.println(test);
-        System.out.println(text);
+    public void readKeyboardValues(){
+        keyboardLv.getItems().clear();
+        String sqlStmt = "SELECT keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
+                "FROM keyboards";
+        keyboardsObservableList = ReadDb.selectValuesKeyboard(sqlStmt);
+        keyboardLv.setItems(keyboardsObservableList);
     }
 }

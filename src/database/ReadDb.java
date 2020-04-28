@@ -1,19 +1,23 @@
 package database;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import objects.Keyboards;
+
 import java.sql.*;
+import java.util.List;
 
 public class ReadDb {
-    private final String dbPath;
+    private static final String url = WriteDb.url;
 
     public ReadDb(String dbPath){
-        this.dbPath = dbPath;
     }
 
     public int getSum(){
         String sql = "SELECT SUM(keystrokes) FROM KeyLogs";
         int result = 0;
 
-        try (Connection conn = ConnectDb.connect(dbPath)){
+        try (Connection conn = ConnectDb.connect(url)){
             Statement stmt = conn.createStatement();
             ResultSet sum = stmt.executeQuery(sql);
 
@@ -24,6 +28,30 @@ public class ReadDb {
         }
 
         return result;
+    }
+
+    public static ObservableList<Keyboards> selectValuesKeyboard(String sqlStatements){
+        try (Connection conn = ConnectDb.connect(WriteDb.url);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlStatements)){
+                ObservableList<Keyboards> keyboardList = FXCollections.observableArrayList();
+                while (rs.next()){
+                    String name = rs.getString("keyboardName");
+                    String type = rs.getString("keyboardType");
+                    String layout = rs.getString("layout");
+                    int totKeyStrokes = rs.getInt("totKeystrokes");
+                    float totTimePressed = rs.getFloat("totTimePressed");
+                    String usedSince = rs.getString("usedSince");
+                    String lastUsed = rs.getString("lastUsed");
+
+                    keyboardList.add(new Keyboards(name, type, totKeyStrokes, totTimePressed, lastUsed,
+                            usedSince, layout));
+            }
+                return keyboardList;
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
 }

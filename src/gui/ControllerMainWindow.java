@@ -86,8 +86,8 @@ public class ControllerMainWindow {
                 + "     keyboardName TEXT NOT NULL,\n"
                 + "     keyboardType TEXT NOT NULL,\n"
                 + "     layout TEXT NOT NULL,\n"
-                + "     totalKeystrokes INTEGER NOT NULL,\n"
-                + "     totalTimePressed REAL NOT NULL,\n"
+                + "     totKeystrokes INTEGER NOT NULL,\n"
+                + "     totTimePressed REAL NOT NULL,\n"
                 + "     usedSince DATE NOT NULL,\n"
                 + "     lastUsed DATE NUT NULL\n"
                 + ");";
