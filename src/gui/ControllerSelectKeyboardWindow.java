@@ -38,8 +38,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private Timer timer;
     private boolean timerStarted = false;
     private int changedSelectedIndex;
-    private int clickedSelectedIndex;
-    private int clicked = 0;
+    private int clickedSelectedIndex = -1;
+    private int clicked = 1;
 
     private ObservableList<Keyboards> keyboardsObservableList;
 
@@ -67,16 +67,15 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             }
         });
 
-        // register a selection change
-       /* keyboardLv.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<Keyboards>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards keyboards, Keyboards t1) {
-                        // cancels the timer if it has started
-                        if (timerStarted)
-                            timer.cancel();
-                        System.out.println("selection changed");
-                        changedSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
+        // double click on a list element
+        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                int newSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
+                if (newSelectedIndex == clickedSelectedIndex){
+                    clicked++;
+                    // start the timer
+                    if (clicked == 1){
                         // starts the timer
                         timerStarted = true;
                         timer = new Timer();
@@ -88,35 +87,19 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                             }
                         }, 250);
                     }
-                });
-
-        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                int newSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
-                if (newSelectedIndex == changedSelectedIndex && timerStarted){
-                    ++clicked;
-                    if (clicked == 2){
-                        System.out.println("Double Clicked");
+                    // double click after selected
+                    if (clicked == 2 && timerStarted){
+                        System.out.println("Double Clicked: " + newSelectedIndex);
                         clicked = 0;
+                        timer.cancel();
                     }
                 }
-            }
-        }); */
-
-        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (clicked == 0){
-                    clickedSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
-                    clicked++;
-                }
+                // reset the selection and clicked, cancel the timer
                 else {
-                    int newSelectedItem = keyboardLv.getSelectionModel().getSelectedIndex();
-                    if (newSelectedItem == clickedSelectedIndex){
-                        System.out.println("Double Clicked");
-                    }
+                    clickedSelectedIndex = newSelectedIndex;
                     clicked = 0;
+                    if (timerStarted)
+                        timer.cancel();
                 }
             }
         });
