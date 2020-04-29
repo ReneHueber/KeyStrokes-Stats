@@ -34,11 +34,14 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private ListView<Keyboards> keyboardLv;
     @FXML
     private Label addKeyboardLb;
+    @FXML
+    private Label startLb;
 
     private Timer timer;
     private boolean timerStarted = false;
     private int changedSelectedIndex;
     private int clickedSelectedIndex = -1;
+    private Keyboards selectedKeyboard;
     private int clicked = 1;
 
     private ObservableList<Keyboards> keyboardsObservableList;
@@ -52,6 +55,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         keyboardsObservableList = FXCollections.observableArrayList();
     }
 
+    // TODO change labels to menu bar
     /**
      * Set's the Custom Items for the list view and the click Listeners.
      */
@@ -67,6 +71,22 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             }
         });
 
+        startLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                System.out.println("Item started: " + selectedKeyboard.getKeyboardName());
+            }
+        });
+
+        keyboardLv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Keyboards>() {
+            @Override
+            public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
+                selectedKeyboard = newValue;
+            }
+        });
+
+        /*
+        // TODO fix clicking on empty rows
         // double click on a list element
         keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -102,7 +122,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                         timer.cancel();
                 }
             }
-        });
+        }); */
     }
 
 
