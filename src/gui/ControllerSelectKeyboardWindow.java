@@ -30,7 +30,7 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+// TODO Add Source "Icon made by Freepik from www.flaticon.com"
 public class ControllerSelectKeyboardWindow implements Initializable {
 
     @FXML
@@ -74,6 +74,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // set's the items for the list view
         setupListView();
 
         // click listener for the addNew keyboard menu item
@@ -89,7 +90,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (selectedKeyboard != null){
-                    System.out.println("Item started: " + selectedKeyboard.getKeyboardName());
+                    CustomDialogWindow dialogWindow = new CustomDialogWindow(null, "Clicked Item" + selectedKeyboard.getKeyboardName());
+                    dialogWindow.show();
                 }
             }
         });

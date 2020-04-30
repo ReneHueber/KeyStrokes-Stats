@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="CENTER_RIGHT" style="-fx-background-color: #3d3d3d;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerDialogWindow">
+   <children>
+      <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="600.0" spacing="60.0" style="-fx-background-color: #3d3d3d;">
+         <children>
+            <ImageView fx:id="dialogImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="dialogMassage" text="Label" textFill="#fbfbfb">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Label>
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <Button fx:id="confirmButton" mnemonicParsing="false" text="Ok">
+         <VBox.margin>
+            <Insets bottom="10.0" right="10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="3.0" left="15.0" right="15.0" top="3.0" />
+         </padding>
+      </Button>
+   </children>
+</VBox>
