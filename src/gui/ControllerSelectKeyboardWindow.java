@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -90,7 +91,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (selectedKeyboard != null){
-                    CustomDialogWindow dialogWindow = new CustomDialogWindow(null, "Clicked Item" + selectedKeyboard.getKeyboardName());
+                    CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
                     dialogWindow.show();
                 }
             }

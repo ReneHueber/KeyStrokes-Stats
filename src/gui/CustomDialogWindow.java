@@ -10,21 +10,21 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class CustomDialogWindow {
-    private Image dialogImage;
-    private String dialogMassage;
+    private final String dialogHeading;
+    private final String dialogMassage;
 
-    public CustomDialogWindow(Image dialogImage, String dialogMassage){
-        this.dialogImage = dialogImage;
+    public CustomDialogWindow(String dialogHeading, String dialogMassage){
+        this.dialogHeading = dialogHeading;
         this.dialogMassage = dialogMassage;
     }
 
     public void show(){
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("..//fxml/customDialogWindow.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
+            Parent root = fxmlLoader.load();
 
             ControllerDialogWindow controller = fxmlLoader.getController();
-            controller.setItemValues(dialogImage, dialogMassage);
+            controller.setItemValues(dialogHeading, dialogMassage);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);

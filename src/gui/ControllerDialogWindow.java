@@ -8,25 +8,23 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-// TODO separate Classes
 public class ControllerDialogWindow {
 
     @FXML
-    private ImageView dialogImage;
+    private Label dialogHeading, dialogMassage;
     @FXML
-    private Label dialogMassage;
-    @FXML
-    private Button confirmButton;
+    private Label confirmLabel;
 
 
     public void initialize(){
-        // close the window if you click the button
-        confirmButton.setOnAction(new EventHandler<ActionEvent>() {
+        // closes the window is you click okay
+        confirmLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(ActionEvent actionEvent) {
-                Stage stage = (Stage) ((Node)actionEvent.getSource()).getScene().getWindow();
+            public void handle(MouseEvent mouseEvent) {
+                Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
                 stage.close();
             }
         });
@@ -34,11 +32,11 @@ public class ControllerDialogWindow {
 
     /**
      * Set's the passed Values for the Gui
-     * @param image Dialog Window Image
+     * @param heading Dialog Window Heading
      * @param massage Dialog Window Massage
      */
-    protected void setItemValues(Image image, String massage){
-        dialogImage.setImage(image);
+    protected void setItemValues(String heading, String massage){
+        dialogHeading.setText(heading);
         dialogMassage.setText(massage);
     }
 }
