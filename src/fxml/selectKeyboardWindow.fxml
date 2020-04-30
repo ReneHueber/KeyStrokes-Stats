@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="389.0" minWidth="500.0" prefHeight="389.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="369.0" minWidth="500.0" prefHeight="380.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
    <children>
-      <HBox alignment="CENTER_LEFT" spacing="30.0" style="-fx-background-color: #3d3d3d;">
-         <children>
-            <Label fx:id="addKeyboardLb" style="-fx-text-fill: #e3e3e3;" text="Add Keyboard">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <Label style="-fx-text-fill: #e3e3e3;" text="Übersicht">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="startLb" text="Start KeyLogger" textFill="#e3e3e3">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font>
-               <HBox.margin>
-                  <Insets left="80.0" />
-               </HBox.margin>
-            </Label>
-         </children>
-         <padding>
-            <Insets bottom="8.0" left="15.0" top="8.0" />
-         </padding>
-      </HBox>
-      <ListView fx:id="keyboardLv" stylesheets="@../css/style.css">
+      <MenuBar fx:id="menuBar">
+        <menus>
+          <Menu mnemonicParsing="false" text="Keyboards">
+            <items>
+              <MenuItem fx:id="addNew" mnemonicParsing="false" text="Add new" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="KeyLogger">
+              <items>
+                <MenuItem fx:id="start" mnemonicParsing="false" text="Start" />
+                  <MenuItem fx:id="stop" mnemonicParsing="false" text="Stop" />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Stats">
+            <items>
+              <MenuItem fx:id="overview" mnemonicParsing="false" text="Overview" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem fx:id="about" mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <ListView fx:id="keyboardLv" prefHeight="353.0" prefWidth="500.0" stylesheets="@../css/style.css">
       </ListView>
    </children>
 </VBox>

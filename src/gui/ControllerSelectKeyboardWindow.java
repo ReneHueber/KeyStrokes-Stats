@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,17 +35,27 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
     @FXML
     private ListView<Keyboards> keyboardLv;
-    @FXML
-    private Label addKeyboardLb;
-    @FXML
-    private Label startLb;
 
-    private Timer timer;
-    private boolean timerStarted = false;
-    private int changedSelectedIndex;
-    private int clickedSelectedIndex = -1;
+    // Menu Keyboards
+    @FXML
+    private MenuItem addNew;
+
+    // Menu Key Logger
+    @FXML
+    private MenuItem start, stop;
+
+    // Menu Stats
+    @FXML
+    private MenuItem overview;
+
+    // Menu Help
+    @FXML
+    private MenuItem about;
+
+    @FXML
+    private MenuBar menuBar;
+
     private Keyboards selectedKeyboard;
-    private int clicked = 1;
 
     private ObservableList<Keyboards> keyboardsObservableList;
 
@@ -63,69 +76,32 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupListView();
 
-        // mouse click listener for the add keyboard label
-        addKeyboardLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        // click listener for the addNew keyboard menu item
+        addNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
-                openAddKeyboardWindow(mouseEvent);
+            public void handle(ActionEvent actionEvent) {
+                openAddKeyboardWindow();
             }
         });
 
-        startLb.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        // start the key logger if a keyboard is selected
+        start.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("Item started: " + selectedKeyboard.getKeyboardName());
+            public void handle(ActionEvent actionEvent) {
+                if (selectedKeyboard != null){
+                    System.out.println("Item started: " + selectedKeyboard.getKeyboardName());
+                }
             }
         });
 
+        // get's the selected item if the selection is changed
         keyboardLv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Keyboards>() {
             @Override
             public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
                 selectedKeyboard = newValue;
             }
         });
-
-        /*
-        // TODO fix clicking on empty rows
-        // double click on a list element
-        keyboardLv.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                int newSelectedIndex = keyboardLv.getSelectionModel().getSelectedIndex();
-                if (newSelectedIndex == clickedSelectedIndex){
-                    clicked++;
-                    // start the timer
-                    if (clicked == 1){
-                        // starts the timer
-                        timerStarted = true;
-                        timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                timerStarted = false;
-                                clicked = 0;
-                            }
-                        }, 250);
-                    }
-                    // double click after selected
-                    if (clicked == 2 && timerStarted){
-                        System.out.println("Double Clicked: " + newSelectedIndex);
-                        clicked = 0;
-                        timer.cancel();
-                    }
-                }
-                // reset the selection and clicked, cancel the timer
-                else {
-                    clickedSelectedIndex = newSelectedIndex;
-                    clicked = 0;
-                    if (timerStarted)
-                        timer.cancel();
-                }
-            }
-        }); */
     }
-
-
 
 
     /**
@@ -143,9 +119,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     /**
      * Opens the Window to add a new Keyboard.
      * Passes the Stage of the current Window to reload the fxml file from the new Controller.
-     * @param mouseEvent Source of the Mouse Click to pass the current Stage
      */
-    private void openAddKeyboardWindow(MouseEvent mouseEvent){
+    private void openAddKeyboardWindow(){
         try {
             // loads the fxml file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
@@ -156,7 +131,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
              * After a keyboard is added to the database
              */
             ControllerAddKeyboardWindow controller = fxmlLoader.getController();
-            controller.parentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            controller.parentStage = (Stage) menuBar.getScene().getWindow();
 
             // creates the stage and set's the property's
             Stage stage = new Stage();
