@@ -8,7 +8,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="369.0" minWidth="500.0" prefHeight="380.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerSelectKeyboardWindow">
    <children>
-      <MenuBar fx:id="menuBar">
+      <MenuBar fx:id="menuBar" stylesheets="@../css/style.css">
         <menus>
           <Menu mnemonicParsing="false" text="Keyboards">
             <items>

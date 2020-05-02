@@ -71,3 +71,23 @@
     -fx-background-insets: 0;
     -fx-padding: 0;
 }
+
+.menu-bar {
+    -fx-background-color: #3d3d3d;
+}
+
+.menu-bar .label {
+    -fx-text-fill: #fbfbfb;
+}
+
+.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+    -fx-background: #5887d1;
+}
+
+.menu-item:focused {
+    -fx-background-color: #5887d1;
+}
+
+.context-menu {
+    -fx-background-color: #3d3d3d;
+}
