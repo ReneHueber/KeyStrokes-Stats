@@ -22,6 +22,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import keylogger.KeyLogger;
 import objects.Keyboards;
 
 import java.io.IOException;
@@ -92,6 +93,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             public void handle(ActionEvent actionEvent) {
                 if (selectedKeyboard != null){
                     CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
+                    KeyLogger.setupKeyListener();
                     dialogWindow.show();
                 }
             }
@@ -153,16 +155,39 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private void createTables(){
         ArrayList<String> tables = new ArrayList<>();
         String keyboardTables = "CREATE TABLE IF NOT EXISTS keyboards (\n"
-                + "     id INTEGER PRIMARY KEY,\n"
+                + "     id INTEGER,\n"
                 + "     keyboardName TEXT NOT NULL,\n"
                 + "     keyboardType TEXT NOT NULL,\n"
                 + "     layout TEXT NOT NULL,\n"
                 + "     totKeystrokes INTEGER NOT NULL,\n"
                 + "     totTimePressed REAL NOT NULL,\n"
                 + "     usedSince DATE NOT NULL,\n"
-                + "     lastUsed DATE NUT NULL\n"
+                + "     lastUsed DATE NUT NULL,\n"
+                + "     PRIMARY KEY (id)"
                 + ");";
         tables.add(keyboardTables);
+
+        String totalTodayTables = "CREATE TABLE IF NOT EXISTS total_today (\n"
+                + "     id INTEGER,\n"
+                + "     keyboard_id INTEGER NOT NULL,\n"
+                + "     date DATE NOT NULL,\n"
+                + "     keystrokes INTEGER NOT NULL,\n"
+                + "     time_pressed INTEGER NOT NULL,\n"
+                + "     PRIMARY KEY (id),\n"
+                + "     FOREIGN KEY (keyboard_id) REFERENCES keyboards(id) ON DELETE CASCADE"
+                + ");";
+        tables.add(totalTodayTables);
+
+        String heatmapTable = "CREATE TABLE IF NOT EXISTS heatmap (\n"
+                + "     id INTEGER,\n"
+                + "     keyboard_id INTEGER NOT NULL,\n"
+                + "     date DATE NOT NULL,\n"
+                + "     key Varchar(255) NOT NULL,\n"
+                + "     pressed INTEGER NOT NULL,\n"
+                + "     PRIMARY KEY (id),\n"
+                + "     FOREIGN KEY (keyboard_id) REFERENCES keyboards(id) ON DELETE CASCADE"
+                + ");";
+        tables.add(heatmapTable);
 
         // creates all the tables in a loop
         for (String table : tables){
