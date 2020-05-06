@@ -93,7 +93,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             public void handle(ActionEvent actionEvent) {
                 if (selectedKeyboard != null){
                     CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
-                    KeyLogger.setupKeyListener();
+                    KeyLogger keyLogger = new KeyLogger();
+                    keyLogger.setupKeyListener();
                     dialogWindow.show();
                 }
             }

