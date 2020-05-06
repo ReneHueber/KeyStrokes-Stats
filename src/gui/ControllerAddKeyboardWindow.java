@@ -58,16 +58,17 @@ public class ControllerAddKeyboardWindow {
             boolean nameOkay = checkTextFieldInput(name, "Enter a Keyboard Name");
             boolean typeOkay = checkTextFieldInput(type, "Enter a Keyboard Type");
             if (nameOkay && typeOkay){
+                // formatter for the date
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
                 // get's the selected Date
-                LocalDate chosenDate = datePicker.getValue();
-                String date = chosenDate.toString();
+                String date = formatter.format(datePicker.getValue());
 
                 // creates a new database entrance for the keyboard
                 String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totKeystrokes," +
                         "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
                 WriteDb.insertIntoTable(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
-                "0.0", date, "0000-00-00");
+                "0.0", date, "00.00.000");
 
                 reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved

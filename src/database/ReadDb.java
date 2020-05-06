@@ -48,6 +48,10 @@ public class ReadDb {
                     String usedSince = rs.getString("usedSince");
                     String lastUsed = rs.getString("lastUsed");
 
+                    // checks if the keyboard has been used before
+                    if (lastUsed.equals("00.00.0000"))
+                        lastUsed = "never";
+
                     keyboardList.add(new Keyboards(name, type, totKeyStrokes, totTimePressed, lastUsed,
                             usedSince, layout));
             }
