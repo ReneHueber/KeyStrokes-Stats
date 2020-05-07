@@ -11,15 +11,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
@@ -29,8 +26,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 
 // TODO Add Source "Icon made by Freepik from www.flaticon.com"
 public class ControllerSelectKeyboardWindow implements Initializable {
@@ -94,7 +89,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 if (selectedKeyboard != null){
                     CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
                     KeyLogger keyLogger = new KeyLogger();
-                    keyLogger.setupKeyListener();
+                    keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
                     dialogWindow.show();
                 }
             }
@@ -115,9 +110,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      */
     public void setupListView(){
         keyboardLv.setCellFactory(KeyboardsListViewCell -> new KeyboardsListViewCell());
-        String sqlStmt = "SELECT keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
+        String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
-        keyboardsObservableList = ReadDb.selectValuesKeyboard(sqlStmt);
+        keyboardsObservableList = ReadDb.selectAllValuesKeyboard(sqlStmt);
         keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setPlaceholder(new Label("No Keyboards added"));
     }
@@ -168,25 +163,25 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 + ");";
         tables.add(keyboardTables);
 
-        String totalTodayTables = "CREATE TABLE IF NOT EXISTS total_today (\n"
+        String totalTodayTables = "CREATE TABLE IF NOT EXISTS totalToday (\n"
                 + "     id INTEGER,\n"
-                + "     keyboard_id INTEGER NOT NULL,\n"
+                + "     keyboardId INTEGER NOT NULL,\n"
                 + "     date DATE NOT NULL,\n"
-                + "     keystrokes INTEGER NOT NULL,\n"
-                + "     time_pressed INTEGER NOT NULL,\n"
+                + "     keyStrokes INTEGER NOT NULL,\n"
+                + "     timePressed REAL NOT NULL,\n"
                 + "     PRIMARY KEY (id),\n"
-                + "     FOREIGN KEY (keyboard_id) REFERENCES keyboards(id) ON DELETE CASCADE"
+                + "     FOREIGN KEY (keyboardId) REFERENCES keyboards(id) ON DELETE CASCADE"
                 + ");";
         tables.add(totalTodayTables);
 
         String heatmapTable = "CREATE TABLE IF NOT EXISTS heatmap (\n"
                 + "     id INTEGER,\n"
-                + "     keyboard_id INTEGER NOT NULL,\n"
+                + "     keyboardId INTEGER NOT NULL,\n"
                 + "     date DATE NOT NULL,\n"
                 + "     key Varchar(255) NOT NULL,\n"
                 + "     pressed INTEGER NOT NULL,\n"
                 + "     PRIMARY KEY (id),\n"
-                + "     FOREIGN KEY (keyboard_id) REFERENCES keyboards(id) ON DELETE CASCADE"
+                + "     FOREIGN KEY (keyboardId) REFERENCES keyboards(id) ON DELETE CASCADE"
                 + ");";
         tables.add(heatmapTable);
 

@@ -39,11 +39,11 @@ public class WriteDb {
     }
 
     /**
-     * Inserts Values into an Table
+     * Executes a Sql Statement to inset into a table or update a table.
      * @param sqlStatement Sql Statement for the Table
      * @param values Required Parameters for the Sql Statement
      */
-    public static void insertIntoTable(String sqlStatement, String ... values){
+    public static void executeSqlStmt(String sqlStatement, String ... values){
         try (Connection conn = ConnectDb.connect(WriteDb.url); PreparedStatement prepStatement =
                 conn.prepareStatement(sqlStatement)){
             // goes throw all the passed Parameter's

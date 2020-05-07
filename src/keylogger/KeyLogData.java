@@ -1,14 +1,14 @@
 package keylogger;
 
+import java.time.LocalDate;
 import java.util.AbstractMap;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class KeyLogData {
     private int keyStrokes = 0;
     private float keyPressedTime = 0.0f;
-    private Date date;
+    private LocalDate date;
     private Map<String, Integer> keyValues = new HashMap<>();
     // special key Codes that are not working with the build in function
     private final Map<Integer, String> specialKeyCodes =  Map.ofEntries(
@@ -29,6 +29,14 @@ public class KeyLogData {
             new AbstractMap.SimpleEntry<>(65514,"Alt"),
             new AbstractMap.SimpleEntry<>(65507,"Ctrl")
             );
+
+    public KeyLogData(){
+
+    }
+
+    public KeyLogData(LocalDate date){
+        this.date = date;
+    }
 
     /**
      * Increases the total key strokes by one.
@@ -77,5 +85,9 @@ public class KeyLogData {
 
     public Map<String, Integer> getKeyValues() {
         return keyValues;
+    }
+
+    public LocalDate getDate(){
+        return date;
     }
 }

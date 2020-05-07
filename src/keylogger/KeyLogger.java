@@ -6,6 +6,8 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 import java.security.Key;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,7 +26,7 @@ public class KeyLogger implements NativeKeyListener {
     /**
      * setup and starts the key listener
      */
-    public void setupKeyListener(){
+    public void setupKeyListener(int keyboardId){
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e){
@@ -42,10 +44,10 @@ public class KeyLogger implements NativeKeyListener {
         // initialize the Hash map
         keyStrokes = new HashMap<>();
         // initialize the object
-        keyLogData = new KeyLogData();
+        keyLogData = new KeyLogData(LocalDate.now());
 
         // start's the update schedule
-        DbUpdateSchedule dpUpdate = new DbUpdateSchedule(this);
+        DbUpdateSchedule dpUpdate = new DbUpdateSchedule(this, keyboardId);
         dpUpdate.startSchedule();
     }
 

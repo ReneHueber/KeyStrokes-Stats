@@ -14,6 +14,7 @@ public class Keyboards {
     private String lastUsed;
     private String inUseSince;
     private String layout;
+    private int id;
 
     /**
      * Initialize the Object with Values.
@@ -25,7 +26,7 @@ public class Keyboards {
      * @param layout Keyboard Layout
      */
     public Keyboards(String keyboardName, String keyboardType, int totalKeyStrokes, float totalTimeKeyPressed,
-                     String lastUsed, String inUseSince, String layout) {
+                     String lastUsed, String inUseSince, String layout, int id) {
         this.keyboardName = keyboardName;
         this.keyboardType = keyboardType;
         this.totalKeyStrokes = totalKeyStrokes;
@@ -33,6 +34,7 @@ public class Keyboards {
         this.lastUsed = lastUsed;
         this.inUseSince = inUseSince;
         this.layout = layout;
+        this.id = id;
 
         setImage();
     }
@@ -63,6 +65,10 @@ public class Keyboards {
 
     public String getInUseSince() {
         return inUseSince;
+    }
+
+    public int getKeyboardId(){
+        return id;
     }
 
     /**
