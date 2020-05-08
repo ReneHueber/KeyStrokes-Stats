@@ -67,7 +67,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         keyboardsObservableList = FXCollections.observableArrayList();
     }
 
-    // TODO change labels to menu bar
     /**
      * Set's the Custom Items for the list view and the click Listeners.
      */
@@ -115,11 +114,18 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectAllValuesKeyboard(sqlStmt);
-        formatDate(keyboardsObservableList);
+
+        if (keyboardsObservableList != null)
+            formatDate(keyboardsObservableList);
+
         keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setPlaceholder(new Label("No Keyboards added"));
     }
 
+    /**
+     * Formats the Date in the List for every Keyboard
+     * @param keyboardList List of the used Keyboards
+     */
     private void formatDate(ObservableList<Keyboards> keyboardList){
         for (Keyboards keyboard : keyboardList){
             // formats the dates and sets the values
@@ -127,12 +133,17 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 if (lastUsed.equals("0000-00-00"))
                     keyboard.setLastUsed("never");
                 else
-                    formatStringDate(lastUsed);
+                    keyboard.setLastUsed(formatStringDate(lastUsed));
 
                 keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
         }
     }
 
+    /**
+     * Get's a string date and formats it, returns it as a String.
+     * @param date Date as String
+     * @return Formatted Date as String
+     */
     private String formatStringDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return formatter.format(LocalDate.parse(date));

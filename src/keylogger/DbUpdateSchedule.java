@@ -22,7 +22,6 @@ public class DbUpdateSchedule {
     private int keyboardId;
     private int oldTotal;
     private float oldTimePressed;
-    private String lastUsed;
 
     public DbUpdateSchedule(KeyLogger keyLogger, int keyboardId){
         this.keyLogger = keyLogger;
@@ -60,7 +59,7 @@ public class DbUpdateSchedule {
         LocalDate currentDate = LocalDate.now();
 
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
-        updateKeyboardsTable(timePressed, keyStrokes);
+        updateKeyboardsTable(currentDate, timePressed, keyStrokes);
     }
 
     private void getTotalValuesKeyboard(){
@@ -72,17 +71,12 @@ public class DbUpdateSchedule {
             Keyboards keyboard = keyboardList.get(0);
             oldTotal = keyboard.getTotalKeyStrokes();
             oldTimePressed = keyboard.getTotalTimeKeyPressed();
-            lastUsed = keyboard.getLastUsed();
         }
     }
 
-    private void updateKeyboardsTable(float timePressed, int keyStrokes){
-        String sqlStmt = "UPDATE keyboards SET totKeystrokes = ?, totTimePressed = ? WHERE id = " + keyboardId;
-        WriteDb.executeSqlStmt(sqlStmt, Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
-            System.out.println("Old KeyStrokes: " + oldTotal);
-            System.out.println("Old TimePressed: " + oldTimePressed);
-            System.out.println("New KeyStrokes: " + (oldTotal + keyStrokes));
-            System.out.println("Old TimePressed: " + (oldTimePressed + timePressed));
+    private void updateKeyboardsTable(LocalDate currentDate, float timePressed, int keyStrokes){
+        String sqlStmt = "UPDATE keyboards SET lastUsed = ?, totKeystrokes = ?, totTimePressed = ? WHERE id = " + keyboardId;
+        WriteDb.executeSqlStmt(sqlStmt, currentDate.toString(), Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
     }
 
     /**
