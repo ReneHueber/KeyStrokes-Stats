@@ -3,6 +3,7 @@ package keylogger;
 import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.ObservableList;
+import objects.Heatmap;
 import objects.Keyboards;
 import objects.TotalToday;
 
@@ -48,7 +49,7 @@ public class DbUpdateSchedule {
 
         t.scheduleAtFixedRate(tt, 30000, 30000);
     }
-
+    
     private void updateDb(){
         // get's the values for the key logger
         keyLogData = keyLogger.getKeyLogData();
@@ -62,6 +63,9 @@ public class DbUpdateSchedule {
         updateKeyboardsTable(currentDate, timePressed, keyStrokes);
     }
 
+    /**
+     * Get's the total key strokes and total time key pressed values.
+     */
     private void getTotalValuesKeyboard(){
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards WHERE id = " + keyboardId;
@@ -74,6 +78,12 @@ public class DbUpdateSchedule {
         }
     }
 
+    /**
+     * Updates the total key strokes, last used and total time pressed in the keyboard table.
+     * @param currentDate Current Date
+     * @param timePressed Total time key pressed
+     * @param keyStrokes Total key strokes
+     */
     private void updateKeyboardsTable(LocalDate currentDate, float timePressed, int keyStrokes){
         String sqlStmt = "UPDATE keyboards SET lastUsed = ?, totKeystrokes = ?, totTimePressed = ? WHERE id = " + keyboardId;
         WriteDb.executeSqlStmt(sqlStmt, currentDate.toString(), Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
@@ -98,6 +108,19 @@ public class DbUpdateSchedule {
         else {
             String sqlSetStmt = "UPDATE totalToday SET keyStrokes = ?, timePressed = ? WHERE keyboardId = " + keyboardId + " AND date = '" + date + "'";
             WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyStrokes), Float.toString(timePressed));
+        }
+    }
+
+    // TODO complete the function, map the differences and than update the db
+    private void updateHeatmapTable(LocalDate currentDate, Map<String, Integer> keyValues){
+        String date = currentDate.toString();
+        String sqlGetStmt = "SELECT keyboardId, date, key, pressed FROM heatmap WHERE keyboardId = " + keyboardId +
+                " AND date = '" + date + "'";
+        ArrayList<Heatmap> heatmapValues = ReadDb.selectAllValueHeatmapTable(sqlGetStmt);
+
+        for (Map.Entry<String, Integer> value : keyValues.entrySet()){
+            String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
+            WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
         }
     }
 }
