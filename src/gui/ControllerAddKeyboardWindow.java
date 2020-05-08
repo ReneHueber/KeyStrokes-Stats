@@ -65,7 +65,7 @@ public class ControllerAddKeyboardWindow {
                         "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
                 WriteDb.executeSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
-                "0.0", date, "00.00.000");
+                "0.0", date, "0000-00-00");
 
                 reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved

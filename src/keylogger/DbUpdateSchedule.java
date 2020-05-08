@@ -18,11 +18,17 @@ import java.util.TimerTask;
 public class DbUpdateSchedule {
     private KeyLogger keyLogger;
     private KeyLogData keyLogData;
+
     private int keyboardId;
+    private int oldTotal;
+    private float oldTimePressed;
+    private String lastUsed;
 
     public DbUpdateSchedule(KeyLogger keyLogger, int keyboardId){
         this.keyLogger = keyLogger;
         this.keyboardId = keyboardId;
+
+        getTotalValuesKeyboard();
     }
 
     /**
@@ -54,17 +60,29 @@ public class DbUpdateSchedule {
         LocalDate currentDate = LocalDate.now();
 
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
+        updateKeyboardsTable(timePressed, keyStrokes);
     }
 
-    private void updateKeyboardsTable(){
+    private void getTotalValuesKeyboard(){
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards WHERE id = " + keyboardId;
         ObservableList<Keyboards> keyboardList = ReadDb.selectAllValuesKeyboard(sqlStmt);
 
         if (keyboardList != null) {
             Keyboards keyboard = keyboardList.get(0);
-
+            oldTotal = keyboard.getTotalKeyStrokes();
+            oldTimePressed = keyboard.getTotalTimeKeyPressed();
+            lastUsed = keyboard.getLastUsed();
         }
+    }
+
+    private void updateKeyboardsTable(float timePressed, int keyStrokes){
+        String sqlStmt = "UPDATE keyboards SET totKeystrokes = ?, totTimePressed = ? WHERE id = " + keyboardId;
+        WriteDb.executeSqlStmt(sqlStmt, Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
+            System.out.println("Old KeyStrokes: " + oldTotal);
+            System.out.println("Old TimePressed: " + oldTimePressed);
+            System.out.println("New KeyStrokes: " + (oldTotal + keyStrokes));
+            System.out.println("Old TimePressed: " + (oldTimePressed + timePressed));
     }
 
     /**

@@ -24,6 +24,8 @@ import objects.Keyboards;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -113,8 +115,27 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectAllValuesKeyboard(sqlStmt);
+        formatDate(keyboardsObservableList);
         keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setPlaceholder(new Label("No Keyboards added"));
+    }
+
+    private void formatDate(ObservableList<Keyboards> keyboardList){
+        for (Keyboards keyboard : keyboardList){
+            // formats the dates and sets the values
+            String lastUsed = keyboard.getLastUsed();
+                if (lastUsed.equals("0000-00-00"))
+                    keyboard.setLastUsed("never");
+                else
+                    formatStringDate(lastUsed);
+
+                keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
+        }
+    }
+
+    private String formatStringDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        return formatter.format(LocalDate.parse(date));
     }
 
     /**

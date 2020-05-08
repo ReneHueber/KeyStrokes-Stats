@@ -71,6 +71,14 @@ public class Keyboards {
         return id;
     }
 
+    public void setLastUsed(String lastUsed){
+        this.lastUsed = lastUsed;
+    }
+
+    public void setInUseSince(String inUseSince){
+        this.inUseSince = inUseSince;
+    }
+
     /**
      * Set's the right Image depending on the layout.
      */

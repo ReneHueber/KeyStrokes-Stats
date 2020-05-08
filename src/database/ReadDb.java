@@ -50,12 +50,8 @@ public class ReadDb {
                     String layout = rs.getString("layout");
                     int totKeyStrokes = rs.getInt("totKeystrokes");
                     float totTimePressed = rs.getFloat("totTimePressed");
-                    String usedSince = formatDate(rs.getString("usedSince"));
+                    String usedSince = rs.getString("usedSince");
                     String lastUsed = rs.getString("lastUsed");
-
-                    // checks if the keyboard has been used before
-                    if (lastUsed.equals("00.00.0000"))
-                        lastUsed = "never";
 
                     keyboardList.add(new Keyboards(name, type, totKeyStrokes, totTimePressed, lastUsed,
                             usedSince, layout, id));
@@ -65,11 +61,6 @@ public class ReadDb {
             System.out.println(e.getMessage());
             return null;
         }
-    }
-
-    private static String formatDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return formatter.format(LocalDate.parse(date));
     }
 
     public static ArrayList<TotalToday> selectAllValuesTotalToday(String sqlStmt){
