@@ -61,6 +61,7 @@ public class DbUpdateSchedule {
 
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
         updateKeyboardsTable(currentDate, timePressed, keyStrokes);
+        updateHeatmapTable(currentDate, keyValues);
     }
 
     /**
@@ -118,9 +119,32 @@ public class DbUpdateSchedule {
                 " AND date = '" + date + "'";
         ArrayList<Heatmap> heatmapValues = ReadDb.selectAllValueHeatmapTable(sqlGetStmt);
 
-        for (Map.Entry<String, Integer> value : keyValues.entrySet()){
-            String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
-            WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
+        if (heatmapValues.size() == 0) {
+            for (Map.Entry<String, Integer> value : keyValues.entrySet()) {
+                String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
+                WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
+            }
         }
+        else {
+            for (Map.Entry<String, Integer> value : keyValues.entrySet()) {
+                boolean insert = true;
+                for (Heatmap heatmapValue : heatmapValues){
+                    if (value.getKey().equals(heatmapValue.getKey())){
+                        String sqlStmt = "UPDATE heatmap SET pressed = ? WHERE keyboardId = " + keyboardId +
+                                " AND date = '" + date + "' AND key = '" + heatmapValue.getKey() + "'";
+                        int sumPressed = value.getValue() + heatmapValue.getTimesPressed();
+                        WriteDb.executeSqlStmt(sqlStmt, Integer.toString(sumPressed));
+                        insert = false;
+                        break;
+                    }
+                }
+                if (insert) {
+                    String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
+                    WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
+                }
+            }
+        }
+
+        keyLogger.clearKeyValues();
     }
 }

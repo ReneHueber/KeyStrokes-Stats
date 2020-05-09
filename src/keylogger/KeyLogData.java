@@ -90,4 +90,8 @@ public class KeyLogData {
     public LocalDate getDate(){
         return date;
     }
+
+    public void clearKeyValues(){
+        keyValues.clear();
+    }
 }

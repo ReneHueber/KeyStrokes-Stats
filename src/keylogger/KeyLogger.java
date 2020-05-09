@@ -96,6 +96,10 @@ public class KeyLogger implements NativeKeyListener {
         return keyLogData;
     }
 
+    protected void clearKeyValues(){
+        keyLogData.clearKeyValues();
+    }
+
     /**
      * Calculate the difference between the pressed and released time
      * @param keyCode the keycode of the clicked key
