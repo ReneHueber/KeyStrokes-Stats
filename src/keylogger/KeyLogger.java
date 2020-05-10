@@ -5,9 +5,7 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-import java.security.Key;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -22,6 +20,7 @@ public class KeyLogger implements NativeKeyListener {
     private static KeyLogData keyLogData;
     // to calculate the length of the key pressed
     private static Map<Integer, Long> keyStrokes;
+    private DbUpdateSchedule dbUpdate;
 
     /**
      * setup and starts the key listener
@@ -34,7 +33,7 @@ public class KeyLogger implements NativeKeyListener {
         }
 
         // add the global Listener
-        GlobalScreen.addNativeKeyListener(new KeyLogger());
+        GlobalScreen.addNativeKeyListener(this);
 
         // Disables the Logs, because the are not needed
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
@@ -47,8 +46,8 @@ public class KeyLogger implements NativeKeyListener {
         keyLogData = new KeyLogData(LocalDate.now());
 
         // start's the update schedule
-        DbUpdateSchedule dpUpdate = new DbUpdateSchedule(this, keyboardId);
-        dpUpdate.startSchedule();
+        dbUpdate = new DbUpdateSchedule(this, keyboardId);
+        dbUpdate.startSchedule();
     }
 
     /**
@@ -71,6 +70,7 @@ public class KeyLogger implements NativeKeyListener {
         int keyCode = key.getKeyCode();
         Long keyPressedMillis = System.currentTimeMillis();
         keyStrokes.put(keyCode, keyPressedMillis);
+        System.out.println(keyCode);
     }
 
     /**
@@ -86,6 +86,11 @@ public class KeyLogger implements NativeKeyListener {
         // increases the total values
         keyLogData.increaseKeyPressedTime(timeSec);
         keyLogData.increaseKeyStroke();
+    }
+
+    public void stopKeylogger(){
+       GlobalScreen.removeNativeKeyListener(this);
+       dbUpdate.stopSchedule();
     }
 
     /**

@@ -59,6 +59,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
     private ObservableList<Keyboards> keyboardsObservableList;
 
+    private KeyLogger keyLogger;
+
     public ControllerSelectKeyboardWindow(){
         // creates a new Db if it is not existing
         WriteDb.createNewDb("KeyLoggerData.db", "/home/ich/Database/Keylogger/");
@@ -75,6 +77,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // set's the items for the list view
         setupListView();
+        // keylogger can only be started if a keyboard is selected
+        start.setDisable(true);
+        stop.setDisable(true);
 
         // click listener for the addNew keyboard menu item
         addNew.setOnAction(new EventHandler<ActionEvent>() {
@@ -89,11 +94,22 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (selectedKeyboard != null){
+                    start.setDisable(true);
+                    stop.setDisable(false);
                     CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
-                    KeyLogger keyLogger = new KeyLogger();
+                    keyLogger = new KeyLogger();
                     keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
                     dialogWindow.show();
                 }
+            }
+        });
+
+        stop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                keyLogger.stopKeylogger();
+                start.setDisable(false);
+                stop.setDisable(true);
             }
         });
 
@@ -102,6 +118,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
                 selectedKeyboard = newValue;
+                start.setDisable(false);
             }
         });
     }

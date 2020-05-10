@@ -24,6 +24,8 @@ public class DbUpdateSchedule {
     private int oldTotal;
     private float oldTimePressed;
 
+    private Timer t;
+
     public DbUpdateSchedule(KeyLogger keyLogger, int keyboardId){
         this.keyLogger = keyLogger;
         this.keyboardId = keyboardId;
@@ -35,7 +37,7 @@ public class DbUpdateSchedule {
      * Starts the Schedule that updates the Db every 30 Seconds.
      */
     public void startSchedule(){
-        Timer t = new Timer();
+        t = new Timer();
 
         TimerTask tt = new TimerTask() {
             @Override
@@ -48,6 +50,10 @@ public class DbUpdateSchedule {
         };
 
         t.scheduleAtFixedRate(tt, 30000, 30000);
+    }
+
+    public void stopSchedule(){
+        t.cancel();
     }
     
     private void updateDb(){
@@ -62,6 +68,8 @@ public class DbUpdateSchedule {
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
         updateKeyboardsTable(currentDate, timePressed, keyStrokes);
         updateHeatmapTable(currentDate, keyValues);
+
+        System.out.println("update db");
     }
 
     /**
