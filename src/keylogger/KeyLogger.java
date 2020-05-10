@@ -89,15 +89,11 @@ public class KeyLogger implements NativeKeyListener {
     }
 
     /**
-     * Return the KeyLogData object
+     * Return the KeyLogData object.
      * @return KeyLogData object
      */
     protected KeyLogData getKeyLogData(){
         return keyLogData;
-    }
-
-    protected void clearKeyValues(){
-        keyLogData.clearKeyValues();
     }
 
     /**

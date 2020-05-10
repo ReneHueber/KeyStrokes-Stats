@@ -79,6 +79,10 @@ public class Keyboards {
         this.inUseSince = inUseSince;
     }
 
+    public void setTotalTimeKeyPressed(float timeKeyPressed) {
+        this.totalTimeKeyPressed = timeKeyPressed;
+    }
+
     /**
      * Set's the right Image depending on the layout.
      */

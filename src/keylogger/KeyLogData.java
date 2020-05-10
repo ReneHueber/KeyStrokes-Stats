@@ -30,10 +30,6 @@ public class KeyLogData {
             new AbstractMap.SimpleEntry<>(65507,"Ctrl")
             );
 
-    public KeyLogData(){
-
-    }
-
     public KeyLogData(LocalDate date){
         this.date = date;
     }
@@ -91,6 +87,9 @@ public class KeyLogData {
         return date;
     }
 
+    /**
+     * Clears the key Values, because the are already written in the Db.
+     */
     public void clearKeyValues(){
         keyValues.clear();
     }

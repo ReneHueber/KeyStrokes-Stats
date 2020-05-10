@@ -145,6 +145,6 @@ public class DbUpdateSchedule {
             }
         }
 
-        keyLogger.clearKeyValues();
+        keyLogger.getKeyLogData().clearKeyValues();
     }
 }

@@ -24,6 +24,7 @@ import objects.Keyboards;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -135,7 +136,10 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 else
                     keyboard.setLastUsed(formatStringDate(lastUsed));
 
-                keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
+            keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
+
+            DecimalFormat df = new DecimalFormat("#.00");
+            keyboard.setTotalTimeKeyPressed(Float.parseFloat(df.format(keyboard.getTotalTimeKeyPressed())));
         }
     }
 
