@@ -91,3 +91,40 @@
 .context-menu {
     -fx-background-color: #3d3d3d;
 }
+
+.separator *.line {
+    -fx-border-style: solid;
+    -fx-border-width: 0 0 0 2;
+    -fx-border-color: #3d3d3d;
+}
+
+.combo-box .list-cell
+{
+    -fx-background: #3d3d3d;
+    -fx-background-color: transparent;
+    -fx-text-fill: #fbfbfb;
+    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em;
+}
+
+.combo-box-popup .list-view
+{
+    -fx-background-color: #3d3d3d;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: #5887d1;
+    -fx-text-fill: #fbfbfb;
+}
+
+.combo-box-base
+{
+    -fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin";
+    -fx-background-color: #3d3d3d;
+    -fx-background-radius: 4;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-padding: 0;
+}
