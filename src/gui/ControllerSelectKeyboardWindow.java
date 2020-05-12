@@ -11,17 +11,21 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
 import objects.Keyboards;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -86,6 +90,21 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
                 openAddKeyboardWindow();
+            }
+        });
+
+        overview.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    Scene rootOverview = new Scene(FXMLLoader.load(getClass().getResource("../fxml/statOverviewWindow.fxml")));
+
+                    Stage stage = (Stage) menuBar.getScene().getWindow();
+                    stage.setScene(rootOverview);
+                    stage.show();
+                } catch (IOException e){
+                    System.out.println(e.getMessage());
+                }
             }
         });
 

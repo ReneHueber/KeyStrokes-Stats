@@ -4,11 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -45,14 +48,16 @@ public class ControllerStatOverviewWindow {
 
 
     public void initialize(){
+        // changes the scene to the select keyboard window
         selectKeyboard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 try{
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/selectKeyboardWindow.fxml"));
-                    Parent root = (Parent) fxmlLoader.load();
+                    Scene rootSelectKeyboard = new Scene(FXMLLoader.load(getClass().getResource("../fxml/selectKeyboardWindow.fxml")));
 
-
+                    Stage stage = (Stage) menuBar.getScene().getWindow();
+                    stage.setScene(rootSelectKeyboard);
+                    stage.show();
                 } catch (IOException e){
                     System.out.println(e.getMessage());
                 }
