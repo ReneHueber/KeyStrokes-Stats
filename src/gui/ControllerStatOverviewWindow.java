@@ -1,5 +1,7 @@
 package gui;
 
+import database.ReadDb;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,8 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
+import objects.Keyboards;
 
 import java.io.IOException;
+import java.security.Key;
 
 public class ControllerStatOverviewWindow {
 
@@ -46,6 +50,7 @@ public class ControllerStatOverviewWindow {
     @FXML
     private Label keyPressure;
 
+    private int keyboardId;
 
     public void initialize(){
         // changes the scene to the select keyboard window
@@ -64,5 +69,24 @@ public class ControllerStatOverviewWindow {
 
             }
         });
+
+        //setKeyboardTableValue();
+    }
+
+    private ObservableList<Keyboards> getKeyboardValues(){
+        String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
+                "FROM keyboards WHERE id = " + keyboardId;
+        return ReadDb.selectAllValuesKeyboard(sqlStmt);
+    }
+
+    protected void setKeyboardTableValue(Keyboards selectedKeyboard){
+        keyboardName.setText(selectedKeyboard.getKeyboardName());
+        keyboardType.setText(selectedKeyboard.getKeyboardType());
+        timeTyped.setText(Float.toString(selectedKeyboard.getTotalTimeKeyPressed()));
+        keyStrokes.setText(Integer.toString(selectedKeyboard.getTotalKeyStrokes()));
+    }
+
+    public void setKeyboardId(int keyboardId){
+        this.keyboardId = keyboardId;
     }
 }

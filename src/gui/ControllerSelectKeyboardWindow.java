@@ -97,7 +97,15 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    Scene rootOverview = new Scene(FXMLLoader.load(getClass().getResource("../fxml/statOverviewWindow.fxml")));
+                    //Scene rootOverview = new Scene(FXMLLoader.load(getClass().getResource("../fxml/statOverviewWindow.fxml")));
+
+                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("../fxml/statOverviewWindow.fxml"));
+                    VBox statOverview = (VBox) fxmlLoader.load();
+                    Scene rootOverview = new Scene(statOverview);
+
+                    ControllerStatOverviewWindow controller = fxmlLoader.getController();
+                    controller.setKeyboardId(selectedKeyboard.getKeyboardId());
+                    controller.setKeyboardTableValue(selectedKeyboard);
 
                     Stage stage = (Stage) menuBar.getScene().getWindow();
                     stage.setScene(rootOverview);
@@ -174,6 +182,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
             keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
 
+            // TODO not working if number is smaller than 0
             DecimalFormat df = new DecimalFormat("#.00");
             keyboard.setTotalTimeKeyPressed(Float.parseFloat(df.format(keyboard.getTotalTimeKeyPressed())));
         }
