@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #fbfbfb;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="20.0" style="-fx-background-color: #fbfbfb;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerStatOverviewWindow">
    <children>
       <MenuBar fx:id="menuBar" stylesheets="@../css/style.css">
          <menus>
@@ -39,7 +39,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox prefWidth="150.0" stylesheets="@../css/style.css" >
+            <ComboBox fx:id="selectDateCB" prefWidth="150.0" stylesheets="@../css/style.css" visibleRowCount="5">
                <HBox.margin>
                   <Insets right="25.0" />
                </HBox.margin>
@@ -49,8 +49,11 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <ComboBox prefWidth="150.0" stylesheets="@../css/style.css" />
+            <ComboBox fx:id="selectKeyboardCB" prefWidth="150.0" stylesheets="@../css/style.css" visibleRowCount="5" />
          </children>
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
       </HBox>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
@@ -120,7 +123,7 @@
                   <Separator orientation="VERTICAL" prefHeight="200.0" stylesheets="@../css/style.css" />
                   <VBox spacing="60.0">
                      <children>
-                        <Label fx:id="KeyPressur" text="Label" textFill="#5887d1">
+                        <Label fx:id="keyPressure" text="Label" textFill="#5887d1">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
