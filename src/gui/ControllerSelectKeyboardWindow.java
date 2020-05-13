@@ -182,9 +182,11 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
             keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
 
-            // TODO not working if number is smaller than 0
+            // round the float
             DecimalFormat df = new DecimalFormat("#.00");
-            keyboard.setTotalTimeKeyPressed(Float.parseFloat(df.format(keyboard.getTotalTimeKeyPressed())));
+            String timePressed = df.format(keyboard.getTotalTimeKeyPressed());
+            timePressed = timePressed.replace(",", ".");
+            keyboard.setTotalTimeKeyPressed(Float.parseFloat(timePressed));
         }
     }
 
