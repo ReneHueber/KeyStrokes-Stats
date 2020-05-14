@@ -122,9 +122,30 @@
 
 .combo-box-base
 {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin";
+    /*-fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin"; */
     -fx-background-color: #3d3d3d;
     -fx-background-radius: 4;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-padding: 0;
+}
+
+.button, .button:focused
+{
+    -fx-background-color: transparent;
+    -fx-background-insets: 0,1,2;
+    -fx-background-radius: 3,2,1;
+    -fx-padding: 3 15 3 15;
+    -fx-border-color: #c4c4c4;
+    -fx-border-radius: 3;
+}
+
+.button:pressed, .button:hover
+{
+    -fx-background-color: #5887d1;
+    -fx-background-insets: 0,1,2;
+    -fx-background-radius: 3,2,1;
+    -fx-padding: 3 15 3 15;
+    -fx-text-fill: #fbfbfb;
+    -fx-border-color: #c4c4c4;
+    -fx-border-radius: 3;
 }

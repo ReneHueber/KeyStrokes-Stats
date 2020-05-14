@@ -44,6 +44,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     @FXML
     private MenuItem addNew;
 
+    @FXML
+    private MenuItem addComponent;
+
     // Menu Key Logger
     @FXML
     private MenuItem start, stop;
@@ -84,12 +87,21 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         // keylogger can only be started if a keyboard is selected
         start.setDisable(true);
         stop.setDisable(true);
+        overview.setDisable(true);
+        addComponent.setDisable(true);
 
         // click listener for the addNew keyboard menu item
         addNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 openAddKeyboardWindow();
+            }
+        });
+
+        addComponent.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                openNewWindow("../fxml/componentsWindow.fxml", "Components");
             }
         });
 
@@ -146,6 +158,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
                 selectedKeyboard = newValue;
                 start.setDisable(false);
+                overview.setDisable(false);
+                addComponent.setDisable(false);
             }
         });
     }
@@ -222,6 +236,21 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Add Keyboard");
             stage.setScene(new Scene(rootAddKeyboard));
+            stage.show();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void openNewWindow(String fxmlPath, String windowName){
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(windowName);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e){
             System.out.println(e.getMessage());
