@@ -11,21 +11,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
 import objects.Keyboards;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -84,7 +79,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // set's the items for the list view
         setupListView();
-        // keylogger can only be started if a keyboard is selected
+        // keyLogger can only be started if a keyboard is selected
         start.setDisable(true);
         stop.setDisable(true);
         overview.setDisable(true);
@@ -94,20 +89,30 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         addNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                openAddKeyboardWindow();
+                // openAddKeyboardWindow();
+                ProcessFxmlFiles openWindow = new ProcessFxmlFiles("../fxml/splitSelectedWindow.fxml", "Add Keyboard");
+                ControllerAddKeyboardWindow controller = (ControllerAddKeyboardWindow) openWindow.openInNewStage();
+                controller.parentStage = (Stage) menuBar.getScene().getWindow();
             }
         });
 
         addComponent.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                openNewWindow("../fxml/componentsWindow.fxml", "Components");
+                ProcessFxmlFiles newWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
+                ControllerComponentWindow controller = (ControllerComponentWindow) newWindow.openInNewStage();
             }
         });
 
         overview.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                ProcessFxmlFiles overviewWindow = new ProcessFxmlFiles("../fxml/statOverviewWindow.fxml", "Statistic Overview");
+                Stage stage = (Stage) menuBar.getScene().getWindow();
+                ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
+                controller.setKeyboardId(selectedKeyboard.getKeyboardId());
+                controller.setKeyboardTableValue(selectedKeyboard);
+                /*
                 try {
                     //Scene rootOverview = new Scene(FXMLLoader.load(getClass().getResource("../fxml/statOverviewWindow.fxml")));
 
@@ -124,7 +129,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                     stage.show();
                 } catch (IOException e){
                     System.out.println(e.getMessage());
-                }
+                } */
             }
         });
 
@@ -212,49 +217,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     private String formatStringDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return formatter.format(LocalDate.parse(date));
-    }
-
-    /**
-     * Opens the Window to add a new Keyboard.
-     * Passes the Stage of the current Window to reload the fxml file from the new Controller.
-     */
-    private void openAddKeyboardWindow(){
-        try {
-            // loads the fxml file
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/splitSelectedWindow.fxml"));
-            Parent rootAddKeyboard = (Parent) fxmlLoader.load();
-            /*
-             * get's the controller and passes the stage,
-             * so the select keyboard stage can be reloaded from the add keyboard controller.
-             * After a keyboard is added to the database
-             */
-            ControllerAddKeyboardWindow controller = fxmlLoader.getController();
-            controller.parentStage = (Stage) menuBar.getScene().getWindow();
-
-            // creates the stage and set's the property's
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Add Keyboard");
-            stage.setScene(new Scene(rootAddKeyboard));
-            stage.show();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void openNewWindow(String fxmlPath, String windowName){
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = fxmlLoader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle(windowName);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
     }
 
     /**
