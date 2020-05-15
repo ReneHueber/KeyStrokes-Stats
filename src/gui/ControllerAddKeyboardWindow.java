@@ -105,6 +105,9 @@ public class ControllerAddKeyboardWindow {
      * Updates the Keyboard List after a Keyboard is added.
      */
     public void reloadSelectKeyboardWindow() {
+        ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
+        selectKeyboardWindow.openInExistingStage(parentStage);
+        /*
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/selectKeyboardWindow.fxml"));
             Parent root = (Parent) fxmlLoader.load();
@@ -114,7 +117,7 @@ public class ControllerAddKeyboardWindow {
 
         } catch (IOException e){
             e.printStackTrace();
-        }
+        } */
     }
 
     /**

@@ -57,6 +57,10 @@ public class ControllerStatOverviewWindow {
         selectKeyboard.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+                ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
+                Stage stage = (Stage) menuBar.getScene().getWindow();
+                selectKeyboardWindow.openInExistingStage(stage);
+                /*
                 try{
                     Scene rootSelectKeyboard = new Scene(FXMLLoader.load(getClass().getResource("../fxml/selectKeyboardWindow.fxml")));
 
@@ -65,8 +69,7 @@ public class ControllerStatOverviewWindow {
                     stage.show();
                 } catch (IOException e){
                     System.out.println(e.getMessage());
-                }
-
+                } */
             }
         });
 
