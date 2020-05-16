@@ -31,7 +31,7 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <ComboBox prefWidth="150.0" stylesheets="@../css/style.css">
+            <ComboBox fx:id="componentType" prefWidth="150.0" stylesheets="@../css/style.css">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></ComboBox>
@@ -39,7 +39,7 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField maxWidth="200.0">
+            <TextField fx:id="componentName" maxWidth="200.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></TextField>
@@ -47,7 +47,7 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <TextField maxWidth="200.0">
+            <TextField fx:id="componentBrand" maxWidth="200.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></TextField>
@@ -55,18 +55,18 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-            <ComboBox prefWidth="150.0" stylesheets="@../css/style.css">
+            <ComboBox fx:id="addedDate" prefWidth="150.0" stylesheets="@../css/style.css">
                <VBox.margin>
                   <Insets bottom="5.0" />
                </VBox.margin></ComboBox>
-            <DatePicker maxWidth="200.0">
+            <DatePicker fx:id="chooseDateDatePicker" maxWidth="200.0">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin></DatePicker>
             <HBox alignment="TOP_CENTER" spacing="15.0">
                <children>
-                  <Button mnemonicParsing="false" stylesheets="@../css/style.css" text="Save" />
-                  <Button mnemonicParsing="false" stylesheets="@../css/style.css" text="Cancel" />
+                  <Button fx:id="saveBtn" mnemonicParsing="false" stylesheets="@../css/style.css" text="Save" />
+                  <Button fx:id="cancelBtn" mnemonicParsing="false" stylesheets="@../css/style.css" text="Cancel" />
                </children>
             </HBox>
          </children>

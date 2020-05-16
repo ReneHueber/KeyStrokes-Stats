@@ -9,19 +9,15 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
 import objects.Keyboards;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -38,9 +34,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     // Menu Keyboards
     @FXML
     private MenuItem addNew;
-
     @FXML
-    private MenuItem addComponent;
+    private MenuItem showComponents, addComponents;
 
     // Menu Key Logger
     @FXML
@@ -83,7 +78,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         start.setDisable(true);
         stop.setDisable(true);
         overview.setDisable(true);
-        addComponent.setDisable(true);
+        showComponents.setDisable(true);
+        addComponents.setDisable(true);
 
         // click listener for the addNew keyboard menu item
         addNew.setOnAction(new EventHandler<ActionEvent>() {
@@ -96,11 +92,19 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             }
         });
 
-        addComponent.setOnAction(new EventHandler<ActionEvent>() {
+        showComponents.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                ProcessFxmlFiles newWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
-                ControllerComponentWindow controller = (ControllerComponentWindow) newWindow.openInNewStage();
+                ProcessFxmlFiles componentsWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
+                ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
+            }
+        });
+
+        addComponents.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ProcessFxmlFiles addComponentsWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Components");
+                ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentsWindow.openInNewStage();
             }
         });
 
@@ -164,7 +168,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 selectedKeyboard = newValue;
                 start.setDisable(false);
                 overview.setDisable(false);
-                addComponent.setDisable(false);
+                showComponents.setDisable(false);
+                addComponents.setDisable(false);
             }
         });
     }

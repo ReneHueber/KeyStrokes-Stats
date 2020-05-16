@@ -13,7 +13,8 @@
           <Menu mnemonicParsing="false" text="Keyboards">
             <items>
               <MenuItem fx:id="addNew" mnemonicParsing="false" text="Add new" />
-                  <MenuItem fx:id="addComponent" mnemonicParsing="false" text="Add Component" />
+                  <MenuItem fx:id="showComponents" mnemonicParsing="false" text="Show Components" />
+                  <MenuItem fx:id="addComponents" mnemonicParsing="false" text="Add Component" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="KeyLogger">
