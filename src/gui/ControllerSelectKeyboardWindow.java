@@ -74,7 +74,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // set's the items for the list view
         setupListView();
-        // keyLogger can only be started if a keyboard is selected
+        // disables the menu items, because a keyboard has to be selected for them
         start.setDisable(true);
         stop.setDisable(true);
         overview.setDisable(true);
@@ -166,6 +166,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
                 selectedKeyboard = newValue;
+                // enables the menu items
                 start.setDisable(false);
                 overview.setDisable(false);
                 showComponents.setDisable(false);
