@@ -116,24 +116,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
                 controller.setKeyboardId(selectedKeyboard.getKeyboardId());
                 controller.setKeyboardTableValue(selectedKeyboard);
-                /*
-                try {
-                    //Scene rootOverview = new Scene(FXMLLoader.load(getClass().getResource("../fxml/statOverviewWindow.fxml")));
-
-                    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("../fxml/statOverviewWindow.fxml"));
-                    VBox statOverview = (VBox) fxmlLoader.load();
-                    Scene rootOverview = new Scene(statOverview);
-
-                    ControllerStatOverviewWindow controller = fxmlLoader.getController();
-                    controller.setKeyboardId(selectedKeyboard.getKeyboardId());
-                    controller.setKeyboardTableValue(selectedKeyboard);
-
-                    Stage stage = (Stage) menuBar.getScene().getWindow();
-                    stage.setScene(rootOverview);
-                    stage.show();
-                } catch (IOException e){
-                    System.out.println(e.getMessage());
-                } */
             }
         });
 

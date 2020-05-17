@@ -72,13 +72,21 @@
             <Insets top="35.0" />
          </VBox.margin>
       </HBox>
-      <Label fx:id="timeTyped" text="Time Pressed" textFill="#3d3d3d">
+      <Label text="Time Keys Pressed" textFill="#3d3d3d">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
          <VBox.margin>
-            <Insets />
+            <Insets top="-5.0" />
          </VBox.margin>
+      </Label>
+      <Label fx:id="timeTyped" text="Label" textFill="#5887d1">
+         <VBox.margin>
+            <Insets top="-10.0" />
+         </VBox.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
       </Label>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
          <children>
