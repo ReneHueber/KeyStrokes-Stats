@@ -11,10 +11,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class ControllerAddComponentWindow {
 
@@ -37,6 +33,10 @@ public class ControllerAddComponentWindow {
     private TextField componentName;
     @FXML
     private TextField componentBrand;
+    @FXML
+    private TextField keyPressure;
+    @FXML
+    private TextField keyTravel;
 
     @FXML
     private ComboBox<String> addedDate;
@@ -53,7 +53,6 @@ public class ControllerAddComponentWindow {
      * Set's values for the gui elements.
      */
     public void initialize(){
-        chooseDateDatePicker.setVisible(false);
         // adds the lists to the combo boxes and sets a value
         addedDate.setItems(addedDateOptions);
         addedDate.setValue(addedDateOptions.get(0));
@@ -70,17 +69,34 @@ public class ControllerAddComponentWindow {
             }
         });
 
-        // display and hides the date picker
+        // disable or enable the date picker
         addedDate.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 String option = addedDate.getSelectionModel().getSelectedItem();
                 if (option.equals("Choose Date")){
-                    chooseDateDatePicker.setVisible(true);
+                    chooseDateDatePicker.setDisable(false);
                 }
                 else {
-                    chooseDateDatePicker.setVisible(false);
+                    chooseDateDatePicker.setDisable(true);
                     chooseDateDatePicker.setValue(null);
+                }
+            }
+        });
+
+        // disable or enable the key pressure and key travel inputs
+        componentType.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
+                    keyPressure.setDisable(false);
+                    keyTravel.setDisable(false);
+                }
+                else {
+                    keyPressure.setText("");
+                    keyPressure.setDisable(true);
+                    keyTravel.setText("");
+                    keyTravel.setDisable(true);
                 }
             }
         });

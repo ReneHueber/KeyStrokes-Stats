@@ -12,11 +12,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 
 public class ControllerAddKeyboardWindow {
@@ -107,17 +105,6 @@ public class ControllerAddKeyboardWindow {
     public void reloadSelectKeyboardWindow() {
         ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
         selectKeyboardWindow.openInExistingStage(parentStage);
-        /*
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../fxml/selectKeyboardWindow.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
-
-            parentStage.setScene(new Scene(root));
-            parentStage.show();
-
-        } catch (IOException e){
-            e.printStackTrace();
-        } */
     }
 
     /**
@@ -156,7 +143,7 @@ public class ControllerAddKeyboardWindow {
 
     /**
      * Clear the text Field from the error massage.
-     * @param clearMassage Text ah with the Text Field should be cleared
+     * @param clearMassage Text to clare the textField
      */
     private void clearTextField(TextField field, String clearMassage){
         // TODO not only name
