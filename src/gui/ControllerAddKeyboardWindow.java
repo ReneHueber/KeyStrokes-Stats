@@ -148,29 +148,7 @@ public class ControllerAddKeyboardWindow {
      * Formats the Date like "dd.MM.yyyy" and set's the current Date.
      */
     private void setupDatePicker(){
-        // creates the formatter for the date of the date picker
-        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            @Override
-            public String toString(LocalDate localDate) {
-                if (localDate != null) {
-                    return dateFormatter.format(localDate);
-                } else{
-                    return "";
-                }
-            }
-
-            @Override
-            public LocalDate fromString(String s) {
-                if (s != null && !s.isEmpty()){
-                    return LocalDate.parse(s, dateFormatter);
-                }
-                else{
-                    return null;
-                }
-            }
-        };
-        datePicker.setConverter(converter);
+        datePicker.setConverter(datePickerConverter.getConverter());
         datePicker.setValue(LocalDate.now());
         // user can only choose real dates
         datePicker.setEditable(false);
