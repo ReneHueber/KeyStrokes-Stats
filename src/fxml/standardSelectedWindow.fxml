@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.4716666666666667" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerAddKeyboardWindow">
+<SplitPane dividerPositions="0.4716666666666667" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="435.0" prefWidth="600.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerAddKeyboardWindow">
     <items>
         <VBox alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="326.0" spacing="30.0" style="-fx-background-color: #3d3d3d;">
             <children>
@@ -50,10 +50,22 @@
                 </ImageView>
                 <VBox alignment="TOP_CENTER" spacing="20.0">
                     <children>
-                  <HBox alignment="CENTER_LEFT" spacing="15.0">
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
                      <children>
-                        <Label text="Keyboard Name" textFill="#3d3d3d" />
-                        <TextField fx:id="type" />
+                        <Label text="Keyboard Type" textFill="#3d3d3d">
+                           <HBox.margin>
+                              <Insets top="17.0" />
+                           </HBox.margin></Label>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label fx:id="typeError" text="Label" textFill="#f22828" visible="false">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                              <TextField fx:id="type" minWidth="171.0" />
+                           </children>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets left="5.0" />
@@ -61,21 +73,42 @@
                   </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                             <children>
-                                <Label text="Keyboard Name" textFill="#3d3d3d" />
-                                <TextField fx:id="name" />
+                                <Label text="Keyboard Name" textFill="#3d3d3d">
+                           <HBox.margin>
+                              <Insets top="17.0" />
+                           </HBox.margin></Label>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label fx:id="nameError" text="Label" textFill="#f22828" visible="false">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Label>
+                                      <TextField fx:id="name" minWidth="171.0" />
+                           </children>
+                        </VBox>
                             </children>
                             <padding>
                                 <Insets left="5.0" />
                             </padding>
+                     <VBox.margin>
+                        <Insets top="-8.0" />
+                     </VBox.margin>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="40.0">
+                        <HBox alignment="CENTER_LEFT" spacing="45.0">
                             <children>
                                 <Label text="In Use Since" textFill="#3d3d3d" />
-                                <DatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="171.0" />
+                                <DatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="171.0">
+                           <HBox.margin>
+                              <Insets left="-5.0" />
+                           </HBox.margin></DatePicker>
                             </children>
                             <padding>
                                 <Insets left="5.0" />
                             </padding>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
                         </HBox>
                         <Label fx:id="confirm" text="Confrim" textFill="#3d3d3d">
                             <font>
@@ -87,7 +120,7 @@
                         <Insets top="5.0" />
                     </padding>
                <VBox.margin>
-                  <Insets top="20.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
                 </VBox>
             </children>

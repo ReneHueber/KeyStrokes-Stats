@@ -1,6 +1,9 @@
 package gui;
 
+import database.ReadDb;
 import database.WriteDb;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -12,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import objects.Keyboards;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -20,13 +24,21 @@ import java.time.LocalDate;
 public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
     protected Stage parentStage;
+    private ObservableList<Keyboards> allKeyboards = FXCollections.observableArrayList();
 
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
+
+    @FXML
+    private Label nameError;
     @FXML
     private TextField name;
+
+    @FXML
+    private Label typeError;
     @FXML
     private TextField type;
+
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -37,6 +49,8 @@ public class ControllerAddKeyboardWindow {
      * Setup the Image View, click Listeners, and the date picker.
      */
     public void initialize() {
+        getSavedKeyboards();
+
         // change the layout if the split Layout image is clicked
         splitLayoutIv.setOnMouseClicked(mouseEvent -> {
             keyboardStyle = "split";
@@ -52,10 +66,16 @@ public class ControllerAddKeyboardWindow {
 
         // label to add the keyboard to the list
         confirm.setOnMouseClicked(mouseEvent -> {
-            // keyboard name okay
-            boolean nameOkay = checkTextFieldInput(name, "Enter a Keyboard Name");
-            boolean typeOkay = checkTextFieldInput(type, "Enter a Keyboard Type");
-            if (nameOkay && typeOkay){
+            // checks if the inputs are okay
+            checkInput(name, nameError, "Enter a Keyboard Name");
+            checkInput(type, typeError, "Enter a Keyboard Type");
+
+            // keyboard name and type okay
+            boolean nameOkay = !nameError.isVisible();
+            boolean typeOkay = !typeError.isVisible();
+            // name already existing
+            boolean nameExisting = checkKeyboardNameExisting(name.getText());
+            if (nameOkay && typeOkay && !nameExisting){
                 String date = datePicker.getValue().toString();
 
                 // creates a new database entrance for the keyboard
@@ -69,30 +89,30 @@ public class ControllerAddKeyboardWindow {
                 // closes the stage after the values are saved
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 stage.close();
+            } // error is the name already exists
+            else if (nameExisting){
+                displayInputError(nameError, "Name already exists!");
+                name.setText("");
             }
         });
 
 
         // gui handling for the name text field
         name.setOnMouseClicked(mouseEvent -> {
-            clearTextField(name, "Enter a Keyboard Name");
-            errorTextField(type, "Enter a Keyboard Type");
+            checkInput(type, typeError, "Enter a Keyboard Type");
+            hideInputError(nameError);
         });
 
-        name.setOnKeyPressed(keyEvent -> clearTextField(name, "Enter a Keyboard Name"));
-
-        name.setOnKeyReleased(keyEvent -> errorTextField(name, "Enter a Keyboard Name"));
+        name.setOnKeyReleased(keyEvent -> checkInput(name, nameError, "Enter a Keyboard Name"));
 
 
         // Gui handling for the type text field
         type.setOnMouseClicked(mouseEvent -> {
-            clearTextField(type, "Enter a Keyboard Type");
-            errorTextField(name, "Enter a Keyboard Name");
+            checkInput(name, nameError, "Enter a Keyboard Name");
+            hideInputError(typeError);
         });
 
-        type.setOnKeyPressed(keyEvent -> clearTextField(type, "Enter a Keyboard Type"));
-
-        type.setOnKeyReleased(keyEvent -> errorTextField(type, "Enter a Keyboard Type"));
+        type.setOnKeyReleased(keyEvent -> checkInput(type, typeError, "Enter a Keyboard Type"));
 
 
         // setup the appearance of the date picker
@@ -142,38 +162,56 @@ public class ControllerAddKeyboardWindow {
     }
 
     /**
-     * Clear the text Field from the error massage.
-     * @param clearMassage Text to clare the textField
+     * Set's the error Label visible and set's the error massage.
+     * @param errorLabel Wished error Label
+     * @param errorMassage Wished error Massage
      */
-    private void clearTextField(TextField field, String clearMassage){
-        // TODO not only name
-        if (field.getText().equals(clearMassage)) {
-            field.setText("");
-        }
+    private void displayInputError(Label errorLabel, String errorMassage){
+        errorLabel.setVisible(true);
+        errorLabel.setText(errorMassage);
     }
 
     /**
-     * Set's the Error massage for the text Field.
-     * @param errorMassage Massage that should be displayed in the Text Field
+     * Clears and hides the error Label.
+     * @param errorLabel Wished error Label
      */
-    private void errorTextField(TextField field, String errorMassage){
-        if (field.getText().isEmpty()) {
-            field.setText(errorMassage);
-        }
+    private void hideInputError(Label errorLabel){
+        errorLabel.setText("");
+        errorLabel.setVisible(false);
     }
 
     /**
-     * Checks if the text Field is not empty or the error massage is showed.
-     * @param filed Text Field to check
-     * @param errorText The error Massage for the text Field
-     * @return Input of the text Field is okay
+     * Checks if the input is empty and displays or hides the error label.
+     * @param input Check text field
+     * @param errorLabel wished error label
+     * @param errorMassage wished error massage
      */
-    private boolean checkTextFieldInput(TextField filed, String errorText){
-        if (!filed.getText().isEmpty() && !filed.getText().equals(errorText))
-            return true;
-        else{
-            filed.setText(errorText);
-            return false;
+    private void checkInput(TextField input, Label errorLabel, String errorMassage){
+        if (input.getText().isEmpty())
+            displayInputError(errorLabel, errorMassage);
+        else
+            hideInputError(errorLabel);
+    }
+
+    /**
+     * Get's all the saved keyboards of the db, needed to check the names.
+     */
+    private void getSavedKeyboards(){
+        String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
+                "FROM keyboards";
+        allKeyboards = ReadDb.selectAllValuesKeyboard(sqlStmt);
+    }
+
+    /**
+     * Checks if the Keyboard name is already existing.
+     * @param keyboardName Keyboard name to check
+     * @return True if the name exist, false if not
+     */
+    private boolean checkKeyboardNameExisting(String keyboardName){
+        for (Keyboards keyboard : allKeyboards){
+            if (keyboard.getKeyboardName().equals(keyboardName))
+                return true;
         }
+        return false;
     }
 }
