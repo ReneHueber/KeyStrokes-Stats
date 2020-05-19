@@ -6,10 +6,9 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class ControllerAddComponentWindow {
@@ -37,6 +36,15 @@ public class ControllerAddComponentWindow {
     private TextField keyPressure;
     @FXML
     private TextField keyTravel;
+
+    @FXML
+    private Label nameError;
+    @FXML
+    private Label brandError;
+    @FXML
+    private Label pressureError;
+    @FXML
+    private Label travelError;
 
     @FXML
     private ComboBox<String> addedDate;
@@ -98,8 +106,88 @@ public class ControllerAddComponentWindow {
                     keyTravel.setText("");
                     keyTravel.setDisable(true);
                 }
+                // reset's the error label and inputs
+                hideInputError(nameError);
+                hideInputError(brandError);
+                hideInputError(pressureError);
+                hideInputError(travelError);
+
+                componentName.setText("");
+                componentBrand.setText("");
+                keyPressure.setText("");
+                keyTravel.setText("");
             }
         });
+
+
+        componentName.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hideInputError(nameError);
+                checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkTextInput(keyPressure, pressureError, "Enter a Number");
+                checkTextInput(keyTravel, travelError, "Enter a Number");
+            }
+        });
+
+        componentName.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                checkTextInput(componentName, nameError, "Enter a Name");
+            }
+        });
+
+        componentBrand.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hideInputError(brandError);
+                checkTextInput(componentName, nameError, "Enter a Name");
+                checkTextInput(keyPressure, pressureError, "Enter a Number");
+                checkTextInput(keyTravel, travelError, "Enter a Number");
+            }
+        });
+
+        componentBrand.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                checkTextInput(componentBrand, brandError, "Enter a Brand");
+            }
+        });
+
+        keyPressure.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hideInputError(pressureError);
+                checkTextInput(componentName, nameError, "Enter a Name");
+                checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkTextInput(keyTravel, travelError, "Enter a Number");
+            }
+        });
+
+        keyPressure.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                checkTextInput(keyPressure, pressureError, "Enter a Number");
+            }
+        });
+
+        keyTravel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                hideInputError(travelError);
+                checkTextInput(componentName, nameError, "Enter a Name");
+                checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkTextInput(keyPressure, pressureError, "Enter a Number");
+            }
+        });
+
+        keyTravel.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                checkTextInput(keyTravel, travelError, "Enter a Number");
+            }
+        });
+
 
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -121,13 +209,61 @@ public class ControllerAddComponentWindow {
     }
 
     // TODO finis the function
-    private boolean checkValues(){
-        boolean valuesOkay = false;
+    private void checkValues(){
+       checkNumberInput(keyPressure, pressureError);
+       checkNumberInput(keyTravel, travelError);
+       checkTextInput(componentName, nameError, "Enter a Name");
+       checkTextInput(componentBrand, brandError, "Enter a Brand");
 
-        if (componentName.getText().isEmpty() || componentName.getText() != null) {
-        
+       if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
+            // TODO save to Db
+       }
+    }
+
+    /**
+     * Set's the error Label visible and set's the error massage.
+     * @param errorLabel Wished error Label
+     * @param errorMassage Wished error Massage
+     */
+    private void displayInputError(Label errorLabel, String errorMassage){
+        errorLabel.setVisible(true);
+        errorLabel.setText(errorMassage);
+    }
+
+    /**
+     * Clears and hides the error Label.
+     * @param errorLabel Wished error Label
+     */
+    private void hideInputError(Label errorLabel){
+        errorLabel.setText("");
+        errorLabel.setVisible(false);
+    }
+
+    /**
+     * Check if the text of the given TextField is a valid number.
+     * @param inputLabel Checked TextField
+     * @param errorLabel Label for the Error massage
+     */
+    private void checkNumberInput(TextField inputLabel, Label errorLabel){
+        try{
+            Integer.parseInt(inputLabel.getText());
+            hideInputError(errorLabel);
+        } catch (NumberFormatException e){
+            System.out.println(e.getMessage());
+            displayInputError(errorLabel, "Enter a Number");
         }
+    }
 
-        return valuesOkay;
+    /**
+     * Check if the TextField is not empty
+     * @param inputLabel Checked TextField
+     * @param errorLabel Label for the Error massage
+     * @param errorMassage Error Massage to display
+     */
+    private void checkTextInput(TextField inputLabel, Label errorLabel, String errorMassage){
+        if (inputLabel.getText().isEmpty())
+            displayInputError(errorLabel, errorMassage);
+        else
+            hideInputError(errorLabel);
     }
 }
