@@ -1,5 +1,6 @@
 package gui;
 
+import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,7 +23,8 @@ public class ControllerAddComponentWindow {
     private final ObservableList<String> componentsOptions = FXCollections.observableArrayList(
             "Key Caps",
             "Key Switches",
-            "Tilt Set"
+            "Tilt Set",
+            "Other"
     );
 
     @FXML
@@ -100,11 +102,18 @@ public class ControllerAddComponentWindow {
                     keyPressure.setDisable(false);
                     keyTravel.setDisable(false);
                 }
+                else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
+                    keyPressure.setDisable(false);
+                    keyTravel.setDisable(false);
+                    componentName.setDisable(false);
+                }
                 else {
                     keyPressure.setText("");
                     keyPressure.setDisable(true);
                     keyTravel.setText("");
                     keyTravel.setDisable(true);
+                    componentName.setText("");
+                    componentName.setDisable(true);
                 }
                 // reset's the error label and inputs
                 hideInputError(nameError);
@@ -125,15 +134,6 @@ public class ControllerAddComponentWindow {
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(nameError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkTextInput(keyPressure, pressureError, "Enter a Number");
-                checkTextInput(keyTravel, travelError, "Enter a Number");
-            }
-        });
-
-        componentName.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                checkTextInput(componentName, nameError, "Enter a Name");
             }
         });
 
@@ -141,9 +141,6 @@ public class ControllerAddComponentWindow {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(brandError);
-                checkTextInput(componentName, nameError, "Enter a Name");
-                checkTextInput(keyPressure, pressureError, "Enter a Number");
-                checkTextInput(keyTravel, travelError, "Enter a Number");
             }
         });
 
@@ -158,33 +155,32 @@ public class ControllerAddComponentWindow {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(pressureError);
-                checkTextInput(componentName, nameError, "Enter a Name");
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkTextInput(keyTravel, travelError, "Enter a Number");
             }
         });
 
         keyPressure.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                checkTextInput(keyPressure, pressureError, "Enter a Number");
+                if (!keyPressure.getText().isEmpty())
+                    checkNumberInput(keyPressure, pressureError);
             }
         });
+
 
         keyTravel.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(travelError);
-                checkTextInput(componentName, nameError, "Enter a Name");
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkTextInput(keyPressure, pressureError, "Enter a Number");
             }
         });
 
         keyTravel.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
-                checkTextInput(keyTravel, travelError, "Enter a Number");
+                if (!keyTravel.getText().isEmpty())
+                    checkNumberInput(keyTravel, travelError);
             }
         });
 
@@ -210,13 +206,13 @@ public class ControllerAddComponentWindow {
 
     // TODO finis the function
     private void checkValues(){
-       checkNumberInput(keyPressure, pressureError);
-       checkNumberInput(keyTravel, travelError);
-       checkTextInput(componentName, nameError, "Enter a Name");
        checkTextInput(componentBrand, brandError, "Enter a Brand");
 
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
-            // TODO save to Db
+            String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
+                    "addDate) VALUES(?,?,?,?,?,?,?)";
+            // TODO get keyboard id and date
+           WriteDb.executeSqlStmt(sqlStmt, "1", componentType.getSelectionModel().getSelectedItem(), componentName.getText(), componentBrand.getText(), keyPressure.getText(), keyTravel.getText(), "16.20.2022");
        }
     }
 

@@ -247,6 +247,21 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 + ");";
         tables.add(heatmapTable);
 
+        String componentTable = "CREATE TABLE IF NOT EXISTS components(\n"
+                + "     id INTEGER,\n"
+                + "     keyboardId INTEGER NOT NULL,\n"
+                + "     componentType Text NOT NULL,\n"
+                + "     componentName Text,\n"
+                + "     componentBrand Text,\n"
+                + "     keyPressure REAL,\n"
+                + "     keyTravel INTEGER,\n"
+                + "     addDate Date NOT NULL,\n"
+                + "     isActive BOOLEAN DEFAULT TRUE,\n"
+                + "     PRIMARY KEY (id),\n"
+                + "     FOREIGN KEY (keyboardId) REFERENCES keyboards(id) ON DELETE CASCADE"
+                + ");";
+        tables.add(componentTable);
+
         // creates all the tables in a loop
         for (String table : tables){
             WriteDb.createNewTable(table);
