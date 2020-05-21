@@ -121,7 +121,19 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="addedDate" maxWidth="150.0" prefWidth="150.0" stylesheets="@../css/style.css" />
-                  <DatePicker fx:id="chooseDateDatePicker" disable="true" maxWidth="150.0" />
+                  <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                     <children>
+                        <Label fx:id="dateError" text="Label" textFill="#f22828" visible="false" />
+                        <DatePicker fx:id="chooseDateDatePicker" disable="true" maxWidth="150.0" minWidth="150.0">
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </DatePicker>
+                     </children>
+                     <HBox.margin>
+                        <Insets top="-14.0" />
+                     </HBox.margin>
+                  </VBox>
                </children>
                <padding>
                   <Insets left="10.0" />

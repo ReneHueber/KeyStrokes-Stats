@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import objects.Keyboards;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class ControllerAddComponentWindow {
 
@@ -55,6 +56,8 @@ public class ControllerAddComponentWindow {
     private Label pressureError;
     @FXML
     private Label travelError;
+    @FXML
+    private Label dateError;
 
     @FXML
     private ComboBox<String> addedDate;
@@ -94,18 +97,30 @@ public class ControllerAddComponentWindow {
                 String option = addedDate.getSelectionModel().getSelectedItem();
                 if (option.equals("Choose Date")){
                     chooseDateDatePicker.setDisable(false);
-                    addDate = chooseDateDatePicker.getValue().toString();
                 }
                 else {
                     chooseDateDatePicker.setDisable(true);
-                    chooseDateDatePicker.setValue(null);
+                    chooseDateDatePicker.getEditor().clear();
+
                     if (option.equals("Today")){
                         addDate = LocalDate.now().toString();
                     }
-                    // TODO format the String, because so it can't be checked
-                    else if (option.equals("Since Beginning"))
-                        addDate = selectedKeyboard.getInUseSince();
+                    else if (option.equals("Since Beginning")){
+                        // formats the date given by the object
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                        LocalDate date = LocalDate.parse(selectedKeyboard.getInUseSince(), formatter);
+                        addDate = date.toString();
+                    }
                 }
+            }
+        });
+
+        // if a date at the datePicker is selected
+        chooseDateDatePicker.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                hideInputError(dateError);
+               addDate = chooseDateDatePicker.getValue().toString();
             }
         });
 
@@ -125,7 +140,7 @@ public class ControllerAddComponentWindow {
                     disableTextField(componentName);
                 }
                 // reset's all the error labels and inputs if the component type is changed
-                Label[] errorLabels = {nameError, brandError, pressureError, travelError};
+                Label[] errorLabels = {nameError, brandError, pressureError, travelError, dateError};
                 TextField[] textFields = {componentName, componentBrand, keyPressure, keyTravel};
                 // resets the error labels
                 for (Label errorLabel : errorLabels){
@@ -137,6 +152,7 @@ public class ControllerAddComponentWindow {
                     if (!textField.getText().isEmpty())
                         textField.setText("");
                 }
+                chooseDateDatePicker.getEditor().clear();
             }
         });
 
@@ -146,6 +162,7 @@ public class ControllerAddComponentWindow {
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(nameError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkDatePicker();
             }
         });
 
@@ -161,6 +178,7 @@ public class ControllerAddComponentWindow {
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(brandError);
                 checkNameInput(componentName, nameError, "Enter a Name");
+                checkDatePicker();
             }
         });
 
@@ -177,6 +195,7 @@ public class ControllerAddComponentWindow {
                 hideInputError(pressureError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
                 checkNameInput(componentName, nameError, "Enter a Name");
+                checkDatePicker();
             }
         });
 
@@ -195,6 +214,7 @@ public class ControllerAddComponentWindow {
                 hideInputError(travelError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
                 checkNameInput(componentName, nameError, "Enter a Name");
+                checkDatePicker();
             }
         });
 
@@ -268,9 +288,9 @@ public class ControllerAddComponentWindow {
         chooseDateDatePicker.setEditable(false);
     }
 
-    // TODO finis the function
     private boolean checkValues(){
        checkTextInput(componentBrand, brandError, "Enter a Brand");
+       checkDatePicker();
 
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
             String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
@@ -301,6 +321,15 @@ public class ControllerAddComponentWindow {
     private void hideInputError(Label errorLabel){
         errorLabel.setText("");
         errorLabel.setVisible(false);
+    }
+
+    /**
+     * Checks if a Date is selected at the DatePicker.
+     */
+    private void checkDatePicker(){
+        if (!chooseDateDatePicker.isDisabled() && chooseDateDatePicker.getEditor().getText().isEmpty()){
+            displayInputError(dateError, "Select a Date");
+        }
     }
 
     /**
