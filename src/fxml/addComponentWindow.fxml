@@ -53,7 +53,7 @@
                   <VBox spacing="5.0">
                      <children>
                         <Label fx:id="nameError" text="Label" textFill="#f22828" visible="false" />
-                        <TextField fx:id="componentName" disable="true" maxWidth="150.0" />
+                        <TextField fx:id="componentName" maxWidth="150.0" />
                      </children>
                   </VBox>
                   <Label text="Key Pressur (cN)" textFill="#3d3d3d">

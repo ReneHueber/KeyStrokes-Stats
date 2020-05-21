@@ -105,6 +105,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             public void handle(ActionEvent event) {
                 ProcessFxmlFiles addComponentsWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Components");
                 ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentsWindow.openInNewStage();
+                controller.setSelectedKeyboard(selectedKeyboard);
             }
         });
 

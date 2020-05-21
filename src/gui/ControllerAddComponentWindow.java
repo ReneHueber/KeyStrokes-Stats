@@ -11,6 +11,9 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import objects.Keyboards;
+
+import java.time.LocalDate;
 
 public class ControllerAddComponentWindow {
 
@@ -26,6 +29,11 @@ public class ControllerAddComponentWindow {
             "Tilt Set",
             "Other"
     );
+
+    private Keyboards selectedKeyboard;
+
+    // today is the default value
+    private String addDate = LocalDate.now().toString();
 
     @FXML
     private ComboBox<String> componentType;
@@ -86,10 +94,17 @@ public class ControllerAddComponentWindow {
                 String option = addedDate.getSelectionModel().getSelectedItem();
                 if (option.equals("Choose Date")){
                     chooseDateDatePicker.setDisable(false);
+                    addDate = chooseDateDatePicker.getValue().toString();
                 }
                 else {
                     chooseDateDatePicker.setDisable(true);
                     chooseDateDatePicker.setValue(null);
+                    if (option.equals("Today")){
+                        addDate = LocalDate.now().toString();
+                    }
+                    // TODO format the String, because so it can't be checked
+                    else if (option.equals("Since Beginning"))
+                        addDate = selectedKeyboard.getInUseSince();
                 }
             }
         });
@@ -99,32 +114,29 @@ public class ControllerAddComponentWindow {
             @Override
             public void handle(ActionEvent event) {
                 if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
-                    keyPressure.setDisable(false);
-                    keyTravel.setDisable(false);
+                    enableAllOtherInputs();
                 }
                 else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
-                    keyPressure.setDisable(false);
-                    keyTravel.setDisable(false);
-                    componentName.setDisable(false);
+                    enableAllOtherInputs();
                 }
                 else {
-                    keyPressure.setText("");
-                    keyPressure.setDisable(true);
-                    keyTravel.setText("");
-                    keyTravel.setDisable(true);
-                    componentName.setText("");
-                    componentName.setDisable(true);
+                    disableTextField(keyPressure);
+                    disableTextField(keyTravel);
+                    disableTextField(componentName);
                 }
-                // reset's the error label and inputs
-                hideInputError(nameError);
-                hideInputError(brandError);
-                hideInputError(pressureError);
-                hideInputError(travelError);
-
-                componentName.setText("");
-                componentBrand.setText("");
-                keyPressure.setText("");
-                keyTravel.setText("");
+                // reset's all the error labels and inputs if the component type is changed
+                Label[] errorLabels = {nameError, brandError, pressureError, travelError};
+                TextField[] textFields = {componentName, componentBrand, keyPressure, keyTravel};
+                // resets the error labels
+                for (Label errorLabel : errorLabels){
+                    hideInputError(errorLabel);
+                    errorLabel.setText("");
+                }
+                // resets the inputs
+                for (TextField textField : textFields){
+                    if (!textField.getText().isEmpty())
+                        textField.setText("");
+                }
             }
         });
 
@@ -137,10 +149,18 @@ public class ControllerAddComponentWindow {
             }
         });
 
+        componentName.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+               checkTextInput(componentName, nameError, "Enter a Name");
+            }
+        });
+
         componentBrand.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(brandError);
+                checkNameInput(componentName, nameError, "Enter a Name");
             }
         });
 
@@ -156,6 +176,7 @@ public class ControllerAddComponentWindow {
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(pressureError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkNameInput(componentName, nameError, "Enter a Name");
             }
         });
 
@@ -173,6 +194,7 @@ public class ControllerAddComponentWindow {
             public void handle(MouseEvent mouseEvent) {
                 hideInputError(travelError);
                 checkTextInput(componentBrand, brandError, "Enter a Brand");
+                checkNameInput(componentName, nameError, "Enter a Name");
             }
         });
 
@@ -188,11 +210,53 @@ public class ControllerAddComponentWindow {
         saveBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                checkValues();
+                if (checkValues()){
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.close();
+                }
             }
         });
 
         setUpDatePicker();
+    }
+
+    /**
+     * Passes the selected Keyboard from the Select Keyboard Window.
+     * @param selectedKeyboard Keyboard that has been selected in the Window before
+     */
+    public void setSelectedKeyboard(Keyboards selectedKeyboard){
+        this.selectedKeyboard = selectedKeyboard;
+    }
+
+    /**
+     * Clears the Text and disables the TextField.
+     * @param input Wished TextField
+     */
+    private void disableTextField(TextField input){
+        input.setText("");
+        input.setDisable(true);
+    }
+
+    /**
+     * Enables all the TextFields.
+     */
+    private void enableAllOtherInputs(){
+        keyPressure.setDisable(false);
+        keyTravel.setDisable(false);
+        componentName.setDisable(false);
+    }
+
+    /**
+     * Name is disables sometimes so, we don't need to check.
+     * Only checks the Input if it is not disabled.
+     * @param input Input TextField
+     * @param error Error Label
+     * @param errorMassage Error Massage to display
+     */
+    private void checkNameInput(TextField input, Label error, String errorMassage){
+        if (!input.isDisabled()){
+            checkTextInput(input, error, errorMassage);
+        }
     }
 
     /**
@@ -205,14 +269,18 @@ public class ControllerAddComponentWindow {
     }
 
     // TODO finis the function
-    private void checkValues(){
+    private boolean checkValues(){
        checkTextInput(componentBrand, brandError, "Enter a Brand");
 
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
             String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
                     "addDate) VALUES(?,?,?,?,?,?,?)";
-            // TODO get keyboard id and date
-           WriteDb.executeSqlStmt(sqlStmt, "1", componentType.getSelectionModel().getSelectedItem(), componentName.getText(), componentBrand.getText(), keyPressure.getText(), keyTravel.getText(), "16.20.2022");
+           WriteDb.executeSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()), componentType.getSelectionModel().getSelectedItem(),
+                   componentName.getText(), componentBrand.getText(), keyPressure.getText(), keyTravel.getText(), addDate);
+           return true;
+       }
+       else{
+           return false;
        }
     }
 
