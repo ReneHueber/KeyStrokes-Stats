@@ -6,14 +6,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import objects.Keyboards;
+import objects.Keyboard;
 
 import java.io.IOException;
 
 /**
  * Set's the custom Items for every Cell in the List View.
  */
-public class KeyboardsListViewCell extends ListCell<Keyboards> {
+public class KeyboardsListViewCell extends ListCell<Keyboard> {
 
     @FXML
     private Label labelKeyboardName;
@@ -45,7 +45,7 @@ public class KeyboardsListViewCell extends ListCell<Keyboards> {
      * @param empty If the Object is empty
      */
     @Override
-    protected void updateItem(Keyboards keyboard, boolean empty) {
+    protected void updateItem(Keyboard keyboard, boolean empty) {
         super.updateItem(keyboard, empty);
 
         // loads the fxml file if the passed object is not empty
@@ -55,7 +55,7 @@ public class KeyboardsListViewCell extends ListCell<Keyboards> {
 
         } else {
             if (fxmlLoader == null) {
-                fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/customListCell.fxml"));
+                fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/keyboardListCell.fxml"));
                 fxmlLoader.setController(this);
 
                 try {

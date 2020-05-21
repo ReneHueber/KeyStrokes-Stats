@@ -2,7 +2,7 @@ package objects;
 
 import javafx.scene.image.Image;
 
-public class Keyboards {
+public class Keyboard {
     private final Image splitImage = new Image(getClass().getResource("../images/ergodox.png").toExternalForm());
     private final Image standardImage = new Image(getClass().getResource("../images/plank.png").toExternalForm());
 
@@ -25,8 +25,8 @@ public class Keyboards {
      * @param inUseSince When the keyboard was introduced
      * @param layout Keyboard Layout
      */
-    public Keyboards(String keyboardName, String keyboardType, int totalKeyStrokes, float totalTimeKeyPressed,
-                     String lastUsed, String inUseSince, String layout, int id) {
+    public Keyboard(String keyboardName, String keyboardType, int totalKeyStrokes, float totalTimeKeyPressed,
+                    String lastUsed, String inUseSince, String layout, int id) {
         this.keyboardName = keyboardName;
         this.keyboardType = keyboardType;
         this.totalKeyStrokes = totalKeyStrokes;

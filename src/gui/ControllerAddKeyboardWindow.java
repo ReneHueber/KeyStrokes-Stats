@@ -15,7 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import objects.Keyboards;
+import objects.Keyboard;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ import java.time.LocalDate;
 public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
     protected Stage parentStage;
-    private ObservableList<Keyboards> allKeyboards = FXCollections.observableArrayList();
+    private ObservableList<Keyboard> allKeyboards = FXCollections.observableArrayList();
 
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
@@ -208,7 +208,7 @@ public class ControllerAddKeyboardWindow {
      * @return True if the name exist, false if not
      */
     private boolean checkKeyboardNameExisting(String keyboardName){
-        for (Keyboards keyboard : allKeyboards){
+        for (Keyboard keyboard : allKeyboards){
             if (keyboard.getKeyboardName().equals(keyboardName))
                 return true;
         }

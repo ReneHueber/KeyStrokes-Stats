@@ -6,16 +6,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import objects.Keyboards;
+import objects.Keyboard;
 
-import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 
 public class ControllerStatOverviewWindow {
@@ -27,7 +21,7 @@ public class ControllerStatOverviewWindow {
             "custom Date"
     );
 
-    private ObservableList<Keyboards> allKeyboards;
+    private ObservableList<Keyboard> allKeyboards;
 
     @FXML
     MenuBar menuBar;
@@ -88,7 +82,7 @@ public class ControllerStatOverviewWindow {
             @Override
             public void handle(ActionEvent event) {
                 String selectedKeyboard = selectKeyboardCB.getSelectionModel().getSelectedItem();
-                Keyboards keyboard = getKeyboard(selectedKeyboard);
+                Keyboard keyboard = getKeyboard(selectedKeyboard);
                 if (keyboard != null){
                     setStatValues(keyboard);
                 }
@@ -111,7 +105,7 @@ public class ControllerStatOverviewWindow {
     private ObservableList<String> createSelectKeyboardOptions(){
         ObservableList<String> keyboardOptions = FXCollections.observableArrayList();
 
-        for (Keyboards keyboard : allKeyboards){
+        for (Keyboard keyboard : allKeyboards){
             keyboardOptions.add(keyboard.getKeyboardName());
         }
 
@@ -122,7 +116,7 @@ public class ControllerStatOverviewWindow {
      * Reads the Database and get's all the Keyboard Values.
      * @return List of all Keyboard Objects saved.
      */
-    private ObservableList<Keyboards> getKeyboardValues(){
+    private ObservableList<Keyboard> getKeyboardValues(){
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
         return ReadDb.selectAllValuesKeyboard(sqlStmt);
@@ -133,8 +127,8 @@ public class ControllerStatOverviewWindow {
      * @param selectedKeyboard The name of the searched Keyboard.
      * @return The searched Keyboard object.
      */
-    private Keyboards getKeyboard(String selectedKeyboard){
-        for(Keyboards keyboard : allKeyboards){
+    private Keyboard getKeyboard(String selectedKeyboard){
+        for(Keyboard keyboard : allKeyboards){
             if (keyboard.getKeyboardName().equals(selectedKeyboard)){
                 return keyboard;
             }
@@ -146,7 +140,7 @@ public class ControllerStatOverviewWindow {
      * Sets the values from the select keyboard Controller.
      * @param selectedKeyboard Selected Keyboard Object.
      */
-    protected void setKeyboardTableValue(Keyboards selectedKeyboard){
+    protected void setKeyboardTableValue(Keyboard selectedKeyboard){
         setStatValues(selectedKeyboard);
         selectKeyboardCB.setValue(selectedKeyboard.getKeyboardName());
     }
@@ -155,7 +149,7 @@ public class ControllerStatOverviewWindow {
      * Sets the stat Values of the selected Keyboard.
      * @param selectedKeyboard Selected Keyboard Object.
      */
-    private void setStatValues(Keyboards selectedKeyboard){
+    private void setStatValues(Keyboard selectedKeyboard){
         keyboardName.setText(selectedKeyboard.getKeyboardName());
         keyboardType.setText(selectedKeyboard.getKeyboardType());
         timeTyped.setText(formatTimeTyped(selectedKeyboard.getTotalTimeKeyPressed()));

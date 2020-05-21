@@ -4,7 +4,7 @@ import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.ObservableList;
 import objects.Heatmap;
-import objects.Keyboards;
+import objects.Keyboard;
 import objects.TotalToday;
 
 import java.time.LocalDate;
@@ -78,10 +78,10 @@ public class DbUpdateSchedule {
     private void getTotalValuesKeyboard(){
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards WHERE id = " + keyboardId;
-        ObservableList<Keyboards> keyboardList = ReadDb.selectAllValuesKeyboard(sqlStmt);
+        ObservableList<Keyboard> keyboardList = ReadDb.selectAllValuesKeyboard(sqlStmt);
 
         if (keyboardList != null) {
-            Keyboards keyboard = keyboardList.get(0);
+            Keyboard keyboard = keyboardList.get(0);
             oldTotal = keyboard.getTotalKeyStrokes();
             oldTimePressed = keyboard.getTotalTimeKeyPressed();
         }

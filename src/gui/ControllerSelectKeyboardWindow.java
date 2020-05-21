@@ -16,7 +16,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
-import objects.Keyboards;
+import objects.Keyboard;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
 public class ControllerSelectKeyboardWindow implements Initializable {
 
     @FXML
-    private ListView<Keyboards> keyboardLv;
+    private ListView<Keyboard> keyboardLv;
 
     // Menu Keyboards
     @FXML
@@ -52,9 +52,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     @FXML
     private MenuBar menuBar;
 
-    private Keyboards selectedKeyboard;
+    private Keyboard selectedKeyboard;
 
-    private ObservableList<Keyboards> keyboardsObservableList;
+    private ObservableList<Keyboard> keyboardsObservableList;
 
     private KeyLogger keyLogger;
 
@@ -145,9 +145,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         });
 
         // get's the selected item if the selection is changed
-        keyboardLv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Keyboards>() {
+        keyboardLv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Keyboard>() {
             @Override
-            public void changed(ObservableValue<? extends Keyboards> observableValue, Keyboards oldValue, Keyboards newValue) {
+            public void changed(ObservableValue<? extends Keyboard> observableValue, Keyboard oldValue, Keyboard newValue) {
                 selectedKeyboard = newValue;
                 // enables the menu items
                 start.setDisable(false);
@@ -179,8 +179,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      * Formats the Date in the List for every Keyboard
      * @param keyboardList List of the used Keyboards
      */
-    private void formatDate(ObservableList<Keyboards> keyboardList){
-        for (Keyboards keyboard : keyboardList){
+    private void formatDate(ObservableList<Keyboard> keyboardList){
+        for (Keyboard keyboard : keyboardList){
             // formats the dates and sets the values
             String lastUsed = keyboard.getLastUsed();
                 if (lastUsed.equals("0000-00-00"))

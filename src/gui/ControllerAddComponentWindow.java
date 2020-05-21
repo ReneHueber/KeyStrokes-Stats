@@ -11,7 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import objects.Keyboards;
+import objects.Keyboard;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,7 +31,7 @@ public class ControllerAddComponentWindow {
             "Other"
     );
 
-    private Keyboards selectedKeyboard;
+    private Keyboard selectedKeyboard;
 
     // today is the default value
     private String addDate = LocalDate.now().toString();
@@ -244,7 +244,7 @@ public class ControllerAddComponentWindow {
      * Passes the selected Keyboard from the Select Keyboard Window.
      * @param selectedKeyboard Keyboard that has been selected in the Window before
      */
-    public void setSelectedKeyboard(Keyboards selectedKeyboard){
+    public void setSelectedKeyboard(Keyboard selectedKeyboard){
         this.selectedKeyboard = selectedKeyboard;
     }
 

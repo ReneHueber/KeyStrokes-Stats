@@ -3,12 +3,11 @@ package database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import objects.Heatmap;
-import objects.Keyboards;
+import objects.Keyboard;
 import objects.TotalToday;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ReadDb {
@@ -39,11 +38,11 @@ public class ReadDb {
      * @param sqlStatements What values should be read
      * @return An ObservableList<Keyboards> with all the Keyboards from the Db
      */
-    public static ObservableList<Keyboards> selectAllValuesKeyboard(String sqlStatements){
+    public static ObservableList<Keyboard> selectAllValuesKeyboard(String sqlStatements){
         try (Connection conn = ConnectDb.connect(WriteDb.url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStatements)){
-                ObservableList<Keyboards> keyboardList = FXCollections.observableArrayList();
+                ObservableList<Keyboard> keyboardList = FXCollections.observableArrayList();
                 while (rs.next()){
                     int id = rs.getInt("id");
                     String name = rs.getString("keyboardName");
@@ -54,7 +53,7 @@ public class ReadDb {
                     String usedSince = rs.getString("usedSince");
                     String lastUsed = rs.getString("lastUsed");
 
-                    keyboardList.add(new Keyboards(name, type, totKeyStrokes, totTimePressed, lastUsed,
+                    keyboardList.add(new Keyboard(name, type, totKeyStrokes, totTimePressed, lastUsed,
                             usedSince, layout, id));
             }
                 return keyboardList;
