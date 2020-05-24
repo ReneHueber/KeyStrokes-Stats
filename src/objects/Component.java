@@ -68,4 +68,12 @@ public class Component {
     public boolean isActive() {
         return isActive;
     }
+
+    public void setAddedDate(String addedDate) {
+        this.addedDate = addedDate;
+    }
+
+    public void setRemovedDate(String removedDate) {
+        this.removedDate = removedDate;
+    }
 }

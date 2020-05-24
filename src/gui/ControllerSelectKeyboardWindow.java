@@ -92,6 +92,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
             controller.setInfoLabels();
+            controller.setValuesTableView();
         });
 
         addComponents.setOnAction(event -> {
@@ -127,16 +128,13 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         });
 
         // get's the selected item if the selection is changed
-        keyboardLv.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Keyboard>() {
-            @Override
-            public void changed(ObservableValue<? extends Keyboard> observableValue, Keyboard oldValue, Keyboard newValue) {
-                selectedKeyboard = newValue;
-                // enables the menu items
-                start.setDisable(false);
-                overview.setDisable(false);
-                showComponents.setDisable(false);
-                addComponents.setDisable(false);
-            }
+        keyboardLv.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            selectedKeyboard = newValue;
+            // enables the menu items
+            start.setDisable(false);
+            overview.setDisable(false);
+            showComponents.setDisable(false);
+            addComponents.setDisable(false);
         });
     }
 

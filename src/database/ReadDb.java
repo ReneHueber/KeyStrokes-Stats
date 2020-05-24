@@ -2,12 +2,14 @@ package database;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import objects.Component;
 import objects.Heatmap;
 import objects.Keyboard;
 import objects.TotalToday;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ReadDb {
@@ -94,8 +96,8 @@ public class ReadDb {
 
     /**
      * Read all the Values for the Heatmap table.
-     * @param sqlStmt What values should be read
-     * @return An ArrayList<Heatmap> with all the Heatmap values form the Db
+     * @param sqlStmt What values should be read.
+     * @return An ArrayList<Heatmap> with all the Heatmap values form the Db.
      */
     public static ArrayList<Heatmap> selectAllValueHeatmapTable(String sqlStmt){
         ArrayList<Heatmap> heatmapValues = new ArrayList<>();
@@ -134,5 +136,37 @@ public class ReadDb {
             System.out.println(e.getMessage());
             return 0;
         }
+    }
+
+    /**
+     * Read all the Values for the Components table.
+     * @param sqlStmt What values should be read.
+     * @return An ObservableList<Component> with all the Component values form the Db.
+     */
+    public static ObservableList<Component> getAllValuesComponents(String sqlStmt){
+        ObservableList<Component> components = FXCollections.observableArrayList();
+
+        try(Connection conn = ConnectDb.connect(WriteDb.url);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlStmt)){
+
+            while (rs.next()){
+                int keyboardId = rs.getInt("keyboardId");
+                String componentType = rs.getString("componentType");
+                String componentName = rs.getString("componentName");
+                String componentBrand = rs.getString("componentBrand");
+                float keyPressure = rs.getFloat("keyPressure");
+                int keyTravel = rs.getInt("keyTravel");
+                int keyStrokes = rs.getInt("keyStrokes");
+                String addDate = rs.getString("addDate");
+                boolean isActive = rs.getBoolean("isActive");
+
+                components.add(new Component(keyboardId, componentType, componentName, componentBrand,
+                                keyPressure, keyTravel, addDate, "", keyStrokes, isActive));
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return components;
     }
 }
