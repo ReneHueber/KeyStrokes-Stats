@@ -12,6 +12,8 @@ import objects.Keyboard;
 
 public class ControllerComponentWindow {
 
+    private Keyboard selectedKeyboard;
+
     @FXML
     private Label keyboardName;
     @FXML
@@ -41,18 +43,20 @@ public class ControllerComponentWindow {
 
 
     public void initialize(){
-        addComponentsBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                ProcessFxmlFiles addComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Component");
-                addComponentWindow.openInNewStage();
-            }
+        addComponentsBtn.setOnAction(event -> {
+            ProcessFxmlFiles addComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Component");
+            addComponentWindow.openInNewStage();
         });
         ObservableList<Component> components = FXCollections.observableArrayList(
                 new Component(1, "test", "test", "test", 12.0f, 10, "15", "",1150, true)
         );
+
         componentTV.setItems(components);
         setupTableView();
+    }
+
+    public void setSelectedKeyboard(Keyboard selectedKeyboard){
+        this.selectedKeyboard = selectedKeyboard;
     }
 
     private void setupTableView(){
@@ -63,4 +67,12 @@ public class ControllerComponentWindow {
         removedColumn.setCellValueFactory(new PropertyValueFactory<>("removedDate"));
         keyStrokesColumn.setCellValueFactory(new PropertyValueFactory<>("keyStrokes"));
     }
+
+    public void setInfoLabels(){
+        keyboardName.setText(selectedKeyboard.getKeyboardName());
+        keyboardType.setText(selectedKeyboard.getKeyboardType());
+        keyStrokes.setText(Integer.toString(selectedKeyboard.getTotalKeyStrokes()));
+        keyPressedTime.setText(Float.toString(selectedKeyboard.getTotalTimeKeyPressed()));
+    }
+
 }

@@ -6,8 +6,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -82,66 +80,50 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         addComponents.setDisable(true);
 
         // click listener for the addNew keyboard menu item
-        addNew.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                // openAddKeyboardWindow();
-                ProcessFxmlFiles openWindow = new ProcessFxmlFiles("../fxml/splitSelectedWindow.fxml", "Add Keyboard");
-                ControllerAddKeyboardWindow controller = (ControllerAddKeyboardWindow) openWindow.openInNewStage();
-                controller.parentStage = (Stage) menuBar.getScene().getWindow();
-            }
+        addNew.setOnAction(actionEvent -> {
+            // openAddKeyboardWindow();
+            ProcessFxmlFiles openWindow = new ProcessFxmlFiles("../fxml/splitSelectedWindow.fxml", "Add Keyboard");
+            ControllerAddKeyboardWindow controller = (ControllerAddKeyboardWindow) openWindow.openInNewStage();
+            controller.parentStage = (Stage) menuBar.getScene().getWindow();
         });
 
-        showComponents.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ProcessFxmlFiles componentsWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
-                ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
-            }
+        showComponents.setOnAction(actionEvent -> {
+            ProcessFxmlFiles componentsWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
+            ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
+            controller.setSelectedKeyboard(selectedKeyboard);
+            controller.setInfoLabels();
         });
 
-        addComponents.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                ProcessFxmlFiles addComponentsWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Components");
-                ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentsWindow.openInNewStage();
-                controller.setSelectedKeyboard(selectedKeyboard);
-            }
+        addComponents.setOnAction(event -> {
+            ProcessFxmlFiles addComponentsWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Components");
+            ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentsWindow.openInNewStage();
+            controller.setSelectedKeyboard(selectedKeyboard);
         });
 
-        overview.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                ProcessFxmlFiles overviewWindow = new ProcessFxmlFiles("../fxml/statOverviewWindow.fxml", "Statistic Overview");
-                Stage stage = (Stage) menuBar.getScene().getWindow();
-                ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
-                controller.setKeyboardId(selectedKeyboard.getKeyboardId());
-                controller.setKeyboardTableValue(selectedKeyboard);
-            }
+        overview.setOnAction(event -> {
+            ProcessFxmlFiles overviewWindow = new ProcessFxmlFiles("../fxml/statOverviewWindow.fxml", "Statistic Overview");
+            Stage stage = (Stage) menuBar.getScene().getWindow();
+            ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
+            controller.setKeyboardId(selectedKeyboard.getKeyboardId());
+            controller.setKeyboardTableValue(selectedKeyboard);
         });
 
         // start the key logger if a keyboard is selected
-        start.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                if (selectedKeyboard != null){
-                    start.setDisable(true);
-                    stop.setDisable(false);
-                    CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
-                    keyLogger = new KeyLogger();
-                    keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
-                    dialogWindow.show();
-                }
+        start.setOnAction(actionEvent -> {
+            if (selectedKeyboard != null){
+                start.setDisable(true);
+                stop.setDisable(false);
+                CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
+                keyLogger = new KeyLogger();
+                keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
+                dialogWindow.show();
             }
         });
 
-        stop.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                keyLogger.stopKeylogger();
-                start.setDisable(false);
-                stop.setDisable(true);
-            }
+        stop.setOnAction(event -> {
+            keyLogger.stopKeylogger();
+            start.setDisable(false);
+            stop.setDisable(true);
         });
 
         // get's the selected item if the selection is changed
@@ -256,6 +238,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 + "     componentBrand Text,\n"
                 + "     keyPressure REAL,\n"
                 + "     keyTravel INTEGER,\n"
+                + "     keyStrokes INTEGER,\n"
                 + "     addDate Date NOT NULL,\n"
                 + "     isActive BOOLEAN DEFAULT TRUE,\n"
                 + "     PRIMARY KEY (id),\n"

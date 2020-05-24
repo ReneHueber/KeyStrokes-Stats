@@ -68,33 +68,24 @@ public class ControllerStatOverviewWindow {
         setupDatePicker();
 
         // changes the scene to the select keyboard window
-        selectKeyboard.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
-                Stage stage = (Stage) menuBar.getScene().getWindow();
-                selectKeyboardWindow.openInExistingStage(stage);
-            }
+        selectKeyboard.setOnAction(actionEvent -> {
+            ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
+            Stage stage = (Stage) menuBar.getScene().getWindow();
+            selectKeyboardWindow.openInExistingStage(stage);
         });
 
         // updates the stat values if the keyboard is changed
-        selectKeyboardCB.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String selectedKeyboard = selectKeyboardCB.getSelectionModel().getSelectedItem();
-                Keyboard keyboard = getKeyboard(selectedKeyboard);
-                if (keyboard != null){
-                    setStatValues(keyboard);
-                }
+        selectKeyboardCB.setOnAction(event -> {
+            String selectedKeyboard = selectKeyboardCB.getSelectionModel().getSelectedItem();
+            Keyboard keyboard = getKeyboard(selectedKeyboard);
+            if (keyboard != null){
+                setStatValues(keyboard);
             }
         });
 
-        selectDateCB.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // checks if the date picker should be displayed
-                customDateSelected();
-            }
+        selectDateCB.setOnAction(event -> {
+            // checks if the date picker should be displayed
+            customDateSelected();
         });
     }
 

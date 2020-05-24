@@ -1,15 +1,12 @@
 package gui;
 
+import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.Keyboard;
 
@@ -82,158 +79,122 @@ public class ControllerAddComponentWindow {
         componentType.setValue(componentsOptions.get(1));
 
         // closes the stage
-        cancelBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.close();
-            }
+        cancelBtn.setOnAction(event -> {
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
         });
 
         // disable or enable the date picker
-        addedDate.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String option = addedDate.getSelectionModel().getSelectedItem();
-                if (option.equals("Choose Date")){
-                    chooseDateDatePicker.setDisable(false);
-                }
-                else {
-                    chooseDateDatePicker.setDisable(true);
-                    chooseDateDatePicker.getEditor().clear();
+        addedDate.setOnAction(event -> {
+            String option = addedDate.getSelectionModel().getSelectedItem();
+            if (option.equals("Choose Date")){
+                chooseDateDatePicker.setDisable(false);
+            }
+            else {
+                chooseDateDatePicker.setDisable(true);
+                chooseDateDatePicker.getEditor().clear();
 
-                    if (option.equals("Today")){
-                        addDate = LocalDate.now().toString();
-                    }
-                    else if (option.equals("Since Beginning")){
-                        // formats the date given by the object
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                        LocalDate date = LocalDate.parse(selectedKeyboard.getInUseSince(), formatter);
-                        addDate = date.toString();
-                    }
+                if (option.equals("Today")){
+                    addDate = LocalDate.now().toString();
+                }
+                else if (option.equals("Since Beginning")){
+                    // formats the date given by the object
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                    LocalDate date = LocalDate.parse(selectedKeyboard.getInUseSince(), formatter);
+                    addDate = date.toString();
                 }
             }
         });
 
         // if a date at the datePicker is selected
-        chooseDateDatePicker.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                hideInputError(dateError);
-               addDate = chooseDateDatePicker.getValue().toString();
-            }
+        chooseDateDatePicker.setOnAction(event -> {
+            hideInputError(dateError);
+           addDate = chooseDateDatePicker.getValue().toString();
         });
 
         // disable or enable the key pressure and key travel inputs
-        componentType.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
-                    enableAllOtherInputs();
-                }
-                else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
-                    enableAllOtherInputs();
-                }
-                else {
-                    disableTextField(keyPressure);
-                    disableTextField(keyTravel);
-                    disableTextField(componentName);
-                }
-                // reset's all the error labels and inputs if the component type is changed
-                Label[] errorLabels = {nameError, brandError, pressureError, travelError, dateError};
-                TextField[] textFields = {componentName, componentBrand, keyPressure, keyTravel};
-                // resets the error labels
-                for (Label errorLabel : errorLabels){
-                    hideInputError(errorLabel);
-                    errorLabel.setText("");
-                }
-                // resets the inputs
-                for (TextField textField : textFields){
-                    if (!textField.getText().isEmpty())
-                        textField.setText("");
-                }
-                chooseDateDatePicker.getEditor().clear();
+        componentType.setOnAction(event -> {
+            if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
+                enableAllOtherInputs();
             }
+            else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
+                enableAllOtherInputs();
+            }
+            else {
+                disableTextField(keyPressure);
+                disableTextField(keyTravel);
+                disableTextField(componentName);
+            }
+            // reset's all the error labels and inputs if the component type is changed
+            Label[] errorLabels = {nameError, brandError, pressureError, travelError, dateError};
+            TextField[] textFields = {componentName, componentBrand, keyPressure, keyTravel};
+            // resets the error labels
+            for (Label errorLabel : errorLabels){
+                hideInputError(errorLabel);
+                errorLabel.setText("");
+            }
+            // resets the inputs
+            for (TextField textField : textFields){
+                if (!textField.getText().isEmpty())
+                    textField.setText("");
+            }
+            chooseDateDatePicker.getEditor().clear();
         });
 
 
-        componentName.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                hideInputError(nameError);
-                checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkDatePicker();
-            }
+        // clears the error for the text field and, checks the other necessary textFields
+        componentName.setOnMouseClicked(mouseEvent -> {
+            hideInputError(nameError);
+            checkTextInput(componentBrand, brandError, "Enter a Brand");
+            checkDatePicker();
         });
 
-        componentName.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-               checkTextInput(componentName, nameError, "Enter a Name");
-            }
+        // check if the input is correct
+        componentName.setOnKeyReleased(keyEvent -> checkTextInput(componentName, nameError, "Enter a Name"));
+
+        // clears the error for the text field and, checks the other necessary textFields
+        componentBrand.setOnMouseClicked(mouseEvent -> {
+            hideInputError(brandError);
+            checkNameInput(componentName, nameError, "Enter a Name");
+            checkDatePicker();
         });
 
-        componentBrand.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                hideInputError(brandError);
-                checkNameInput(componentName, nameError, "Enter a Name");
-                checkDatePicker();
-            }
+        // check if the input is correct
+        componentBrand.setOnKeyReleased(keyEvent -> checkTextInput(componentBrand, brandError, "Enter a Brand"));
+
+        // clears the error for the text field and, checks the other necessary textFields
+        keyPressure.setOnMouseClicked(mouseEvent -> {
+            hideInputError(pressureError);
+            checkTextInput(componentBrand, brandError, "Enter a Brand");
+            checkNameInput(componentName, nameError, "Enter a Name");
+            checkDatePicker();
         });
 
-        componentBrand.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                checkTextInput(componentBrand, brandError, "Enter a Brand");
-            }
+        // check if the input is correct
+        keyPressure.setOnKeyReleased(keyEvent -> {
+            if (!keyPressure.getText().isEmpty())
+                checkNumberInput(keyPressure, pressureError);
         });
 
-        keyPressure.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                hideInputError(pressureError);
-                checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkNameInput(componentName, nameError, "Enter a Name");
-                checkDatePicker();
-            }
+        // clears the error for the text field and, checks the other necessary textFields
+        keyTravel.setOnMouseClicked(mouseEvent -> {
+            hideInputError(travelError);
+            checkTextInput(componentBrand, brandError, "Enter a Brand");
+            checkNameInput(componentName, nameError, "Enter a Name");
+            checkDatePicker();
         });
 
-        keyPressure.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (!keyPressure.getText().isEmpty())
-                    checkNumberInput(keyPressure, pressureError);
-            }
+        // check if the input is correct
+        keyTravel.setOnKeyReleased(keyEvent -> {
+            if (!keyTravel.getText().isEmpty())
+                checkNumberInput(keyTravel, travelError);
         });
 
-
-        keyTravel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                hideInputError(travelError);
-                checkTextInput(componentBrand, brandError, "Enter a Brand");
-                checkNameInput(componentName, nameError, "Enter a Name");
-                checkDatePicker();
-            }
-        });
-
-        keyTravel.setOnKeyReleased(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (!keyTravel.getText().isEmpty())
-                    checkNumberInput(keyTravel, travelError);
-            }
-        });
-
-
-        saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (checkValues()){
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    stage.close();
-                }
+        // closes the stage if the vales are correct and saved to the db
+        saveBtn.setOnAction(event -> {
+            if (checkValues()){
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.close();
             }
         });
 
@@ -288,20 +249,57 @@ public class ControllerAddComponentWindow {
         chooseDateDatePicker.setEditable(false);
     }
 
+    /**
+     * Checks if the input vales are Correct.
+     * If the are Correct the values get's saved to the db.
+     * @return If the Values are Correct or not.
+     */
     private boolean checkValues(){
        checkTextInput(componentBrand, brandError, "Enter a Brand");
        checkDatePicker();
 
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
-            String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
-                    "addDate) VALUES(?,?,?,?,?,?,?)";
-           WriteDb.executeSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()), componentType.getSelectionModel().getSelectedItem(),
-                   componentName.getText(), componentBrand.getText(), keyPressure.getText(), keyTravel.getText(), addDate);
+            String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
+                    "keyPressure, keyTravel, keyStrokes, addDate) VALUES(?,?,?,?,?,?,?,?)";
+           WriteDb.executeSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
+                   componentType.getSelectionModel().getSelectedItem(), componentName.getText(),
+                   componentBrand.getText(), keyPressure.getText(), keyTravel.getText(),
+                   Integer.toString(getComponentKeyStrokes()), addDate);
            return true;
        }
        else{
            return false;
        }
+    }
+
+    /**
+     * Get's the keyStrokes depending on the date option chosen at the date picker.
+     * @return The KeyStokes depending on the Date option.
+     */
+    private int getComponentKeyStrokes(){
+        switch(addedDate.getSelectionModel().getSelectedItem()){
+            // get's all keyStrokes
+            case "Since Beginning":
+                return selectedKeyboard.getTotalKeyStrokes();
+
+             // get's the keyStrokes since e specific date
+            case "Choose Date":
+                return getDateSpecificKeyStrokes();
+
+            // "Today" is the default case
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Reads the sum of the keystrokes form the totalToday Tables since a specific Date.
+     * @return The total keyStrokes since a specific Date.
+     */
+    private int getDateSpecificKeyStrokes(){
+        String selectedDate = chooseDateDatePicker.getValue().toString();
+        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "'";
+        return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
     }
 
     /**

@@ -21,12 +21,9 @@ public class ControllerDialogWindow {
 
     public void initialize(){
         // closes the window is you click okay
-        confirmLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
-                stage.close();
-            }
+        confirmLabel.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ((Node)mouseEvent.getSource()).getScene().getWindow();
+            stage.close();
         });
     }
 

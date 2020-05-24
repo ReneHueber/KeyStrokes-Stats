@@ -119,4 +119,20 @@ public class ReadDb {
 
         return heatmapValues;
     }
+
+    /**
+     * Sum's the Keystrokes form the totalToday Table since a specific Date.
+     * @param sqlStmt Sql Statement with the selected start Date.
+     * @return The Total Keystrokes since the specific Date.
+     */
+    public static int sumDateSpecificKeyStrokes(String sqlStmt){
+        try(Connection conn = ConnectDb.connect(WriteDb.url);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlStmt)){
+            return rs.getInt(1);
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            return 0;
+        }
+    }
 }
