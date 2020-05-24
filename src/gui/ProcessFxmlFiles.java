@@ -14,7 +14,8 @@ import java.io.IOException;
  * Returns the Controller of the Scene to pass data.
  */
 public class ProcessFxmlFiles {
-    private String fxmlPath, windowName;
+    private final String fxmlPath;
+    private final String windowName;
     private Parent root;
 
     private Object controller;
@@ -66,7 +67,7 @@ public class ProcessFxmlFiles {
         try{
             // loads the fxml file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
-            root = (Parent) fxmlLoader.load();
+            root = fxmlLoader.load();
 
             // get's the controller of the fxml file
             controller = fxmlLoader.getController();

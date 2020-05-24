@@ -9,31 +9,10 @@ import objects.TotalToday;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ReadDb {
     private static final String url = WriteDb.url;
-
-    public ReadDb(String dbPath){
-    }
-
-    public int getSum(){
-        String sql = "SELECT SUM(keystrokes) FROM KeyLogs";
-        int result = 0;
-
-        try (Connection conn = ConnectDb.connect(url)){
-            Statement stmt = conn.createStatement();
-            ResultSet sum = stmt.executeQuery(sql);
-
-            result = sum.getInt(1);
-
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-
-        return result;
-    }
 
     /**
      * Reads the all values for the keyboards Table.
@@ -41,7 +20,7 @@ public class ReadDb {
      * @return An ObservableList<Keyboards> with all the Keyboards from the Db
      */
     public static ObservableList<Keyboard> selectAllValuesKeyboard(String sqlStatements){
-        try (Connection conn = ConnectDb.connect(WriteDb.url);
+        try (Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStatements)){
                 ObservableList<Keyboard> keyboardList = FXCollections.observableArrayList();
@@ -73,7 +52,7 @@ public class ReadDb {
     public static ArrayList<TotalToday> selectAllValuesTotalToday(String sqlStmt){
         ArrayList<TotalToday> keyboardEntrance = new ArrayList<>();
 
-        try (Connection conn = ConnectDb.connect(WriteDb.url);
+        try (Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStmt)){
 
@@ -102,7 +81,7 @@ public class ReadDb {
     public static ArrayList<Heatmap> selectAllValueHeatmapTable(String sqlStmt){
         ArrayList<Heatmap> heatmapValues = new ArrayList<>();
 
-        try (Connection conn = ConnectDb.connect(WriteDb.url);
+        try (Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStmt)){
 
@@ -128,7 +107,7 @@ public class ReadDb {
      * @return The Total Keystrokes since the specific Date.
      */
     public static int sumDateSpecificKeyStrokes(String sqlStmt){
-        try(Connection conn = ConnectDb.connect(WriteDb.url);
+        try(Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStmt)){
             return rs.getInt(1);
@@ -146,7 +125,7 @@ public class ReadDb {
     public static ObservableList<Component> getAllValuesComponents(String sqlStmt){
         ObservableList<Component> components = FXCollections.observableArrayList();
 
-        try(Connection conn = ConnectDb.connect(WriteDb.url);
+        try(Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStmt)){
 

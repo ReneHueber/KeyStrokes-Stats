@@ -8,7 +8,7 @@ import java.awt.*;
 import java.net.URL;
 
 public class SystemTrayIcon {
-    private Stage stage;
+    private final Stage stage;
 
     public SystemTrayIcon(Stage stage){
         this.stage = stage;

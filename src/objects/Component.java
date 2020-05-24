@@ -2,16 +2,16 @@ package objects;
 
 public class Component {
 
-    private int keyboardId;
-    private String componentType;
-    private String componentName;
-    private String componentBrand;
-    private float keyPressure;
-    private int keyTravel;
+    private final int keyboardId;
+    private final String componentType;
+    private final String componentName;
+    private final String componentBrand;
+    private final float keyPressure;
+    private final int keyTravel;
     private String addedDate;
     private String removedDate;
-    private int keyStrokes;
-    private boolean isActive;
+    private final int keyStrokes;
+    private final boolean isActive;
 
     // TODO get the keyStrokes, update the keystrokes in the table
     public Component(int keyboardId, String componentType, String componentName,

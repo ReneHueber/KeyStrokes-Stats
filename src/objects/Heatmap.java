@@ -3,10 +3,10 @@ package objects;
 import java.time.LocalDate;
 
 public class Heatmap {
-    private int id;
-    private LocalDate date;
-    private String key;
-    private int timesPressed;
+    private final int id;
+    private final LocalDate date;
+    private final String key;
+    private final int timesPressed;
 
     public Heatmap(int id, LocalDate date, String key, int timesPressed) {
         this.id = id;

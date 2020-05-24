@@ -17,10 +17,9 @@ import java.util.TimerTask;
  * Update the Database every 30 Seconds.
  */
 public class DbUpdateSchedule {
-    private KeyLogger keyLogger;
-    private KeyLogData keyLogData;
+    private final KeyLogger keyLogger;
 
-    private int keyboardId;
+    private final int keyboardId;
     private int oldTotal;
     private float oldTimePressed;
 
@@ -43,9 +42,6 @@ public class DbUpdateSchedule {
             @Override
             public void run() {
                 updateDb();
-                /*
-                for (Map.Entry<String, Integer> entry : keyValues.entrySet())
-                    System.out.println(entry.getKey() + ": " + entry.getValue()); */
             }
         };
 
@@ -58,11 +54,10 @@ public class DbUpdateSchedule {
     
     private void updateDb(){
         // get's the values for the key logger
-        keyLogData = keyLogger.getKeyLogData();
+        KeyLogData keyLogData = keyLogger.getKeyLogData();
         Map<String, Integer> keyValues = keyLogData.getKeyValues();
         float timePressed = keyLogData.getKeyPressedTime();
         int keyStrokes = keyLogData.getKeyStrokes();
-        LocalDate createdDate = keyLogData.getDate();
         LocalDate currentDate = LocalDate.now();
 
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);

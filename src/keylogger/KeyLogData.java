@@ -8,7 +8,7 @@ import java.util.Map;
 public class KeyLogData {
     private int keyStrokes = 0;
     private float keyPressedTime = 0.0f;
-    private LocalDate date;
+    private final LocalDate date;
     private Map<String, Integer> keyValues = new HashMap<>();
     // special key Codes that are not working with the build in function
     private final Map<Integer, String> specialKeyCodes =  Map.ofEntries(

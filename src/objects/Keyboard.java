@@ -7,14 +7,14 @@ public class Keyboard {
     private final Image standardImage = new Image(getClass().getResource("../images/plank.png").toExternalForm());
 
     private Image keyboardImage;
-    private String keyboardName;
-    private String keyboardType;
-    private int totalKeyStrokes;
+    private final String keyboardName;
+    private final String keyboardType;
+    private final int totalKeyStrokes;
     private float totalTimeKeyPressed;
     private String lastUsed;
     private String inUseSince;
-    private String layout;
-    private int id;
+    private final String layout;
+    private final int id;
 
     /**
      * Initialize the Object with Values.
