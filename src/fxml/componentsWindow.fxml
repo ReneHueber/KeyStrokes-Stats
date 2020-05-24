@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -11,33 +12,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerComponentWindow">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerComponentWindow">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="226.0" layoutY="89.0" prefHeight="500.0" prefWidth="600.0" spacing="12.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Label fx:id="keyboardName" text="Name" textFill="#3d3d3d">
                <VBox.margin>
-                  <Insets bottom="20.0" left="15.0" top="25.0" />
+                  <Insets bottom="20.0" left="15.0" top="15.0" />
                </VBox.margin>
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
             </Label>
-            <HBox alignment="TOP_CENTER" spacing="230.0">
+            <HBox>
                <children>
                   <Label text="Type" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="keyboardType" text="Label" textFill="#3d3d3d">
+                  <Label fx:id="keyboardType" alignment="CENTER_RIGHT" contentDisplay="RIGHT" minWidth="250.0" text="Label" textFill="#3d3d3d">
                      <HBox.margin>
-                        <Insets left="47.0" />
+                        <Insets left="94.0" />
                      </HBox.margin>
                   </Label>
                </children>
                <padding>
-                  <Insets left="15.0" />
+                  <Insets left="120.0" />
                </padding>
             </HBox>
             <Separator maxWidth="400.0" prefWidth="400.0">
@@ -45,17 +46,20 @@
                   <Insets left="20.0" />
                </VBox.margin>
             </Separator>
-            <HBox alignment="TOP_CENTER" spacing="230.0">
+            <HBox>
                <children>
                   <Label text="Key Strokes" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="keyStrokes" text="Label" textFill="#3d3d3d" />
+                  <Label fx:id="keyStrokes" alignment="CENTER_RIGHT" contentDisplay="RIGHT" minWidth="250.0" text="Label" textFill="#3d3d3d">
+                     <HBox.margin>
+                        <Insets left="40.0" />
+                     </HBox.margin></Label>
                </children>
                <padding>
-                  <Insets left="15.0" />
+                  <Insets left="120.0" />
                </padding>
             </HBox>
             <Separator maxWidth="400.0" prefWidth="400.0">
@@ -63,21 +67,21 @@
                   <Insets left="20.0" />
                </VBox.margin>
             </Separator>
-            <HBox alignment="TOP_CENTER" spacing="230.0">
+            <HBox>
                <children>
                   <Label text="Key Pressed" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <Label fx:id="keyPressedTime" text="Label" textFill="#3d3d3d">
+                  <Label fx:id="keyPressedTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" minWidth="250.0" text="Label" textFill="#3d3d3d">
                      <HBox.margin>
-                        <Insets left="-1.0" />
+                        <Insets left="40.0" />
                      </HBox.margin>
                   </Label>
                </children>
                <padding>
-                  <Insets left="15.0" />
+                  <Insets left="120.0" />
                </padding>
             </HBox>
             <Separator maxWidth="400.0" prefWidth="400.0">
@@ -89,26 +93,42 @@
                <children>
                   <Label text="Components" textFill="#3d3d3d">
                      <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="15.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="25.0">
+               <children>
+                  <Label text="Filter" textFill="#3d3d3d">
+                     <font>
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Label>
+                  <ComboBox fx:id="componentFilterCB" prefWidth="200.0" stylesheets="@../css/style.css" />
                   <Button fx:id="addComponentsBtn" alignment="CENTER_RIGHT" mnemonicParsing="false" stylesheets="@../css/style.css" text="Add Component" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
-                     </font></Button>
+                     </font>
+                     <HBox.margin>
+                        <Insets left="100.0" />
+                     </HBox.margin></Button>
                </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
             </HBox>
-            <TableView fx:id="componentTV" prefHeight="200.0" prefWidth="200.0">
+            <TableView fx:id="componentTV" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/style.css">
               <columns>
-                <TableColumn fx:id="typeColumn" prefWidth="88.0" text="Type" />
-                <TableColumn fx:id="nameColumn" prefWidth="85.0" text="Name" />
-                  <TableColumn fx:id="brandColumn" prefWidth="77.0" text="Brand" />
-                  <TableColumn fx:id="addedColumn" prefWidth="124.0" text="Added" />
-                  <TableColumn fx:id="removedColumn" prefWidth="122.0" text="Removed" />
-                  <TableColumn fx:id="keyStrokesColumn" prefWidth="102.0" text="Key Strokes" />
+                <TableColumn fx:id="typeColumn" editable="false" prefWidth="88.0" resizable="false" sortable="false" text="Type" />
+                <TableColumn fx:id="nameColumn" editable="false" prefWidth="85.0" resizable="false" sortable="false" text="Name" />
+                  <TableColumn fx:id="brandColumn" editable="false" prefWidth="77.0" resizable="false" sortable="false" text="Brand" />
+                  <TableColumn fx:id="addedColumn" editable="false" prefWidth="124.0" resizable="false" sortable="false" text="Added" />
+                  <TableColumn fx:id="removedColumn" editable="false" prefWidth="122.0" resizable="false" sortable="false" text="Removed" />
+                  <TableColumn fx:id="keyStrokesColumn" editable="false" prefWidth="102.0" resizable="false" sortable="false" text="Key Strokes" />
               </columns>
             </TableView>
          </children>

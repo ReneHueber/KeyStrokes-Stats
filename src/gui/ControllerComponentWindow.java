@@ -1,6 +1,7 @@
 package gui;
 
 import database.ReadDb;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -12,6 +13,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class ControllerComponentWindow {
+
+    private final ObservableList<String> componentFilterOptionsList = FXCollections.observableArrayList(
+            "Active Components",
+            "Removed Components",
+            "Active & Removed"
+    );
 
     private Keyboard selectedKeyboard;
 
@@ -26,6 +33,9 @@ public class ControllerComponentWindow {
 
     @FXML
     private Button addComponentsBtn;
+
+    @FXML
+    private ComboBox<String> componentFilterCB;
 
     @FXML
     private TableView<Component> componentTV;
@@ -51,6 +61,8 @@ public class ControllerComponentWindow {
             controller.setSelectedKeyboard(selectedKeyboard);
         });
         setupTableView();
+        componentFilterCB.setItems(componentFilterOptionsList);
+        componentFilterCB.setValue(componentFilterOptionsList.get(0));
     }
 
     /**

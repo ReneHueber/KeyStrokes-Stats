@@ -172,8 +172,11 @@ public class ControllerAddComponentWindow {
 
         // check if the input is correct
         keyPressure.setOnKeyReleased(keyEvent -> {
+            // because the field is not necessary
             if (!keyPressure.getText().isEmpty())
-                checkNumberInput(keyPressure, pressureError);
+                checkNumberInput(keyPressure, pressureError, false);
+            else
+                hideInputError(pressureError);
         });
 
         // clears the error for the text field and, checks the other necessary textFields
@@ -186,8 +189,11 @@ public class ControllerAddComponentWindow {
 
         // check if the input is correct
         keyTravel.setOnKeyReleased(keyEvent -> {
+            // because the filed is not necessary
             if (!keyTravel.getText().isEmpty())
-                checkNumberInput(keyTravel, travelError);
+                checkNumberInput(keyTravel, travelError, true);
+            else
+                hideInputError(travelError);
         });
 
         // closes the stage if the vales are correct and saved to the db
@@ -335,13 +341,22 @@ public class ControllerAddComponentWindow {
      * @param inputLabel Checked TextField
      * @param errorLabel Label for the Error massage
      */
-    private void checkNumberInput(TextField inputLabel, Label errorLabel){
+    private void checkNumberInput(TextField inputLabel, Label errorLabel, boolean isInt){
         try{
-            Integer.parseInt(inputLabel.getText());
+            if (isInt)
+                Integer.parseInt(inputLabel.getText());
+            else
+                Float.parseFloat(inputLabel.getText());
+
             hideInputError(errorLabel);
+
         } catch (NumberFormatException e){
             System.out.println(e.getMessage());
-            displayInputError(errorLabel, "Enter a Number");
+
+           if (isInt && !inputLabel.getText().isEmpty() && inputLabel.getText().contains("."))
+                displayInputError(errorLabel, "Only full Numbers");
+           else if (!inputLabel.getText().isEmpty())
+                displayInputError(errorLabel, "Enter a Number");
         }
     }
 

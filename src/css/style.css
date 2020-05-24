@@ -149,3 +149,14 @@
     -fx-border-color: #c4c4c4;
     -fx-border-radius: 3;
 }
+
+/* no focus ring at table view */
+.table-view:focused {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5, 4, 3;
+}
+
+.table-view .table-column {
+    -fx-alignment: CENTER;
+}
