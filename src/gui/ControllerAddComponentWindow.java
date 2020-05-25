@@ -8,10 +8,12 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import objects.Component;
 import objects.Keyboard;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class ControllerAddComponentWindow {
 
@@ -35,6 +37,8 @@ public class ControllerAddComponentWindow {
 
     @FXML
     private ComboBox<String> componentType;
+    @FXML
+    private Label typeError;
 
     @FXML
     private TextField componentName;
@@ -114,17 +118,32 @@ public class ControllerAddComponentWindow {
 
         // disable or enable the key pressure and key travel inputs
         componentType.setOnAction(event -> {
-            if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
-                enableAllOtherInputs();
+            String selectedOption = componentType.getSelectionModel().getSelectedItem();
+
+            // component already exists and is not key switch or other
+            if (getComponentTypes().contains(selectedOption) && (!selectedOption.equals("Key Switches") && !selectedOption.equals("Other"))){
+                displayInputError(typeError, "This component already exists!");
+                disableAllInputs();
+                saveBtn.setDisable(true);
             }
-            else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
-                enableAllOtherInputs();
+            else{
+                hideInputError(typeError);
+                saveBtn.setDisable(false);
+                if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
+                    enableAllOtherInputs();
+                }
+                else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
+                    enableAllOtherInputs();
+                }
+                else {
+                    disableTextField(keyPressure);
+                    disableTextField(keyTravel);
+                    disableTextField(componentName);
+                    componentBrand.setDisable(false);
+                    addedDate.setDisable(false);
+                }
             }
-            else {
-                disableTextField(keyPressure);
-                disableTextField(keyTravel);
-                disableTextField(componentName);
-            }
+
             // reset's all the error labels and inputs if the component type is changed
             Label[] errorLabels = {nameError, brandError, pressureError, travelError, dateError};
             TextField[] textFields = {componentName, componentBrand, keyPressure, keyTravel};
@@ -155,7 +174,7 @@ public class ControllerAddComponentWindow {
         // clears the error for the text field and, checks the other necessary textFields
         componentBrand.setOnMouseClicked(mouseEvent -> {
             hideInputError(brandError);
-            checkNameInput(componentName, nameError, "Enter a Name");
+            checkNameInput(componentName, nameError);
             checkDatePicker();
         });
 
@@ -166,7 +185,7 @@ public class ControllerAddComponentWindow {
         keyPressure.setOnMouseClicked(mouseEvent -> {
             hideInputError(pressureError);
             checkTextInput(componentBrand, brandError, "Enter a Brand");
-            checkNameInput(componentName, nameError, "Enter a Name");
+            checkNameInput(componentName, nameError);
             checkDatePicker();
         });
 
@@ -183,7 +202,7 @@ public class ControllerAddComponentWindow {
         keyTravel.setOnMouseClicked(mouseEvent -> {
             hideInputError(travelError);
             checkTextInput(componentBrand, brandError, "Enter a Brand");
-            checkNameInput(componentName, nameError, "Enter a Name");
+            checkNameInput(componentName, nameError);
             checkDatePicker();
         });
 
@@ -231,6 +250,19 @@ public class ControllerAddComponentWindow {
         keyPressure.setDisable(false);
         keyTravel.setDisable(false);
         componentName.setDisable(false);
+        componentBrand.setDisable(false);
+        addedDate.setDisable(false);
+    }
+
+    /**
+     * Disables all inputs and the date picker, if a component already exists.
+     */
+    private void disableAllInputs(){
+        componentName.setDisable(true);
+        componentBrand.setDisable(true);
+        keyPressure.setDisable(true);
+        keyTravel.setDisable(true);
+        addedDate.setDisable(true);
     }
 
     /**
@@ -238,11 +270,10 @@ public class ControllerAddComponentWindow {
      * Only checks the Input if it is not disabled.
      * @param input Input TextField
      * @param error Error Label
-     * @param errorMassage Error Massage to display
      */
-    private void checkNameInput(TextField input, Label error, String errorMassage){
+    private void checkNameInput(TextField input, Label error){
         if (!input.isDisabled()){
-            checkTextInput(input, error, errorMassage);
+            checkTextInput(input, error, "Enter a Name");
         }
     }
 
@@ -307,6 +338,19 @@ public class ControllerAddComponentWindow {
         String selectedDate = chooseDateDatePicker.getValue().toString();
         String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
         return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
+    }
+
+    private ArrayList<String> getComponentTypes(){
+        ArrayList<String> componentTypes = new ArrayList<>();
+        // get's all the components objects
+        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+                "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
+        ObservableList<Component> components = ReadDb.selectAllValuesComponents(sqlStmt);
+
+        for(Component component : components)
+            componentTypes.add(component.getComponentType());
+
+        return componentTypes;
     }
 
     /**
