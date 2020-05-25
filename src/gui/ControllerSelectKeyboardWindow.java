@@ -90,7 +90,10 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
             controller.setInfoLabels();
-            controller.setValuesTableView();
+            // get's all the Active components what is default
+            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+                    "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId() + " AND isActive = true";
+            controller.setValuesTableView(sqlStmt);
         });
 
         addComponents.setOnAction(event -> {

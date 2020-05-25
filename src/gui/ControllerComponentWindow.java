@@ -60,6 +60,22 @@ public class ControllerComponentWindow {
             ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
         });
+
+        componentFilterCB.setOnAction(event -> {
+            String selectedOption = componentFilterCB.getSelectionModel().getSelectedItem();
+            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+                    "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
+            // adds an argument to the sql string
+            switch (selectedOption){
+                case "Active Components": sqlStmt += " AND isActive = true";
+                                        break;
+                case "Removed Components": sqlStmt += " AND isActive = false";
+                                        break;
+            }
+            setValuesTableView(sqlStmt);
+        });
+
+
         setupTableView();
         componentFilterCB.setItems(componentFilterOptionsList);
         componentFilterCB.setValue(componentFilterOptionsList.get(0));
@@ -87,11 +103,9 @@ public class ControllerComponentWindow {
 
     /**
      * Set the values for the Table view, from the controller that opens the window.
+     * Default only Active components.
      */
-    protected void setValuesTableView(){
-        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
-                "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
-
+    protected void setValuesTableView(String sqlStmt){
         ObservableList<Component> components = ReadDb.selectAllValuesComponents(sqlStmt);
         formatDates(components);
         componentTV.setItems(components);
