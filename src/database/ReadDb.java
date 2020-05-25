@@ -122,7 +122,7 @@ public class ReadDb {
      * @param sqlStmt What values should be read.
      * @return An ObservableList<Component> with all the Component values form the Db.
      */
-    public static ObservableList<Component> getAllValuesComponents(String sqlStmt){
+    public static ObservableList<Component> selectAllValuesComponents(String sqlStmt){
         ObservableList<Component> components = FXCollections.observableArrayList();
 
         try(Connection conn = ConnectDb.connect(url);
@@ -130,6 +130,7 @@ public class ReadDb {
             ResultSet rs = stmt.executeQuery(sqlStmt)){
 
             while (rs.next()){
+                int id = rs.getInt("id");
                 int keyboardId = rs.getInt("keyboardId");
                 String componentType = rs.getString("componentType");
                 String componentName = rs.getString("componentName");
@@ -140,7 +141,7 @@ public class ReadDb {
                 String addDate = rs.getString("addDate");
                 boolean isActive = rs.getBoolean("isActive");
 
-                components.add(new Component(keyboardId, componentType, componentName, componentBrand,
+                components.add(new Component(id, keyboardId, componentType, componentName, componentBrand,
                                 keyPressure, keyTravel, addDate, "", keyStrokes, isActive));
             }
         } catch (SQLException e){

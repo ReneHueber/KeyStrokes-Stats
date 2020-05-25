@@ -3,6 +3,7 @@ package keylogger;
 import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.ObservableList;
+import objects.Component;
 import objects.Heatmap;
 import objects.Keyboard;
 import objects.TotalToday;
@@ -22,6 +23,11 @@ public class DbUpdateSchedule {
     private final int keyboardId;
     private int oldTotal;
     private float oldTimePressed;
+    private boolean createdThisRun = false;
+    private boolean firstUpdate;
+
+    private int componentsKeyStrokesStart = 0;
+    private float componentTimeStart = 0.0f;
 
     private Timer t;
 
@@ -30,6 +36,7 @@ public class DbUpdateSchedule {
         this.keyboardId = keyboardId;
 
         getTotalValuesKeyboard();
+        firstUpdate = true;
     }
 
     /**
@@ -53,6 +60,7 @@ public class DbUpdateSchedule {
     }
     
     private void updateDb(){
+        // Key strokes and time pressed doesn't get reset, the are summed until the keylogger stops
         // get's the values for the key logger
         KeyLogData keyLogData = keyLogger.getKeyLogData();
         Map<String, Integer> keyValues = keyLogData.getKeyValues();
@@ -63,8 +71,10 @@ public class DbUpdateSchedule {
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
         updateKeyboardsTable(currentDate, timePressed, keyStrokes);
         updateHeatmapTable(currentDate, keyValues);
+        updateKeyStrokesComponents();
 
         System.out.println("update db");
+        firstUpdate = false;
     }
 
     /**
@@ -108,8 +118,19 @@ public class DbUpdateSchedule {
         if (totalKeyboardValues.size() == 0) {
             String sqlSetStmt = "INSERT INTO totalToday(keyboardId, date, keyStrokes, timePressed) VALUES(?,?,?,?)";
             WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyboardId), date, Integer.toString(keyStrokes), Float.toString(timePressed));
+            createdThisRun = true;
         }
         else {
+            // at the first db update the value of the existing entrance is saved, because this has to be added to the current tracked key strokes
+            if (firstUpdate){
+                componentsKeyStrokesStart = totalKeyboardValues.get(0).getKeyStrokes();
+                componentTimeStart = totalKeyboardValues.get(0).getTimePressed();
+            }
+            // but only if this entrance is not created in the same period, because in this case the are no keystrokes tracked before.
+            if (!createdThisRun){
+                keyStrokes += componentsKeyStrokesStart;
+                timePressed += componentTimeStart;
+            }
             String sqlSetStmt = "UPDATE totalToday SET keyStrokes = ?, timePressed = ? WHERE keyboardId = " + keyboardId + " AND date = '" + date + "'";
             WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyStrokes), Float.toString(timePressed));
         }
@@ -149,5 +170,27 @@ public class DbUpdateSchedule {
         }
 
         keyLogger.getKeyLogData().clearKeyValues();
+    }
+
+    /**
+     * Updates the KeyStrokes for the Components table.
+     * Adds all the relevant values of the totalToday Table.
+     */
+    private void updateKeyStrokesComponents(){
+        // TODO date add hour, because at the same date all keystrokes are added (add component at evening)
+        // get's all the active components of the selected keyboard
+        String selectSql = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+                "isActive FROM components WHERE keyboardId = " + keyboardId + " AND isActive = True";
+        ObservableList<Component> components = ReadDb.selectAllValuesComponents(selectSql);
+
+        // get's the updated keyStrokes for the single components and updates them in the components table
+        for(Component component : components){
+            String sumSql = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + component.getAddedDate() + "' AND keyboardId = " + keyboardId;
+            int keyStrokes = ReadDb.sumDateSpecificKeyStrokes(sumSql);
+            System.out.println(keyStrokes);
+
+            String updateSql = "UPDATE components SET keyStrokes = ? WHERE id = " + component.getId();
+            WriteDb.executeSqlStmt(updateSql, Integer.toString(keyStrokes));
+        }
     }
 }

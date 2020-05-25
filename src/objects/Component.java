@@ -2,6 +2,7 @@ package objects;
 
 public class Component {
 
+    private final int id;
     private final int keyboardId;
     private final String componentType;
     private final String componentName;
@@ -14,9 +15,10 @@ public class Component {
     private final boolean isActive;
 
     // TODO get the keyStrokes, update the keystrokes in the table
-    public Component(int keyboardId, String componentType, String componentName,
+    public Component(int id, int keyboardId, String componentType, String componentName,
                      String componentBrand, float keyPressure, int keyTravel,
                      String addedDate, String removedDate, int keyStrokes, boolean isActive) {
+        this.id = id;
         this.keyboardId = keyboardId;
         this.componentType = componentType;
         this.componentName = componentName;
@@ -27,6 +29,10 @@ public class Component {
         this.removedDate = removedDate;
         this.keyStrokes = keyStrokes;
         this.isActive = isActive;
+    }
+
+    public int getId(){
+        return id;
     }
 
     public int getKeyboardId() {
@@ -65,7 +71,7 @@ public class Component {
         return keyStrokes;
     }
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 

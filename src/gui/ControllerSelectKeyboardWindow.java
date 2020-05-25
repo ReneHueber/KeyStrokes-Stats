@@ -107,6 +107,11 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             controller.setKeyboardTableValue(selectedKeyboard);
         });
 
+        about.setOnAction(event -> {
+            String sql = "SELECT SUM(keyStrokes) FROM totalToday";
+            System.out.println(ReadDb.sumDateSpecificKeyStrokes(sql));
+        });
+
         // start the key logger if a keyboard is selected
         start.setOnAction(actionEvent -> {
             if (selectedKeyboard != null){

@@ -261,6 +261,7 @@ public class ControllerAddComponentWindow {
      * @return If the Values are Correct or not.
      */
     private boolean checkValues(){
+        // TODO check if the component is already in use, only key switches allowed
        checkTextInput(componentBrand, brandError, "Enter a Brand");
        checkDatePicker();
 
@@ -304,7 +305,7 @@ public class ControllerAddComponentWindow {
      */
     private int getDateSpecificKeyStrokes(){
         String selectedDate = chooseDateDatePicker.getValue().toString();
-        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "'";
+        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
         return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
     }
 

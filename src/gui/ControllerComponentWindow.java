@@ -89,10 +89,10 @@ public class ControllerComponentWindow {
      * Set the values for the Table view, from the controller that opens the window.
      */
     protected void setValuesTableView(){
-        String sqlStmt = "SELECT keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
                 "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
 
-        ObservableList<Component> components = ReadDb.getAllValuesComponents(sqlStmt);
+        ObservableList<Component> components = ReadDb.selectAllValuesComponents(sqlStmt);
         formatDates(components);
         componentTV.setItems(components);
     }
