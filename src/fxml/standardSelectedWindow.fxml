@@ -98,10 +98,19 @@
                         <HBox alignment="CENTER_LEFT" spacing="45.0">
                             <children>
                                 <Label text="In Use Since" textFill="#3d3d3d" />
-                                <DatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="171.0">
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="dateError" text="Label" textFill="#f22828" visible="false">
+                                 <VBox.margin>
+                                    <Insets bottom="3.0" />
+                                 </VBox.margin>
+                              </Label>
+                                      <DatePicker fx:id="datePicker" minWidth="171.0" prefHeight="26.0" prefWidth="171.0" />
+                           </children>
                            <HBox.margin>
-                              <Insets left="-5.0" />
-                           </HBox.margin></DatePicker>
+                              <Insets top="-16.0" />
+                           </HBox.margin>
+                        </VBox>
                             </children>
                             <padding>
                                 <Insets left="5.0" />

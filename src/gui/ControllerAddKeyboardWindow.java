@@ -19,12 +19,15 @@ import objects.Keyboard;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
     protected Stage parentStage;
     private ObservableList<Keyboard> allKeyboards = FXCollections.observableArrayList();
+
+    private CustomDatePicker customDatePicker;
 
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
@@ -41,6 +44,8 @@ public class ControllerAddKeyboardWindow {
 
     @FXML
     private DatePicker datePicker;
+    @FXML
+    private Label dateError;
     @FXML
     private Label confirm;
 
@@ -69,13 +74,12 @@ public class ControllerAddKeyboardWindow {
             // checks if the inputs are okay
             checkInput(name, nameError, "Enter a Keyboard Name");
             checkInput(type, typeError, "Enter a Keyboard Type");
-
-            // keyboard name and type okay
-            boolean nameOkay = !nameError.isVisible();
-            boolean typeOkay = !typeError.isVisible();
-            // name already existing
-            boolean nameExisting = checkKeyboardNameExisting(name.getText());
-            if (nameOkay && typeOkay && !nameExisting){
+            LocalDateTime dateTime = customDatePicker.getDateTime();
+            // TODO dateTime is ready, write DateTime to db or date and time separate ?
+            // TODO check who it can be sorted best.
+            // check if no error are shown
+            if (!nameError.isVisible() && !typeError.isVisible() &&
+                    checkKeyboardNameExisting(name.getText()) && !dateError.isVisible()){
                 String date = datePicker.getValue().toString();
 
                 // creates a new database entrance for the keyboard
@@ -90,7 +94,7 @@ public class ControllerAddKeyboardWindow {
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 stage.close();
             } // error is the name already exists
-            else if (nameExisting){
+            else if (checkKeyboardNameExisting(name.getText())){
                 displayInputError(nameError, "Name already exists!");
                 name.setText("");
             }
@@ -116,7 +120,8 @@ public class ControllerAddKeyboardWindow {
 
 
         // setup the appearance of the date picker
-        setupDatePicker();
+        customDatePicker = new CustomDatePicker(datePicker, dateError);
+        customDatePicker.setupDatePicker();
     }
 
     /**
@@ -155,10 +160,13 @@ public class ControllerAddKeyboardWindow {
      * Formats the Date like "dd.MM.yyyy" and set's the current Date.
      */
     private void setupDatePicker(){
+        /*
         datePicker.setConverter(datePickerConverter.getConverter());
         datePicker.setValue(LocalDate.now());
         // user can only choose real dates
         datePicker.setEditable(false);
+
+         */
     }
 
     /**
@@ -166,7 +174,7 @@ public class ControllerAddKeyboardWindow {
      * @param errorLabel Wished error Label
      * @param errorMassage Wished error Massage
      */
-    private void displayInputError(Label errorLabel, String errorMassage){
+    protected static void displayInputError(Label errorLabel, String errorMassage){
         errorLabel.setVisible(true);
         errorLabel.setText(errorMassage);
     }
@@ -175,7 +183,7 @@ public class ControllerAddKeyboardWindow {
      * Clears and hides the error Label.
      * @param errorLabel Wished error Label
      */
-    private void hideInputError(Label errorLabel){
+    protected static void hideInputError(Label errorLabel){
         errorLabel.setText("");
         errorLabel.setVisible(false);
     }
