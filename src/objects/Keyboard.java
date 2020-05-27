@@ -2,10 +2,6 @@ package objects;
 
 import javafx.scene.image.Image;
 
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 public class Keyboard {
     private final Image splitImage = new Image(getClass().getResource("../images/ergodox.png").toExternalForm());
     private final Image standardImage = new Image(getClass().getResource("../images/plank.png").toExternalForm());
@@ -14,9 +10,9 @@ public class Keyboard {
     private final String keyboardName;
     private final String keyboardType;
     private final int totalKeyStrokes;
-    private final float totalTimeKeyPressed;
-    private final String lastUsed;
-    private final String inUseSince;
+    private float totalTimeKeyPressed;
+    private String lastUsed;
+    private String inUseSince;
     private final String layout;
     private final int id;
 
@@ -63,31 +59,28 @@ public class Keyboard {
         return totalTimeKeyPressed;
     }
 
-    public float getRoundedTotalTimeKeyPressed(){
-        return roundFloat(totalTimeKeyPressed);
-    }
-
     public String getLastUsed() {
         return lastUsed;
-    }
-
-    public String getFormattedLastUsed(){
-        if (lastUsed.equals("0000-00-00"))
-            return "never";
-        else
-            return formatStringDate(lastUsed);
     }
 
     public String getInUseSince() {
         return inUseSince;
     }
 
-    public String getFormattedInUseSince(){
-        return formatStringDate(inUseSince);
-    }
-
     public int getKeyboardId(){
         return id;
+    }
+
+    public void setLastUsed(String lastUsed){
+        this.lastUsed = lastUsed;
+    }
+
+    public void setInUseSince(String inUseSince){
+        this.inUseSince = inUseSince;
+    }
+
+    public void setTotalTimeKeyPressed(float timeKeyPressed) {
+        this.totalTimeKeyPressed = timeKeyPressed;
     }
 
     /**
@@ -98,26 +91,5 @@ public class Keyboard {
             keyboardImage = splitImage;
         else
             keyboardImage = standardImage;
-    }
-
-    /**
-     * Get's a string date and formats it, returns it as a String.
-     * @param date Date as String
-     * @return Formatted Date as String
-     */
-    private String formatStringDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return formatter.format(LocalDate.parse(date));
-    }
-
-    /**
-     * Rounds a Float number to two digits.
-     * @param number Number to Round
-     * @return Rounded Number
-     */
-    private float roundFloat(float number){
-        DecimalFormat df = new DecimalFormat("#.00");
-        String roundNumber = df.format(number);
-        return Float.parseFloat(roundNumber.replace(",", "."));
     }
 }
