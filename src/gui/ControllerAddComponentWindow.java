@@ -13,7 +13,6 @@ import objects.Keyboard;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ControllerAddComponentWindow {
@@ -34,9 +33,7 @@ public class ControllerAddComponentWindow {
     private Keyboard selectedKeyboard;
 
     // today is the default value
-    private String addDate = LocalDateTime.now().toString();
-
-    private CustomDatePicker customDatePicker;
+    private String addDate = LocalDate.now().toString();
 
     @FXML
     private ComboBox<String> componentType;
@@ -78,7 +75,7 @@ public class ControllerAddComponentWindow {
      * Set's values for the gui elements.
      */
     public void initialize(){
-        customDatePicker = new CustomDatePicker(chooseDateDatePicker, dateError);
+        setupDatePicker();
 
         // adds the lists to the combo boxes and sets a value
         addedDate.setItems(addedDateOptions);
@@ -117,11 +114,9 @@ public class ControllerAddComponentWindow {
         componentType.setOnAction(event -> {
             String selectedOption = componentType.getSelectionModel().getSelectedItem();
 
-            // component already exists and is not key switch or other
-            if (getComponentTypes().contains(selectedOption) && (!selectedOption.equals("Key Switches") && !selectedOption.equals("Other"))){
-                displayInputError(typeError, "This component already exists!");
-                disableAllInputs();
-                saveBtn.setDisable(true);
+            // component already exists and is not other
+            if (getComponentTypes().contains(selectedOption) && (!selectedOption.equals("Other"))){
+                disableGuiComponentExists();
             }
             else{
                 hideInputError(typeError);
@@ -212,6 +207,10 @@ public class ControllerAddComponentWindow {
                 hideInputError(travelError);
         });
 
+        chooseDateDatePicker.setOnAction(event -> {
+            hideInputError(dateError);
+        });
+
         // closes the stage if the vales are correct and saved to the db
         saveBtn.setOnAction(event -> {
             if (checkValues()){
@@ -249,15 +248,22 @@ public class ControllerAddComponentWindow {
         addedDate.setDisable(false);
     }
 
+    protected void checkComponentExisting(String componentName){
+        if (getComponentTypes().contains(componentName) && (!componentName.equals("Other")))
+            disableGuiComponentExists();
+    }
+
     /**
-     * Disables all inputs and the date picker, if a component already exists.
+     * Disables all inputs, the date picker and the save button, if a component already exists.
      */
-    private void disableAllInputs(){
+    private void disableGuiComponentExists(){
+        displayInputError(typeError, "This component already exists!");
         componentName.setDisable(true);
         componentBrand.setDisable(true);
         keyPressure.setDisable(true);
         keyTravel.setDisable(true);
         addedDate.setDisable(true);
+        saveBtn.setDisable(true);
     }
 
     /**
@@ -273,15 +279,24 @@ public class ControllerAddComponentWindow {
     }
 
     /**
+     * Formats the Date like "dd.MM.yyyy" and set's the current Date.
+     */
+    private void setupDatePicker(){
+        chooseDateDatePicker.setConverter(datePickerConverter.getConverter());
+        chooseDateDatePicker.setPromptText("dd.MM.yyyy");
+        // user can only choose real dates
+        chooseDateDatePicker.setEditable(false);
+    }
+
+    /**
      * Checks if the input vales are Correct.
      * If the are Correct the values get's saved to the db.
      * @return If the Values are Correct or not.
      */
     private boolean checkValues(){
-        // TODO check if the component is already in use, only key switches allowed
        checkTextInput(componentBrand, brandError, "Enter a Brand");
-       addDate = getDateTime();
-       System.out.println(addDate);
+       checkDatePicker();
+       addDate = getDate();
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible() && !dateError.isVisible()){
             String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
                     "keyPressure, keyTravel, keyStrokes, addDate) VALUES(?,?,?,?,?,?,?,?)";
@@ -296,13 +311,16 @@ public class ControllerAddComponentWindow {
        }
     }
 
-    private String getDateTime(){
+    private String getDate(){
         String dateOption = addedDate.getSelectionModel().getSelectedItem();
 
         switch(dateOption){
-            case "Today": return LocalDateTime.now().toString();
+            case "Today": return LocalDate.now().toString();
             case "Since Beginning": return selectedKeyboard.getInUseSince();
-            case "Choose Date": return customDatePicker.getDateTime().toString();
+            case "Choose Date": if (!chooseDateDatePicker.getEditor().getText().isEmpty())
+                                    return chooseDateDatePicker.getValue().toString();
+                                else
+                                    return null;
             default: return null;
         }
     }

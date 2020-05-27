@@ -27,8 +27,6 @@ public class ControllerAddKeyboardWindow {
     protected Stage parentStage;
     private ObservableList<Keyboard> allKeyboards = FXCollections.observableArrayList();
 
-    private CustomDatePicker customDatePicker;
-
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
 
@@ -55,6 +53,7 @@ public class ControllerAddKeyboardWindow {
      */
     public void initialize() {
         getSavedKeyboards();
+        setupDatePicker();
 
         // change the layout if the split Layout image is clicked
         splitLayoutIv.setOnMouseClicked(mouseEvent -> {
@@ -74,9 +73,6 @@ public class ControllerAddKeyboardWindow {
             // checks if the inputs are okay
             checkInput(name, nameError, "Enter a Keyboard Name");
             checkInput(type, typeError, "Enter a Keyboard Type");
-            LocalDateTime dateTime = customDatePicker.getDateTime();
-            // TODO dateTime is ready, write DateTime to db or date and time separate ?
-            // TODO check who it can be sorted best.
             // check if no error are shown
             if (!nameError.isVisible() && !typeError.isVisible() &&
                     !checkKeyboardNameExisting(name.getText()) && !dateError.isVisible()){
@@ -87,7 +83,7 @@ public class ControllerAddKeyboardWindow {
                         "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
                 WriteDb.executeSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
-                "0.0", dateTime.toString(), "0000-00-00");
+                "0.0", date, "0000-00-00");
 
                 reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved
@@ -118,9 +114,6 @@ public class ControllerAddKeyboardWindow {
 
         type.setOnKeyReleased(keyEvent -> checkInput(type, typeError, "Enter a Keyboard Type"));
 
-
-        // setup the appearance of the date picker
-        customDatePicker = new CustomDatePicker(datePicker, dateError);
     }
 
     /**
@@ -153,6 +146,16 @@ public class ControllerAddKeyboardWindow {
         } catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Formats the Date like "dd.MM.yyyy" and set's the current Date.
+     */
+    private void setupDatePicker(){
+        datePicker.setConverter(datePickerConverter.getConverter());
+        datePicker.setValue(LocalDate.now());
+        // user can only choose real dates
+        datePicker.setEditable(false);
     }
 
     /**

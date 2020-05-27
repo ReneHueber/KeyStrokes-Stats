@@ -101,6 +101,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             ProcessFxmlFiles addComponentsWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Components");
             ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentsWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
+            controller.checkComponentExisting("Key Switches");
         });
 
         overview.setOnAction(event -> {

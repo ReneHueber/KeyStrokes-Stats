@@ -59,6 +59,7 @@ public class ControllerComponentWindow {
             ProcessFxmlFiles addComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Component");
             ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
+            controller.checkComponentExisting("Key Switches");
         });
 
         componentFilterCB.setOnAction(event -> {

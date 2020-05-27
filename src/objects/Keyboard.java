@@ -65,7 +65,7 @@ public class Keyboard {
     }
 
     public float getRoundedTotalTimeKeyPressed(){
-        return roundTimePressed();
+        return roundFloat(totalTimeKeyPressed);
     }
 
     public String getLastUsed() {
@@ -115,28 +115,24 @@ public class Keyboard {
     }
 
     /**
-     * Get's a string dateTime and formats it, returns only the date as a String.
-     * @param date DateTime as String
+     * Get's a string date and formats it, returns it as a String in the format dd.MM.yyyy
+     * @param date Date as String
      * @return Formatted Date as String
      */
-    // TODO change to the new format dd.MM.yyyyThh:mm
     public static String formatStringDate(String date){
         try {
-            // Parses the String to a Local Date time
-            LocalDateTime dateTime = LocalDateTime.parse(date);
             // formats the date in the right format and returns it as a String
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            return formatter.format(LocalDate.parse(dateTime.toLocalDate().toString()));
+            return formatter.format(LocalDate.parse(date));
         } catch (Exception e){
             System.out.println(e.getMessage());
             return null;
         }
     }
 
-    // TODO format time pressed in this function
-    private float roundTimePressed(){
+    private float roundFloat(float number){
         DecimalFormat df = new DecimalFormat("#.00");
-        String roundNumber = df.format(totalTimeKeyPressed);
+        String roundNumber = df.format(number);
         return Float.parseFloat(roundNumber.replace(",", "."));
     }
 }
