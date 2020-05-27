@@ -72,7 +72,6 @@ public class Keyboard {
         return lastUsed;
     }
 
-    // TODO last used Date change to LocalDateTime
     public String getFormattedLastUsed(){
         if (lastUsed.equals("0000-00-00"))
             return "never";

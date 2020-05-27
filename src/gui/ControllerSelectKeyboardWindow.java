@@ -64,6 +64,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         keyboardsObservableList = FXCollections.observableArrayList();
     }
 
+    // TODO if the keylogger runs, no keyboard or component should be added, disable until the keylogger stops
     /**
      * Set's the Custom Items for the list view and the click Listeners.
      */

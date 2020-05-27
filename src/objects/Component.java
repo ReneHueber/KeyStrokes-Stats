@@ -14,7 +14,6 @@ public class Component {
     private final int keyStrokes;
     private final boolean isActive;
 
-
     public Component(int id, int keyboardId, String componentType, String componentName,
                      String componentBrand, float keyPressure, int keyTravel,
                      String addedDate, String removedDate, int keyStrokes, boolean isActive) {

@@ -43,8 +43,6 @@ public class ControllerAddKeyboardWindow {
     @FXML
     private DatePicker datePicker;
     @FXML
-    private Label dateError;
-    @FXML
     private Label confirm;
 
 
@@ -75,7 +73,7 @@ public class ControllerAddKeyboardWindow {
             checkInput(type, typeError, "Enter a Keyboard Type");
             // check if no error are shown
             if (!nameError.isVisible() && !typeError.isVisible() &&
-                    !checkKeyboardNameExisting(name.getText()) && !dateError.isVisible()){
+                    !checkKeyboardNameExisting(name.getText())){
                 String date = datePicker.getValue().toString();
 
                 // creates a new database entrance for the keyboard
@@ -205,9 +203,12 @@ public class ControllerAddKeyboardWindow {
      * @return True if the name exist, false if not
      */
     private boolean checkKeyboardNameExisting(String keyboardName){
-        for (Keyboard keyboard : allKeyboards){
-            if (keyboard.getKeyboardName().equals(keyboardName))
-                return true;
+        if (allKeyboards.size() != 0){
+            for (Keyboard keyboard : allKeyboards){
+                if (keyboard.getKeyboardName().equals(keyboardName))
+                    return true;
+            }
+            return false;
         }
         return false;
     }

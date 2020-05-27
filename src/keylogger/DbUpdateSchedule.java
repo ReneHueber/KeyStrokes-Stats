@@ -9,10 +9,7 @@ import objects.Keyboard;
 import objects.TotalToday;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Update the Database every 30 Seconds.
@@ -26,8 +23,10 @@ public class DbUpdateSchedule {
     private boolean createdThisRun = false;
     private boolean firstUpdate;
 
-    private int componentsKeyStrokesStart = 0;
-    private float componentTimeStart = 0.0f;
+    private int totalTodayKeyStrokesStart = 0;
+    private float totalTodayTimeStart = 0.0f;
+
+    private HashMap<Integer, Integer> componentStartValuesKeyStrokes = new HashMap<>();
 
     private Timer t;
 
@@ -71,7 +70,7 @@ public class DbUpdateSchedule {
         updateTotalTodayTable(currentDate, timePressed, keyStrokes);
         updateKeyboardsTable(currentDate, timePressed, keyStrokes);
         updateHeatmapTable(currentDate, keyValues);
-        updateKeyStrokesComponents();
+        updateKeyStrokesComponents(keyStrokes);
 
         System.out.println("update db");
         firstUpdate = false;
@@ -123,13 +122,13 @@ public class DbUpdateSchedule {
         else {
             // at the first db update the value of the existing entrance is saved, because this has to be added to the current tracked key strokes
             if (firstUpdate){
-                componentsKeyStrokesStart = totalKeyboardValues.get(0).getKeyStrokes();
-                componentTimeStart = totalKeyboardValues.get(0).getTimePressed();
+                totalTodayKeyStrokesStart = totalKeyboardValues.get(0).getKeyStrokes();
+                totalTodayTimeStart = totalKeyboardValues.get(0).getTimePressed();
             }
             // but only if this entrance is not created in the same period, because in this case the are no keystrokes tracked before.
             if (!createdThisRun){
-                keyStrokes += componentsKeyStrokesStart;
-                timePressed += componentTimeStart;
+                keyStrokes += totalTodayKeyStrokesStart;
+                timePressed += totalTodayTimeStart;
             }
             String sqlSetStmt = "UPDATE totalToday SET keyStrokes = ?, timePressed = ? WHERE keyboardId = " + keyboardId + " AND date = '" + date + "'";
             WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyStrokes), Float.toString(timePressed));
@@ -174,10 +173,9 @@ public class DbUpdateSchedule {
 
     /**
      * Updates the KeyStrokes for the Components table.
-     * Adds all the relevant values of the totalToday Table.
+     * Adds the keyStrokes that are tracked to the already saved.
      */
-    private void updateKeyStrokesComponents(){
-        // TODO date add hour, because at the same date all keystrokes are added (add component at evening)
+    private void updateKeyStrokesComponents(int passedKeyStrokes){
         // get's all the active components of the selected keyboard
         String selectSql = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
                 "isActive FROM components WHERE keyboardId = " + keyboardId + " AND isActive = True";
@@ -185,9 +183,10 @@ public class DbUpdateSchedule {
 
         // get's the updated keyStrokes for the single components and updates them in the components table
         for(Component component : components){
-            String sumSql = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + component.getAddedDate() + "' AND keyboardId = " + keyboardId;
-            int keyStrokes = ReadDb.sumDateSpecificKeyStrokes(sumSql);
-            System.out.println(keyStrokes);
+            if (firstUpdate){
+                componentStartValuesKeyStrokes.put(component.getId(), component.getKeyStrokes());
+            }
+            int keyStrokes = componentStartValuesKeyStrokes.get(component.getId()) + passedKeyStrokes;
 
             String updateSql = "UPDATE components SET keyStrokes = ? WHERE id = " + component.getId();
             WriteDb.executeSqlStmt(updateSql, Integer.toString(keyStrokes));
