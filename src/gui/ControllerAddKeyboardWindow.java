@@ -79,7 +79,7 @@ public class ControllerAddKeyboardWindow {
             // TODO check who it can be sorted best.
             // check if no error are shown
             if (!nameError.isVisible() && !typeError.isVisible() &&
-                    checkKeyboardNameExisting(name.getText()) && !dateError.isVisible()){
+                    !checkKeyboardNameExisting(name.getText()) && !dateError.isVisible()){
                 String date = datePicker.getValue().toString();
 
                 // creates a new database entrance for the keyboard
@@ -87,7 +87,7 @@ public class ControllerAddKeyboardWindow {
                         "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
                 WriteDb.executeSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
-                "0.0", date, "0000-00-00");
+                "0.0", dateTime.toString(), "0000-00-00");
 
                 reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved
@@ -121,7 +121,6 @@ public class ControllerAddKeyboardWindow {
 
         // setup the appearance of the date picker
         customDatePicker = new CustomDatePicker(datePicker, dateError);
-        customDatePicker.setupDatePicker();
     }
 
     /**
@@ -154,19 +153,6 @@ public class ControllerAddKeyboardWindow {
         } catch (IOException e){
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Formats the Date like "dd.MM.yyyy" and set's the current Date.
-     */
-    private void setupDatePicker(){
-        /*
-        datePicker.setConverter(datePickerConverter.getConverter());
-        datePicker.setValue(LocalDate.now());
-        // user can only choose real dates
-        datePicker.setEditable(false);
-
-         */
     }
 
     /**

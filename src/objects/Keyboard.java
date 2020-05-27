@@ -2,6 +2,11 @@ package objects;
 
 import javafx.scene.image.Image;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Keyboard {
     private final Image splitImage = new Image(getClass().getResource("../images/ergodox.png").toExternalForm());
     private final Image standardImage = new Image(getClass().getResource("../images/plank.png").toExternalForm());
@@ -59,12 +64,28 @@ public class Keyboard {
         return totalTimeKeyPressed;
     }
 
+    public float getRoundedTotalTimeKeyPressed(){
+        return roundTimePressed();
+    }
+
     public String getLastUsed() {
         return lastUsed;
     }
 
+    // TODO last used Date change to LocalDateTime
+    public String getFormattedLastUsed(){
+        if (lastUsed.equals("0000-00-00"))
+            return "never";
+        else
+            return formatStringDate(lastUsed);
+    }
+
     public String getInUseSince() {
         return inUseSince;
+    }
+
+    public String getFormattedInUseSince(){
+        return formatStringDate(inUseSince);
     }
 
     public int getKeyboardId(){
@@ -91,5 +112,31 @@ public class Keyboard {
             keyboardImage = splitImage;
         else
             keyboardImage = standardImage;
+    }
+
+    /**
+     * Get's a string dateTime and formats it, returns only the date as a String.
+     * @param date DateTime as String
+     * @return Formatted Date as String
+     */
+    // TODO change to the new format dd.MM.yyyyThh:mm
+    public static String formatStringDate(String date){
+        try {
+            // Parses the String to a Local Date time
+            LocalDateTime dateTime = LocalDateTime.parse(date);
+            // formats the date in the right format and returns it as a String
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return formatter.format(LocalDate.parse(dateTime.toLocalDate().toString()));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    // TODO format time pressed in this function
+    private float roundTimePressed(){
+        DecimalFormat df = new DecimalFormat("#.00");
+        String roundNumber = df.format(totalTimeKeyPressed);
+        return Float.parseFloat(roundNumber.replace(",", "."));
     }
 }

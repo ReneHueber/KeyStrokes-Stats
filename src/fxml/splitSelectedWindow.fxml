@@ -80,8 +80,23 @@
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="40.0">
                      <children>
-                        <Label style="-fx-text-fill: #fbfbfb;" text="In Use Since" />
-                        <DatePicker fx:id="datePicker" prefHeight="26.0" prefWidth="171.0" />
+                        <Label style="-fx-text-fill: #fbfbfb;" text="In Use Since">
+                           <HBox.margin>
+                              <Insets top="2.0" />
+                           </HBox.margin></Label>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label fx:id="dateError" text="Label" textFill="#f22828" visible="false">
+                                 <VBox.margin>
+                                    <Insets bottom="3.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <DatePicker fx:id="datePicker" minWidth="171.0" prefHeight="26.0" prefWidth="171.0" />
+                           </children>
+                           <HBox.margin>
+                              <Insets top="-16.0" />
+                           </HBox.margin>
+                        </VBox>
                      </children>
                      <padding>
                         <Insets left="10.0" />

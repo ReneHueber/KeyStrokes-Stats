@@ -12,6 +12,7 @@ import objects.Component;
 import objects.Keyboard;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -33,7 +34,9 @@ public class ControllerAddComponentWindow {
     private Keyboard selectedKeyboard;
 
     // today is the default value
-    private String addDate = LocalDate.now().toString();
+    private String addDate = LocalDateTime.now().toString();
+
+    private CustomDatePicker customDatePicker;
 
     @FXML
     private ComboBox<String> componentType;
@@ -75,6 +78,8 @@ public class ControllerAddComponentWindow {
      * Set's values for the gui elements.
      */
     public void initialize(){
+        customDatePicker = new CustomDatePicker(chooseDateDatePicker, dateError);
+
         // adds the lists to the combo boxes and sets a value
         addedDate.setItems(addedDateOptions);
         addedDate.setValue(addedDateOptions.get(0));
@@ -99,21 +104,13 @@ public class ControllerAddComponentWindow {
                 chooseDateDatePicker.getEditor().clear();
 
                 if (option.equals("Today")){
-                    addDate = LocalDate.now().toString();
+                    addDate = LocalDateTime.now().toString();
                 }
                 else if (option.equals("Since Beginning")){
                     // formats the date given by the object
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                    LocalDate date = LocalDate.parse(selectedKeyboard.getInUseSince(), formatter);
-                    addDate = date.toString();
+                    addDate = Keyboard.formatStringDate(selectedKeyboard.getInUseSince());
                 }
             }
-        });
-
-        // if a date at the datePicker is selected
-        chooseDateDatePicker.setOnAction(event -> {
-            hideInputError(dateError);
-           addDate = chooseDateDatePicker.getValue().toString();
         });
 
         // disable or enable the key pressure and key travel inputs
@@ -222,8 +219,6 @@ public class ControllerAddComponentWindow {
                 stage.close();
             }
         });
-
-        setUpDatePicker();
     }
 
     /**
@@ -278,15 +273,6 @@ public class ControllerAddComponentWindow {
     }
 
     /**
-     * Setup the date picker
-     */
-    private void setUpDatePicker(){
-        chooseDateDatePicker.setConverter(datePickerConverter.getConverter());
-        chooseDateDatePicker.setPromptText("dd.MM.yyyy");
-        chooseDateDatePicker.setEditable(false);
-    }
-
-    /**
      * Checks if the input vales are Correct.
      * If the are Correct the values get's saved to the db.
      * @return If the Values are Correct or not.
@@ -294,9 +280,9 @@ public class ControllerAddComponentWindow {
     private boolean checkValues(){
         // TODO check if the component is already in use, only key switches allowed
        checkTextInput(componentBrand, brandError, "Enter a Brand");
-       checkDatePicker();
-
-       if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible()){
+       addDate = getDateTime();
+       System.out.println(addDate);
+       if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible() && !dateError.isVisible()){
             String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
                     "keyPressure, keyTravel, keyStrokes, addDate) VALUES(?,?,?,?,?,?,?,?)";
            WriteDb.executeSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
@@ -308,6 +294,17 @@ public class ControllerAddComponentWindow {
        else{
            return false;
        }
+    }
+
+    private String getDateTime(){
+        String dateOption = addedDate.getSelectionModel().getSelectedItem();
+
+        switch(dateOption){
+            case "Today": return LocalDateTime.now().toString();
+            case "Since Beginning": return selectedKeyboard.getInUseSince();
+            case "Choose Date": return customDatePicker.getDateTime().toString();
+            default: return null;
+        }
     }
 
     /**

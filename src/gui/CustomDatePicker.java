@@ -16,9 +16,10 @@ public class CustomDatePicker{
     public CustomDatePicker(DatePicker datePicker, Label dateError){
         this.datePicker = datePicker;
         this.dateError = dateError;
+        setupDatePicker();
     }
 
-    protected void setupDatePicker(){
+    private void setupDatePicker(){
         datePicker.setConverter(new datePickerConverter());
         datePicker.setOnKeyReleased(keyEvent -> {
             getDateTime();
@@ -26,6 +27,7 @@ public class CustomDatePicker{
         datePicker.setOnAction(event -> {
             ControllerAddKeyboardWindow.hideInputError(dateError);
         });
+        datePicker.setPromptText("dd.MM.yyyy hh:mm");
     }
 
     static class datePickerConverter extends  StringConverter<LocalDate>{
