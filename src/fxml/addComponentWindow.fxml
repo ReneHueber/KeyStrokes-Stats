@@ -144,7 +144,7 @@
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
                         <Label fx:id="dateError" text="Label" textFill="#f22828" visible="false" />
-                        <DatePicker fx:id="chooseDateDatePicker" disable="true" maxWidth="150.0" minWidth="150.0">
+                        <DatePicker fx:id="chooseDateDatePicker" disable="true" maxWidth="171.0" minWidth="171.0">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>

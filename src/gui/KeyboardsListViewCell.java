@@ -69,9 +69,9 @@ public class KeyboardsListViewCell extends ListCell<Keyboard> {
             // set's the values for the gui elements
             labelKeyboardName.setText(keyboard.getKeyboardName());
             labelKeyStrokes.setText(String.valueOf(keyboard.getTotalKeyStrokes()));
-            labelTimePressed.setText(String.valueOf(keyboard.getTotalTimeKeyPressed()));
-            labelLastUsed.setText(keyboard.getLastUsed());
-            labelInUseSince.setText(keyboard.getInUseSince());
+            labelTimePressed.setText(String.valueOf(keyboard.getRoundedTotalTimeKeyPressed()));
+            labelLastUsed.setText(keyboard.getFormattedLastUsed());
+            labelInUseSince.setText(keyboard.getFormattedInUseSince());
             imageViewKeyboard.setImage(keyboard.getKeyboardImage());
 
             // set the custom layout
