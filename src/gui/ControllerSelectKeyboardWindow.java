@@ -144,7 +144,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         });
     }
 
-
     /**
      * Setup the list view and set's the values from the db.
      */
@@ -154,44 +153,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectAllValuesKeyboard(sqlStmt);
 
-        if (keyboardsObservableList != null)
-            formatDate(keyboardsObservableList);
-
         keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setPlaceholder(new Label("No Keyboards added"));
-    }
-
-    /**
-     * Formats the Date in the List for every Keyboard
-     * @param keyboardList List of the used Keyboards
-     */
-    private void formatDate(ObservableList<Keyboard> keyboardList){
-        for (Keyboard keyboard : keyboardList){
-            // formats the dates and sets the values
-            String lastUsed = keyboard.getLastUsed();
-                if (lastUsed.equals("0000-00-00"))
-                    keyboard.setLastUsed("never");
-                else
-                    keyboard.setLastUsed(formatStringDate(lastUsed));
-
-            keyboard.setInUseSince(formatStringDate(keyboard.getInUseSince()));
-
-            // round the float
-            DecimalFormat df = new DecimalFormat("#.00");
-            String timePressed = df.format(keyboard.getTotalTimeKeyPressed());
-            timePressed = timePressed.replace(",", ".");
-            keyboard.setTotalTimeKeyPressed(Float.parseFloat(timePressed));
-        }
-    }
-
-    /**
-     * Get's a string date and formats it, returns it as a String.
-     * @param date Date as String
-     * @return Formatted Date as String
-     */
-    private String formatStringDate(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return formatter.format(LocalDate.parse(date));
     }
 
     /**
