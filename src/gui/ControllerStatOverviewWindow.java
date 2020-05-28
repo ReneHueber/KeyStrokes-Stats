@@ -6,9 +6,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import objects.Component;
 import objects.Keyboard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ControllerStatOverviewWindow {
 
@@ -20,6 +22,7 @@ public class ControllerStatOverviewWindow {
     );
 
     private ObservableList<Keyboard> allKeyboards;
+    private HashMap<Integer, ArrayList<Component>> keyboardComponents;
 
     @FXML
     MenuBar menuBar;
@@ -57,6 +60,7 @@ public class ControllerStatOverviewWindow {
     public void initialize(){
         // get's all saved keyboards
         allKeyboards = getKeyboardValues();
+        keyboardComponents = getKeyboardComponents();
 
         // set's the options for the checkboxes
         selectDateCB.setItems(dateOptions);
@@ -126,6 +130,30 @@ public class ControllerStatOverviewWindow {
     }
 
     /**
+     * Reads all KeySwitch Components from all available Keyboards.
+     * Active and not Active Components.
+     * @return HashMap with every KeySwitch Component for every Keyboard
+     */
+    private HashMap<Integer, ArrayList<Component>> getKeyboardComponents(){
+        HashMap<Integer, ArrayList<Component>> keyboardComponents = new HashMap<>();
+        // goes throw all the available keyboards and saves all keySwitch Components
+        for (Keyboard keyboard : allKeyboards){
+            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
+                    "keyStrokes, addDate, isActive FROM components WHERE keyboardId = " + keyboard.getKeyboardId() +
+                    " AND componentType = 'Key Switches'";
+            // list of all keySwitch components
+            ObservableList<Component> readComponent = ReadDb.selectAllValuesComponents(sqlStmt);
+            // saves all the keySwitch components with the current keyboardId in an hashmap
+            if (readComponent.size() != 0)
+                keyboardComponents.put(keyboard.getKeyboardId(), new ArrayList<>(readComponent));
+            else
+                keyboardComponents.put(keyboard.getKeyboardId(), null);
+
+        }
+        return keyboardComponents;
+    }
+
+    /**
      * Sets the values from the select keyboard Controller.
      * @param selectedKeyboard Selected Keyboard Object.
      */
@@ -143,6 +171,38 @@ public class ControllerStatOverviewWindow {
         keyboardType.setText(selectedKeyboard.getKeyboardType());
         timeTyped.setText(formatTimeTyped(selectedKeyboard.getTotalTimeKeyPressed()));
         keyStrokes.setText(Integer.toString(selectedKeyboard.getTotalKeyStrokes()));
+        setKeyTravelPressure(selectedKeyboard.getKeyboardId());
+    }
+
+    private void setKeyTravelPressure(int keyboardId){
+        String[] totalValues = calculateTotalValues(keyboardId);
+
+        if (Boolean.parseBoolean(totalValues[2])){
+            keyTravel.setText(totalValues[0]);
+            keyPressure.setText(totalValues[1]);
+        }
+        else {
+            keyTravel.setText("No Data");
+            keyPressure.setText("No Data");
+        }
+    }
+
+
+    private String[] calculateTotalValues(int keyboardId){
+        ArrayList<Component> components = keyboardComponents.get(keyboardId);
+        int keyTravel = 0;
+        float keyPressure = 0.0f;
+        boolean keySwitchSelected = false;
+
+        if (components != null){
+            keySwitchSelected = true;
+            for (Component component : components){
+                keyTravel += component.getKeyStrokes() * component.getKeyTravel();
+                keyPressure += component.getKeyStrokes() * component.getKeyPressure();
+            }
+        }
+
+        return new String[] {Float.toString((float) keyTravel / 1000), Float.toString(keyPressure), Boolean.toString(keySwitchSelected)};
     }
 
     /**
