@@ -55,8 +55,6 @@ public class ControllerStatOverviewWindow {
     @FXML
     private Label keyPressure;
 
-    private int keyboardId;
-
     public void initialize(){
         // get's all saved keyboards
         allKeyboards = getKeyboardValues();
@@ -253,8 +251,4 @@ public class ControllerStatOverviewWindow {
         customDate.setEditable(false);
     }
 
-
-    public void setKeyboardId(int keyboardId){
-        this.keyboardId = keyboardId;
-    }
 }

@@ -86,7 +86,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
         showComponents.setOnAction(actionEvent -> {
             ProcessFxmlFiles componentsWindow = new ProcessFxmlFiles("../fxml/componentsWindow.fxml", "Components");
-            ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInNewStage();
+            Stage stage = (Stage) menuBar.getScene().getWindow();
+            ControllerComponentWindow controller = (ControllerComponentWindow) componentsWindow.openInExistingStage(stage);
             controller.setSelectedKeyboard(selectedKeyboard);
             controller.setInfoLabels();
             // get's all the Active components what is default
@@ -107,7 +108,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             ProcessFxmlFiles overviewWindow = new ProcessFxmlFiles("../fxml/statOverviewWindow.fxml", "Statistic Overview");
             Stage stage = (Stage) menuBar.getScene().getWindow();
             ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
-            controller.setKeyboardId(selectedKeyboard.getKeyboardId());
             controller.setKeyboardTableValue(selectedKeyboard);
         });
 

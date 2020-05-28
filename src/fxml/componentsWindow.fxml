@@ -4,6 +4,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,13 +15,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="498.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerComponentWindow">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="523.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerComponentWindow">
    <children>
       <VBox alignment="TOP_CENTER" layoutX="226.0" layoutY="89.0" prefHeight="500.0" prefWidth="600.0" spacing="12.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <MenuBar fx:id="menuBar" stylesheets="@../css/style.css">
+               <menus>
+                  <Menu mnemonicParsing="false" text="Keyboards">
+                     <items>
+                        <MenuItem fx:id="selectKeyboard" mnemonicParsing="false" text="Select" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Stats">
+                     <items>
+                        <MenuItem fx:id="overview" mnemonicParsing="false" text="Overview" />
+                        <MenuItem fx:id="detail" mnemonicParsing="false" text="Detail" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                     <items>
+                        <MenuItem fx:id="about" mnemonicParsing="false" text="About" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
             <Label fx:id="keyboardName" text="Name" textFill="#3d3d3d">
                <VBox.margin>
-                  <Insets bottom="20.0" left="15.0" top="15.0" />
+                  <Insets bottom="20.0" left="15.0" />
                </VBox.margin>
                <font>
                   <Font name="System Bold" size="20.0" />

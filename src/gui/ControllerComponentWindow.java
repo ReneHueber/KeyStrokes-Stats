@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import objects.Component;
 import objects.Keyboard;
 
@@ -21,6 +22,18 @@ public class ControllerComponentWindow {
     );
 
     private Keyboard selectedKeyboard;
+    private Stage stage;
+
+    @FXML
+    MenuBar menuBar;
+    @FXML
+    MenuItem selectKeyboard;
+    @FXML
+    MenuItem overview;
+    @FXML
+    MenuItem detail;
+    @FXML
+    MenuItem about;
 
     @FXML
     private Label keyboardName;
@@ -54,6 +67,18 @@ public class ControllerComponentWindow {
 
 
     public void initialize(){
+
+        selectKeyboard.setOnAction(event -> {
+            ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
+            selectKeyboardWindow.openInExistingStage((Stage) menuBar.getScene().getWindow());
+        });
+
+        overview.setOnAction(event -> {
+            ProcessFxmlFiles statOverviewWindow = new ProcessFxmlFiles("../fxml/statOverviewWindow.fxml", "Statistic Overview");
+            ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) statOverviewWindow.openInExistingStage((Stage) menuBar.getScene().getWindow());
+            controller.setKeyboardTableValue(selectedKeyboard);
+        });
+
         // opens a window to add a component
         addComponentsBtn.setOnAction(event -> {
             ProcessFxmlFiles addComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Component");
@@ -80,6 +105,7 @@ public class ControllerComponentWindow {
         setupTableView();
         componentFilterCB.setItems(componentFilterOptionsList);
         componentFilterCB.setValue(componentFilterOptionsList.get(0));
+
     }
 
     /**
@@ -90,6 +116,11 @@ public class ControllerComponentWindow {
         this.selectedKeyboard = selectedKeyboard;
     }
 
+    /**
+     * Pass if the keylogger started from another Controller.
+     * To disable the add Component Button.
+     * @param keyLoggerStarted KeyLogger started
+     */
     protected void setKeyLoggerStarted(boolean keyLoggerStarted){
         addComponentsBtn.setDisable(keyLoggerStarted);
     }
