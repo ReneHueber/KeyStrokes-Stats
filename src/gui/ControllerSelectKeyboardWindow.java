@@ -15,15 +15,13 @@ import keylogger.KeyLogger;
 import objects.Keyboard;
 
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 // TODO Add Source "Icon made by Freepik from www.flaticon.com"
 public class ControllerSelectKeyboardWindow implements Initializable {
+
+    private boolean keyLoggerStarted = false;
 
     @FXML
     private ListView<Keyboard> keyboardLv;
@@ -64,7 +62,6 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         keyboardsObservableList = FXCollections.observableArrayList();
     }
 
-    // TODO if the keylogger runs, no keyboard or component should be added, disable until the keylogger stops
     /**
      * Set's the Custom Items for the list view and the click Listeners.
      */
@@ -96,6 +93,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
                     "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId() + " AND isActive = true";
             controller.setValuesTableView(sqlStmt);
+            controller.setKeyLoggerStarted(keyLoggerStarted);
         });
 
         addComponents.setOnAction(event -> {
@@ -128,12 +126,14 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
                 dialogWindow.show();
             }
+            disableAddKeyboardsAndComponents(true);
         });
 
         stop.setOnAction(event -> {
             keyLogger.stopKeylogger();
             start.setDisable(false);
             stop.setDisable(true);
+            disableAddKeyboardsAndComponents(false);
         });
 
         // get's the selected item if the selection is changed
@@ -158,6 +158,16 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
         keyboardLv.setItems(keyboardsObservableList);
         keyboardLv.setPlaceholder(new Label("No Keyboards added"));
+    }
+
+    /**
+     * Disable / Enables the menuItem to add a Keyboard or Component if the keyLogger is Running or not Running.
+     * @param keyLoggerStarted Keylogger is Running or not.
+     */
+    private void disableAddKeyboardsAndComponents(boolean keyLoggerStarted) {
+            addNew.setDisable(keyLoggerStarted);
+            addComponents.setDisable(keyLoggerStarted);
+            this.keyLoggerStarted = keyLoggerStarted;
     }
 
     /**

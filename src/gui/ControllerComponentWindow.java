@@ -90,6 +90,10 @@ public class ControllerComponentWindow {
         this.selectedKeyboard = selectedKeyboard;
     }
 
+    protected void setKeyLoggerStarted(boolean keyLoggerStarted){
+        addComponentsBtn.setDisable(keyLoggerStarted);
+    }
+
     /**
      * Set all the Cell Values for the Table view.
      */
