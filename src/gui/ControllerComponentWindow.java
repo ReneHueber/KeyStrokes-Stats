@@ -3,9 +3,12 @@ package gui;
 import database.ReadDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.Component;
 import objects.Keyboard;
@@ -135,6 +138,33 @@ public class ControllerComponentWindow {
         addedColumn.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
         removedColumn.setCellValueFactory(new PropertyValueFactory<>("removedDate"));
         keyStrokesColumn.setCellValueFactory(new PropertyValueFactory<>("keyStrokes"));
+        componentTV.setContextMenu(createContextMenu());
+    }
+
+    /**
+     * Creates the Context Menu for the Table View.
+     * @return Context Menu for Table View
+     */
+    private ContextMenu createContextMenu(){
+        // TODO finish contextMenu change style
+        MenuItem retire = new MenuItem("Retire");
+        MenuItem delete = new MenuItem("Delete");
+        retire.setOnAction(ActionEvent -> {
+            System.out.println("Retire");
+            Object item = componentTV.getSelectionModel().getSelectedItem();
+            System.out.println("Selected item: " + item);
+        });
+        delete.setOnAction(ActionEvent -> {
+            System.out.println("Delete");
+            Object item = componentTV.getSelectionModel().getSelectedItem();
+            System.out.println("Selected item: " + item);
+        });
+
+        ContextMenu menu = new ContextMenu();
+        menu.getItems().add(retire);
+        menu.getItems().add(delete);
+
+        return menu;
     }
 
     /**
