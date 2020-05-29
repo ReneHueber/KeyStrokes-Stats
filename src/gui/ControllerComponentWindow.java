@@ -137,7 +137,7 @@ public class ControllerComponentWindow {
         // TODO finish contextMenu change style
         MenuItem retire = new MenuItem("Retire");
         MenuItem delete = new MenuItem("Delete");
-        MenuItem details = new MenuItem("Details");
+        MenuItem edit = new MenuItem("Edit");
 
         // functions for the menuItems
         retire.setOnAction(ActionEvent -> {
@@ -157,13 +157,21 @@ public class ControllerComponentWindow {
 
         });
 
-        details.setOnAction(actionEvent -> {
-
+        edit.setOnAction(actionEvent -> {
+            Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+            ProcessFxmlFiles editComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Edit Component");
+            ControllerAddComponentWindow controller = (ControllerAddComponentWindow) editComponentWindow.openInNewStage();
+            controller.setSelectedKeyboard(selectedKeyboard);
+            controller.updateInputsOptions(selectedComponent.getComponentType());
+            controller.changeGuiEditComponent();
+            controller.setComponentValues(selectedComponent.getComponentBrand(), selectedComponent.getComponentName(), selectedComponent.getKeyTravel(),
+                                            selectedComponent.getKeyPressure());
         });
 
         ContextMenu menu = new ContextMenu();
         menu.getItems().add(retire);
         menu.getItems().add(delete);
+        menu.getItems().add(edit);
 
         return menu;
     }

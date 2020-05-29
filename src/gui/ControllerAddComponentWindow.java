@@ -35,10 +35,18 @@ public class ControllerAddComponentWindow {
     // today is the default value
     private String addDate = LocalDate.now().toString();
 
+    private boolean editComponent = false;
+    private boolean dateAdded = false;
+
+    @FXML
+    private Label heading;
+
     @FXML
     private ComboBox<String> componentType;
     @FXML
     private Label typeError;
+    @FXML
+    private Label typeDescription;
 
     @FXML
     private TextField componentName;
@@ -64,6 +72,8 @@ public class ControllerAddComponentWindow {
     private ComboBox<String> addedDate;
     @FXML
     private DatePicker chooseDateDatePicker;
+    @FXML
+    private Label dateLabel;
 
     @FXML
     private Button saveBtn;
@@ -110,6 +120,19 @@ public class ControllerAddComponentWindow {
             }
         });
 
+        dateLabel.setOnMouseClicked(mouseEvent -> {
+            if (editComponent && addedDate.isDisabled()){
+                addedDate.setDisable(false);
+                dateLabel.setText("Added At");
+                dateAdded = true;
+            }
+            else if (editComponent && !addedDate.isDisabled()){
+                addedDate.setDisable(true);
+                dateLabel.setText("Change Date");
+                dateAdded = false;
+            }
+        });
+
         // disable or enable the key pressure and key travel inputs
         componentType.setOnAction(event -> {
             String selectedOption = componentType.getSelectionModel().getSelectedItem();
@@ -121,19 +144,7 @@ public class ControllerAddComponentWindow {
             else{
                 hideInputError(typeError);
                 saveBtn.setDisable(false);
-                if (componentType.getSelectionModel().getSelectedItem().equals("Key Switches")){
-                    enableAllOtherInputs();
-                }
-                else if (componentType.getSelectionModel().getSelectedItem().equals("Other")){
-                    enableAllOtherInputs();
-                }
-                else {
-                    disableTextField(keyPressure);
-                    disableTextField(keyTravel);
-                    disableTextField(componentName);
-                    componentBrand.setDisable(false);
-                    addedDate.setDisable(false);
-                }
+                updateInputsOptions(selectedOption);
             }
 
             // reset's all the error labels and inputs if the component type is changed
@@ -207,9 +218,7 @@ public class ControllerAddComponentWindow {
                 hideInputError(travelError);
         });
 
-        chooseDateDatePicker.setOnAction(event -> {
-            hideInputError(dateError);
-        });
+        chooseDateDatePicker.setOnAction(event -> hideInputError(dateError));
 
         // closes the stage if the vales are correct and saved to the db
         saveBtn.setOnAction(event -> {
@@ -266,6 +275,22 @@ public class ControllerAddComponentWindow {
         saveBtn.setDisable(true);
     }
 
+    protected void updateInputsOptions(String componentType){
+        if (componentType.equals("Key Switches")){
+            enableAllOtherInputs();
+        }
+        else if (componentType.equals("Other")){
+            enableAllOtherInputs();
+        }
+        else {
+            disableTextField(keyPressure);
+            disableTextField(keyTravel);
+            disableTextField(componentName);
+            componentBrand.setDisable(false);
+            addedDate.setDisable(false);
+        }
+    }
+
     /**
      * Name is disables sometimes so, we don't need to check.
      * Only checks the Input if it is not disabled.
@@ -297,13 +322,21 @@ public class ControllerAddComponentWindow {
        checkTextInput(componentBrand, brandError, "Enter a Brand");
        checkDatePicker();
        addDate = getDate();
+
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible() && !dateError.isVisible()){
-            String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
-                    "keyPressure, keyTravel, keyStrokes, addDate, retiredDate) VALUES(?,?,?,?,?,?,?,?,?)";
-           WriteDb.executeWriteSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
-                   componentType.getSelectionModel().getSelectedItem(), componentName.getText(),
-                   componentBrand.getText(), keyPressure.getText(), keyTravel.getText(),
-                   Integer.toString(getComponentKeyStrokes()), addDate, "0000-00-00");
+           if (!editComponent){
+               String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
+                       "keyPressure, keyTravel, keyStrokes, addDate, retiredDate) VALUES(?,?,?,?,?,?,?,?,?)";
+               WriteDb.executeWriteSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
+                       componentType.getSelectionModel().getSelectedItem(), componentName.getText(),
+                       componentBrand.getText(), keyPressure.getText(), keyTravel.getText(),
+                       Integer.toString(getComponentKeyStrokes()), addDate, "0000-00-00");
+           }
+           else{
+               // TODO get Date and values if changed or needed
+               // TODO if inputField is disabled set text to ""
+               String sqlStmt = "";
+           }
            return true;
        }
        else{
@@ -358,7 +391,7 @@ public class ControllerAddComponentWindow {
     private ArrayList<String> getComponentTypes(){
         ArrayList<String> componentTypes = new ArrayList<>();
         // get's all the components objects
-        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, retiredDate, " +
                 "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
         ObservableList<Component> components = ReadDb.selectAllValuesComponents(sqlStmt);
 
@@ -431,5 +464,32 @@ public class ControllerAddComponentWindow {
             displayInputError(errorLabel, errorMassage);
         else
             hideInputError(errorLabel);
+    }
+
+    /**
+     * Chances the gui to use the addComponentWindow as a editComponentWindow
+     */
+    protected void changeGuiEditComponent(){
+        componentType.setVisible(false);
+        typeDescription.setVisible(false);
+        addedDate.setDisable(true);
+        heading.setText("Edit Component");
+        saveBtn.setText("Edit");
+        editComponent = true;
+        dateLabel.setText("Changed Date");
+    }
+
+    /**
+     * Set's the Values for the saved Component.
+     * @param brand Selected Component Brand
+     * @param name Selected Component Name
+     * @param keyTravelValue Selected Component keyTravel
+     * @param keyPressureValue Selected Component keyPressure
+     */
+    protected void setComponentValues(String brand, String name, int keyTravelValue, float keyPressureValue){
+        componentBrand.setText(brand);
+        componentName.setText(name);
+        keyTravel.setText(Integer.toString(keyTravelValue));
+        keyPressure.setText(Float.toString(keyPressureValue));
     }
 }

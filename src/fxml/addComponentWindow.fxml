@@ -17,7 +17,7 @@
          <children>
             <HBox alignment="TOP_CENTER" spacing="10.0">
                <children>
-                  <Label text="New Component" textFill="#3d3d3d">
+                  <Label fx:id="heading" text="New Component" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="17.0" />
                      </font>
@@ -32,7 +32,7 @@
             </HBox>
             <HBox alignment="BOTTOM_CENTER" spacing="10.0">
                <children>
-                  <Label text="Component Type" textFill="#3d3d3d">
+                  <Label fx:id="typeDescription" text="Component Type" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
@@ -135,7 +135,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <Label text="Added at" textFill="#3d3d3d">
+                  <Label fx:id="dateLabel" text="Added at" textFill="#3d3d3d">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
