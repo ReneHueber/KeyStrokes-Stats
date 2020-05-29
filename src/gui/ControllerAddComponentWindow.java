@@ -299,11 +299,11 @@ public class ControllerAddComponentWindow {
        addDate = getDate();
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible() && !dateError.isVisible()){
             String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
-                    "keyPressure, keyTravel, keyStrokes, addDate) VALUES(?,?,?,?,?,?,?,?)";
-           WriteDb.executeSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
+                    "keyPressure, keyTravel, keyStrokes, addDate, retiredDate) VALUES(?,?,?,?,?,?,?,?,?)";
+           WriteDb.executeWriteSqlStmt(sqlStmt, Integer.toString(selectedKeyboard.getKeyboardId()),
                    componentType.getSelectionModel().getSelectedItem(), componentName.getText(),
                    componentBrand.getText(), keyPressure.getText(), keyTravel.getText(),
-                   Integer.toString(getComponentKeyStrokes()), addDate);
+                   Integer.toString(getComponentKeyStrokes()), addDate, "0000-00-00");
            return true;
        }
        else{

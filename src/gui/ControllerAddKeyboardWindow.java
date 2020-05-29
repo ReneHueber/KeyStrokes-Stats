@@ -19,7 +19,6 @@ import objects.Keyboard;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 public class ControllerAddKeyboardWindow {
@@ -80,7 +79,7 @@ public class ControllerAddKeyboardWindow {
                 String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totKeystrokes," +
                         "totTimePressed, usedSince, lastUsed) " +
                         "VALUES(?,?,?,?,?,?,?)";
-                WriteDb.executeSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
+                WriteDb.executeWriteSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
                 "0.0", date, "0000-00-00");
 
                 reloadSelectKeyboardWindow();

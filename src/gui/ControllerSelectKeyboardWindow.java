@@ -91,7 +91,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             controller.setSelectedKeyboard(selectedKeyboard);
             controller.setInfoLabels();
             // get's all the Active components what is default
-            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
+            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, retiredDate,  " +
                     "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId() + " AND isActive = true";
             controller.setValuesTableView(sqlStmt);
             controller.setKeyLoggerStarted(keyLoggerStarted);
@@ -220,6 +220,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 + "     keyTravel INTEGER,\n"
                 + "     keyStrokes INTEGER,\n"
                 + "     addDate Date NOT NULL,\n"
+                + "     retiredDate Date NOT NULL,\n"
                 + "     isActive BOOLEAN DEFAULT TRUE,\n"
                 + "     PRIMARY KEY (id),\n"
                 + "     FOREIGN KEY (keyboardId) REFERENCES keyboards(id) ON DELETE CASCADE"

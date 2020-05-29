@@ -99,7 +99,7 @@ public class DbUpdateSchedule {
      */
     private void updateKeyboardsTable(LocalDate currentDate, float timePressed, int keyStrokes){
         String sqlStmt = "UPDATE keyboards SET lastUsed = ?, totKeystrokes = ?, totTimePressed = ? WHERE id = " + keyboardId;
-        WriteDb.executeSqlStmt(sqlStmt, currentDate.toString(), Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
+        WriteDb.executeWriteSqlStmt(sqlStmt, currentDate.toString(), Integer.toString((oldTotal + keyStrokes)), Float.toString((oldTimePressed + timePressed)));
     }
 
     /**
@@ -116,7 +116,7 @@ public class DbUpdateSchedule {
 
         if (totalKeyboardValues.size() == 0) {
             String sqlSetStmt = "INSERT INTO totalToday(keyboardId, date, keyStrokes, timePressed) VALUES(?,?,?,?)";
-            WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyboardId), date, Integer.toString(keyStrokes), Float.toString(timePressed));
+            WriteDb.executeWriteSqlStmt(sqlSetStmt, Integer.toString(keyboardId), date, Integer.toString(keyStrokes), Float.toString(timePressed));
             createdThisRun = true;
         }
         else {
@@ -131,7 +131,7 @@ public class DbUpdateSchedule {
                 timePressed += totalTodayTimeStart;
             }
             String sqlSetStmt = "UPDATE totalToday SET keyStrokes = ?, timePressed = ? WHERE keyboardId = " + keyboardId + " AND date = '" + date + "'";
-            WriteDb.executeSqlStmt(sqlSetStmt, Integer.toString(keyStrokes), Float.toString(timePressed));
+            WriteDb.executeWriteSqlStmt(sqlSetStmt, Integer.toString(keyStrokes), Float.toString(timePressed));
         }
     }
 
@@ -145,7 +145,7 @@ public class DbUpdateSchedule {
         if (heatmapValues.size() == 0) {
             for (Map.Entry<String, Integer> value : keyValues.entrySet()) {
                 String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
-                WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
+                WriteDb.executeWriteSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
             }
         }
         else {
@@ -156,14 +156,14 @@ public class DbUpdateSchedule {
                         String sqlStmt = "UPDATE heatmap SET pressed = ? WHERE keyboardId = " + keyboardId +
                                 " AND date = '" + date + "' AND key = '" + heatmapValue.getKey() + "'";
                         int sumPressed = value.getValue() + heatmapValue.getTimesPressed();
-                        WriteDb.executeSqlStmt(sqlStmt, Integer.toString(sumPressed));
+                        WriteDb.executeWriteSqlStmt(sqlStmt, Integer.toString(sumPressed));
                         insert = false;
                         break;
                     }
                 }
                 if (insert) {
                     String sqlPutStmt = "INSERT INTO heatmap(keyboardId, date, key, pressed) VALUES(?,?,?,?)";
-                    WriteDb.executeSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
+                    WriteDb.executeWriteSqlStmt(sqlPutStmt, Integer.toString(keyboardId), date, value.getKey(), Integer.toString(value.getValue()));
                 }
             }
         }
@@ -189,7 +189,7 @@ public class DbUpdateSchedule {
             int keyStrokes = componentStartValuesKeyStrokes.get(component.getId()) + passedKeyStrokes;
 
             String updateSql = "UPDATE components SET keyStrokes = ? WHERE id = " + component.getId();
-            WriteDb.executeSqlStmt(updateSql, Integer.toString(keyStrokes));
+            WriteDb.executeWriteSqlStmt(updateSql, Integer.toString(keyStrokes));
         }
     }
 }

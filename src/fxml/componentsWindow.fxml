@@ -150,7 +150,7 @@
                 <TableColumn fx:id="nameColumn" editable="false" prefWidth="85.0" resizable="false" sortable="false" text="Name" />
                   <TableColumn fx:id="brandColumn" editable="false" prefWidth="77.0" resizable="false" sortable="false" text="Brand" />
                   <TableColumn fx:id="addedColumn" editable="false" prefWidth="124.0" resizable="false" sortable="false" text="Added" />
-                  <TableColumn fx:id="removedColumn" editable="false" prefWidth="122.0" resizable="false" sortable="false" text="Removed" />
+                  <TableColumn fx:id="retiredColumn" editable="false" prefWidth="122.0" resizable="false" sortable="false" text="Removed" />
                   <TableColumn fx:id="keyStrokesColumn" editable="false" prefWidth="102.0" resizable="false" sortable="false" text="Key Strokes" />
               </columns>
             </TableView>

@@ -43,7 +43,7 @@ public class WriteDb {
      * @param sqlStatement Sql Statement for the Table
      * @param values Required Parameters for the Sql Statement
      */
-    public static void executeSqlStmt(String sqlStatement, String ... values){
+    public static void executeWriteSqlStmt(String sqlStatement, String ... values){
         try (Connection conn = ConnectDb.connect(WriteDb.url); PreparedStatement prepStatement =
                 conn.prepareStatement(sqlStatement)){
             // goes throw all the passed Parameter's
@@ -51,6 +51,19 @@ public class WriteDb {
                 prepStatement.setString(i + 1, values[i]);
             }
             prepStatement.execute();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void deleteById(String table, int deleteId){
+        String sqlStmt = "DELETE FROM " + table + " WHERE id = ?";
+        try (Connection conn = ConnectDb.connect(url);
+            PreparedStatement prepStmt = conn.prepareStatement(sqlStmt)){
+            // set's the parameter
+            prepStmt.setInt(1, deleteId);
+            prepStmt.execute();
+
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }

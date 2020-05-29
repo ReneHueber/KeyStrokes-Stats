@@ -139,10 +139,11 @@ public class ReadDb {
                 int keyTravel = rs.getInt("keyTravel");
                 int keyStrokes = rs.getInt("keyStrokes");
                 String addDate = rs.getString("addDate");
+                String retiredDate = rs.getString("retiredDate");
                 boolean isActive = rs.getBoolean("isActive");
 
                 components.add(new Component(id, keyboardId, componentType, componentName, componentBrand,
-                                keyPressure, keyTravel, addDate, "", keyStrokes, isActive));
+                                keyPressure, keyTravel, addDate, retiredDate, keyStrokes, isActive));
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());

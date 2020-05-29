@@ -10,13 +10,13 @@ public class Component {
     private final float keyPressure;
     private final int keyTravel;
     private String addedDate;
-    private String removedDate;
+    private String retiredDate;
     private final int keyStrokes;
     private final boolean isActive;
 
     public Component(int id, int keyboardId, String componentType, String componentName,
                      String componentBrand, float keyPressure, int keyTravel,
-                     String addedDate, String removedDate, int keyStrokes, boolean isActive) {
+                     String addedDate, String retiredDate, int keyStrokes, boolean isActive) {
         this.id = id;
         this.keyboardId = keyboardId;
         this.componentType = componentType;
@@ -25,7 +25,7 @@ public class Component {
         this.keyPressure = keyPressure;
         this.keyTravel = keyTravel;
         this.addedDate = addedDate;
-        this.removedDate = removedDate;
+        this.retiredDate = retiredDate;
         this.keyStrokes = keyStrokes;
         this.isActive = isActive;
     }
@@ -62,8 +62,8 @@ public class Component {
         return addedDate;
     }
 
-    public String getRemovedDate(){
-        return removedDate;
+    public String getRetiredDate(){
+        return retiredDate;
     }
 
     public int getKeyStrokes(){
@@ -78,7 +78,7 @@ public class Component {
         this.addedDate = addedDate;
     }
 
-    public void setRemovedDate(String removedDate) {
-        this.removedDate = removedDate;
+    public void setRetiredDate(String retiredDate) {
+        this.retiredDate = retiredDate;
     }
 }

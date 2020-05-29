@@ -1,14 +1,12 @@
 package gui;
 
 import database.ReadDb;
+import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.Component;
 import objects.Keyboard;
@@ -20,8 +18,8 @@ public class ControllerComponentWindow {
 
     private final ObservableList<String> componentFilterOptionsList = FXCollections.observableArrayList(
             "Active Components",
-            "Removed Components",
-            "Active & Removed"
+            "Retired Components",
+            "Active & Retired"
     );
 
     private Keyboard selectedKeyboard;
@@ -64,7 +62,7 @@ public class ControllerComponentWindow {
     @FXML
     private TableColumn<Component, String> addedColumn;
     @FXML
-    private TableColumn<Component, String> removedColumn;
+    private TableColumn<Component, String> retiredColumn;
     @FXML
     private TableColumn<Keyboard, Integer> keyStrokesColumn;
 
@@ -91,17 +89,7 @@ public class ControllerComponentWindow {
         });
 
         componentFilterCB.setOnAction(event -> {
-            String selectedOption = componentFilterCB.getSelectionModel().getSelectedItem();
-            String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
-                    "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
-            // adds an argument to the sql string
-            switch (selectedOption){
-                case "Active Components": sqlStmt += " AND isActive = true";
-                                        break;
-                case "Removed Components": sqlStmt += " AND isActive = false";
-                                        break;
-            }
-            setValuesTableView(sqlStmt);
+            updateTableView();
         });
 
 
@@ -136,7 +124,7 @@ public class ControllerComponentWindow {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("componentName"));
         brandColumn.setCellValueFactory(new PropertyValueFactory<>("componentBrand"));
         addedColumn.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
-        removedColumn.setCellValueFactory(new PropertyValueFactory<>("removedDate"));
+        retiredColumn.setCellValueFactory(new PropertyValueFactory<>("retiredDate"));
         keyStrokesColumn.setCellValueFactory(new PropertyValueFactory<>("keyStrokes"));
         componentTV.setContextMenu(createContextMenu());
     }
@@ -149,15 +137,28 @@ public class ControllerComponentWindow {
         // TODO finish contextMenu change style
         MenuItem retire = new MenuItem("Retire");
         MenuItem delete = new MenuItem("Delete");
+        MenuItem details = new MenuItem("Details");
+
+        // functions for the menuItems
         retire.setOnAction(ActionEvent -> {
-            System.out.println("Retire");
-            Object item = componentTV.getSelectionModel().getSelectedItem();
-            System.out.println("Selected item: " + item);
+            // get's the selected Component and retires it
+            Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+            String sqlStmt = "UPDATE components SET retiredDate = ?, isActive = false"
+                            + " WHERE id = " + selectedComponent.getId();
+            WriteDb.executeWriteSqlStmt(sqlStmt, LocalDate.now().toString());
+            updateTableView();
         });
+
         delete.setOnAction(ActionEvent -> {
-            System.out.println("Delete");
-            Object item = componentTV.getSelectionModel().getSelectedItem();
-            System.out.println("Selected item: " + item);
+            // get's the selected Item and deletes it from the table
+            Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+            WriteDb.deleteById("components", selectedComponent.getId());
+            updateTableView();
+
+        });
+
+        details.setOnAction(actionEvent -> {
+
         });
 
         ContextMenu menu = new ContextMenu();
@@ -165,6 +166,24 @@ public class ControllerComponentWindow {
         menu.getItems().add(delete);
 
         return menu;
+    }
+
+    /**
+     * Updates the Table view depending on the filter option chosen.
+     * Reads the values again from the Table.
+     */
+    private void updateTableView(){
+        String selectedOption = componentFilterCB.getSelectionModel().getSelectedItem();
+        String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, retiredDate, " +
+                "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
+        // adds an argument to the sql string
+        switch (selectedOption){
+            case "Active Components": sqlStmt += " AND isActive = true";
+                break;
+            case "Removed Components": sqlStmt += " AND isActive = false";
+                break;
+        }
+        setValuesTableView(sqlStmt);
     }
 
     /**
@@ -185,7 +204,7 @@ public class ControllerComponentWindow {
     private void formatDates(ObservableList<Component> components){
         for (Component component : components){
             component.setAddedDate(formatDate(component.getAddedDate()));
-            component.setRemovedDate(formatDate(component.getRemovedDate()));
+            component.setRetiredDate(formatDate(component.getRetiredDate()));
         }
     }
 
@@ -196,7 +215,7 @@ public class ControllerComponentWindow {
      */
     private String formatDate(String passDate){
         String formattedDate = "";
-        if (!passDate.isEmpty()) {
+        if (!passDate.isEmpty() && !passDate.equals("0000-00-00")) {
             LocalDate date = LocalDate.parse(passDate);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             formattedDate = formatter.format(date);
