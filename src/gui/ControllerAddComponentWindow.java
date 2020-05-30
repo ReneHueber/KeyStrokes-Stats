@@ -14,6 +14,9 @@ import objects.Keyboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class ControllerAddComponentWindow {
 
@@ -31,6 +34,7 @@ public class ControllerAddComponentWindow {
     );
 
     private Keyboard selectedKeyboard;
+    private Component selectedComponent;
 
     // today is the default value
     private String addDate = LocalDate.now().toString();
@@ -333,9 +337,10 @@ public class ControllerAddComponentWindow {
                        Integer.toString(getComponentKeyStrokes()), addDate, "0000-00-00");
            }
            else{
-               // TODO get Date and values if changed or needed
-               // TODO if inputField is disabled set text to ""
-               String sqlStmt = "";
+               String sqlStmt = "UPDATE components SET ";
+               HashMap<String, String> changes = getEditChanges();
+               sqlStmt += addEditToSqlString(changes) + " WHERE id = " + selectedComponent.getId();
+               WriteDb.executeWriteSqlStmt(sqlStmt, changes.values().toArray(new String[0]));
            }
            return true;
        }
@@ -388,6 +393,7 @@ public class ControllerAddComponentWindow {
         return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
     }
 
+    // TODO add comment
     private ArrayList<String> getComponentTypes(){
         ArrayList<String> componentTypes = new ArrayList<>();
         // get's all the components objects
@@ -467,6 +473,50 @@ public class ControllerAddComponentWindow {
     }
 
     /**
+     * Check if changes have been made, and saves the database variable Name and the values of the changes.
+     * @return Database variable Name, Changed Value
+     */
+    private HashMap<String, String> getEditChanges(){
+        // TODO key stokes for the date, if the date is changed
+        HashMap<String, String> changes = new HashMap<>();
+        HashMap<TextField, String> inputs = new HashMap<>();
+        inputs.put(componentName, selectedComponent.getComponentName());
+        inputs.put(componentBrand, selectedComponent.getComponentBrand());
+        inputs.put(keyTravel, Integer.toString(selectedComponent.getKeyTravel()));
+        inputs.put(keyPressure, Float.toString(selectedComponent.getKeyPressure()));
+
+        // goes throw all the input fields, and check if the current value is different to the already saved value
+        // if it is different, the name of the input is saved and the new value
+        for (TextField key : inputs.keySet()){
+            if (!key.isDisabled()){
+                if (!key.getText().equals(inputs.get(key))){
+                    changes.put(key.getId(), key.getText());
+                }
+            }
+        }
+        // checks if the date has been changed
+        if (!addedDate.isDisabled())
+            changes.put("addDate", getDate());
+
+        return changes;
+    }
+
+    /**
+     * Get all the database Variables that are chancing and returns them in the format:
+     * "Value = ?, Value = ?"
+     * @param changes The changes made
+     * @return String with the changes in the format for Sql
+     */
+    private String addEditToSqlString(HashMap<String, String> changes){
+        // adds all the changes database variables to the sql String
+        String sqlValues = changes.entrySet()
+                            .stream()
+                            .map(e -> e.getKey() + " = ?")
+                            .collect(Collectors.joining(", "));
+        return sqlValues;
+    }
+
+    /**
      * Chances the gui to use the addComponentWindow as a editComponentWindow
      */
     protected void changeGuiEditComponent(){
@@ -481,15 +531,13 @@ public class ControllerAddComponentWindow {
 
     /**
      * Set's the Values for the saved Component.
-     * @param brand Selected Component Brand
-     * @param name Selected Component Name
-     * @param keyTravelValue Selected Component keyTravel
-     * @param keyPressureValue Selected Component keyPressure
+     * @param selectedComponent Selected Component Object
      */
-    protected void setComponentValues(String brand, String name, int keyTravelValue, float keyPressureValue){
-        componentBrand.setText(brand);
-        componentName.setText(name);
-        keyTravel.setText(Integer.toString(keyTravelValue));
-        keyPressure.setText(Float.toString(keyPressureValue));
+    protected void setComponentValues(Component selectedComponent){
+        this.selectedComponent = selectedComponent;
+        componentBrand.setText(selectedComponent.getComponentBrand());
+        componentName.setText(selectedComponent.getComponentName());
+        keyTravel.setText(Integer.toString(selectedComponent.getKeyTravel()));
+        keyPressure.setText(Float.toString(selectedComponent.getKeyPressure()));
     }
 }

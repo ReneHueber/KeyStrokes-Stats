@@ -162,10 +162,10 @@ public class ControllerComponentWindow {
             ProcessFxmlFiles editComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Edit Component");
             ControllerAddComponentWindow controller = (ControllerAddComponentWindow) editComponentWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
+            controller.setComponentValues(selectedComponent);
             controller.updateInputsOptions(selectedComponent.getComponentType());
             controller.changeGuiEditComponent();
-            controller.setComponentValues(selectedComponent.getComponentBrand(), selectedComponent.getComponentName(), selectedComponent.getKeyTravel(),
-                                            selectedComponent.getKeyPressure());
+
         });
 
         ContextMenu menu = new ContextMenu();
