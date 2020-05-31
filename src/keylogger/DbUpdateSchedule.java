@@ -178,7 +178,7 @@ public class DbUpdateSchedule {
     private void updateKeyStrokesComponents(int passedKeyStrokes){
         // get's all the active components of the selected keyboard
         String selectSql = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, " +
-                "isActive FROM components WHERE keyboardId = " + keyboardId + " AND isActive = True";
+                "retiredDate, isActive FROM components WHERE keyboardId = " + keyboardId + " AND isActive = True";
         ObservableList<Component> components = ReadDb.selectAllValuesComponents(selectSql);
 
         // get's the updated keyStrokes for the single components and updates them in the components table

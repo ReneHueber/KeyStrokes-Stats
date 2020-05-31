@@ -188,7 +188,7 @@ public class ControllerComponentWindow {
         switch (selectedOption){
             case "Active Components": sqlStmt += " AND isActive = true";
                 break;
-            case "Removed Components": sqlStmt += " AND isActive = false";
+            case "Retired Components": sqlStmt += " AND isActive = false";
                 break;
         }
         setValuesTableView(sqlStmt);
@@ -238,7 +238,7 @@ public class ControllerComponentWindow {
         keyboardName.setText(selectedKeyboard.getKeyboardName());
         keyboardType.setText(selectedKeyboard.getKeyboardType());
         keyStrokes.setText(Integer.toString(selectedKeyboard.getTotalKeyStrokes()));
-        keyPressedTime.setText(Float.toString(selectedKeyboard.getTotalTimeKeyPressed()));
+        keyPressedTime.setText(Float.toString(selectedKeyboard.getRoundedTotalTimeKeyPressed()));
     }
 
 }

@@ -146,12 +146,12 @@
             </HBox>
             <TableView fx:id="componentTV" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/style.css">
               <columns>
-                <TableColumn fx:id="typeColumn" editable="false" prefWidth="88.0" resizable="false" sortable="false" text="Type" />
-                <TableColumn fx:id="nameColumn" editable="false" prefWidth="85.0" resizable="false" sortable="false" text="Name" />
-                  <TableColumn fx:id="brandColumn" editable="false" prefWidth="77.0" resizable="false" sortable="false" text="Brand" />
-                  <TableColumn fx:id="addedColumn" editable="false" prefWidth="124.0" resizable="false" sortable="false" text="Added" />
-                  <TableColumn fx:id="retiredColumn" editable="false" prefWidth="122.0" resizable="false" sortable="false" text="Removed" />
-                  <TableColumn fx:id="keyStrokesColumn" editable="false" prefWidth="102.0" resizable="false" sortable="false" text="Key Strokes" />
+                <TableColumn fx:id="typeColumn" editable="false" prefWidth="101.0" resizable="false" sortable="false" text="Type" />
+                <TableColumn fx:id="nameColumn" editable="false" prefWidth="96.0" resizable="false" sortable="false" text="Name" />
+                  <TableColumn fx:id="brandColumn" editable="false" prefWidth="99.0" resizable="false" sortable="false" text="Brand" />
+                  <TableColumn fx:id="addedColumn" editable="false" prefWidth="97.0" resizable="false" sortable="false" text="Added" />
+                  <TableColumn fx:id="retiredColumn" editable="false" prefWidth="97.0" resizable="false" sortable="false" text="Removed" />
+                  <TableColumn fx:id="keyStrokesColumn" editable="false" prefWidth="108.0" resizable="false" sortable="false" text="Key Strokes" />
               </columns>
             </TableView>
          </children>

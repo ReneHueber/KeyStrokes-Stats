@@ -141,11 +141,8 @@ public class ControllerAddComponentWindow {
         componentType.setOnAction(event -> {
             String selectedOption = componentType.getSelectionModel().getSelectedItem();
 
-            // component already exists and is not other
-            if (getComponentTypes().contains(selectedOption) && (!selectedOption.equals("Other"))){
-                disableGuiComponentExists();
-            }
-            else{
+            // if the component is not existing
+            if (!checkComponentExisting(selectedOption)){
                 hideInputError(typeError);
                 saveBtn.setDisable(false);
                 updateInputsOptions(selectedOption);
@@ -261,9 +258,18 @@ public class ControllerAddComponentWindow {
         addedDate.setDisable(false);
     }
 
-    protected void checkComponentExisting(String componentName){
-        if (getComponentTypes().contains(componentName) && (!componentName.equals("Other")))
+    /**
+     * Checks if the passed component type is already existing.
+     * Only multiple components of the type "Other" are allowed.
+     * @param componentName Component name to check
+     * @return True if component is already existing, false if not
+     */
+    protected boolean checkComponentExisting(String componentName){
+        if (getComponentTypes().contains(componentName) && (!componentName.equals("Other"))){
             disableGuiComponentExists();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -279,6 +285,10 @@ public class ControllerAddComponentWindow {
         saveBtn.setDisable(true);
     }
 
+    /**
+     * Updates the possible inputs depending on the component types that is chosen.
+     * @param componentType Selected Component option
+     */
     protected void updateInputsOptions(String componentType){
         if (componentType.equals("Key Switches")){
             enableAllOtherInputs();
@@ -328,6 +338,7 @@ public class ControllerAddComponentWindow {
        addDate = getDate();
 
        if (!nameError.isVisible() && !brandError.isVisible() && !pressureError.isVisible() && !travelError.isVisible() && !dateError.isVisible()){
+           // saves a new component
            if (!editComponent){
                String sqlStmt = "INSERT INTO components(keyboardId, componentType, componentName, componentBrand, " +
                        "keyPressure, keyTravel, keyStrokes, addDate, retiredDate) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -336,10 +347,14 @@ public class ControllerAddComponentWindow {
                        componentBrand.getText(), keyPressure.getText(), keyTravel.getText(),
                        Integer.toString(getComponentKeyStrokes()), addDate, "0000-00-00");
            }
+           // updates an existing component
            else{
                String sqlStmt = "UPDATE components SET ";
+               // get's the changes that have been made, first String is the db variable, second the new value
                HashMap<String, String> changes = getEditChanges();
+               // adds the db variables to the sql string
                sqlStmt += addEditToSqlString(changes) + " WHERE id = " + selectedComponent.getId();
+               // passes all the new values
                WriteDb.executeWriteSqlStmt(sqlStmt, changes.values().toArray(new String[0]));
            }
            return true;
@@ -349,6 +364,10 @@ public class ControllerAddComponentWindow {
        }
     }
 
+    /**
+     * Get's the Date option chosen and returns the corresponding date.
+     * @return Chosen Date as String
+     */
     private String getDate(){
         String dateOption = addedDate.getSelectionModel().getSelectedItem();
 
@@ -368,6 +387,7 @@ public class ControllerAddComponentWindow {
      * @return The KeyStokes depending on the Date option.
      */
     private int getComponentKeyStrokes(){
+
         switch(addedDate.getSelectionModel().getSelectedItem()){
             // get's all keyStrokes
             case "Since Beginning":
@@ -375,7 +395,7 @@ public class ControllerAddComponentWindow {
 
              // get's the keyStrokes since e specific date
             case "Choose Date":
-                return getDateSpecificKeyStrokes();
+                return getDateSpecificKeyStrokes(chooseDateDatePicker.getValue().toString());
 
             // "Today" is the default case
             default:
@@ -387,13 +407,15 @@ public class ControllerAddComponentWindow {
      * Reads the sum of the keystrokes form the totalToday Tables since a specific Date.
      * @return The total keyStrokes since a specific Date.
      */
-    private int getDateSpecificKeyStrokes(){
-        String selectedDate = chooseDateDatePicker.getValue().toString();
+    private int getDateSpecificKeyStrokes(String selectedDate){
         String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
         return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
     }
 
-    // TODO add comment
+    /**
+     * Get's all the Components from the selected Keyboard, and saves the component types in a list.
+     * @return List of the component types
+     */
     private ArrayList<String> getComponentTypes(){
         ArrayList<String> componentTypes = new ArrayList<>();
         // get's all the components objects
@@ -495,9 +517,11 @@ public class ControllerAddComponentWindow {
             }
         }
         // checks if the date has been changed
-        if (!addedDate.isDisabled())
-            changes.put("addDate", getDate());
-
+        if (!addedDate.isDisabled()){
+            String chosenDate = getDate();
+            changes.put("addDate", chosenDate);
+            changes.put("keyStrokes", Integer.toString(getComponentKeyStrokes()));
+        }
         return changes;
     }
 
