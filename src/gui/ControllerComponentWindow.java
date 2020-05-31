@@ -138,6 +138,7 @@ public class ControllerComponentWindow {
         MenuItem retire = new MenuItem("Retire");
         MenuItem delete = new MenuItem("Delete");
         MenuItem edit = new MenuItem("Edit");
+        MenuItem details = new MenuItem("Details");
 
         // functions for the menuItems
         retire.setOnAction(ActionEvent -> {
@@ -168,10 +169,18 @@ public class ControllerComponentWindow {
 
         });
 
+        details.setOnAction(actionEvent -> {
+            Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+            ProcessFxmlFiles componentDetails = new ProcessFxmlFiles("../fxml/detailComponentInfoWindow.fxml", "Component Detail");
+            ControllerDetailComponentInfoWindow controller = (ControllerDetailComponentInfoWindow) componentDetails.openInNewStage();
+            controller.setValues(selectedComponent);
+        });
+
         ContextMenu menu = new ContextMenu();
         menu.getItems().add(retire);
         menu.getItems().add(delete);
         menu.getItems().add(edit);
+        menu.getItems().add(details);
 
         return menu;
     }

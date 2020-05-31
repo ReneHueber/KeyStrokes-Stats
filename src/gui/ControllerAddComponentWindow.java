@@ -464,12 +464,17 @@ public class ControllerAddComponentWindow {
      */
     private void checkNumberInput(TextField inputLabel, Label errorLabel, boolean isInt){
         try{
+            float number;
             if (isInt)
-                Integer.parseInt(inputLabel.getText());
+                number = (float) Integer.parseInt(inputLabel.getText());
             else
-                Float.parseFloat(inputLabel.getText());
+                number = Float.parseFloat(inputLabel.getText());
 
-            hideInputError(errorLabel);
+            // checks if the number is bigger than zero
+            if (number > 0)
+                hideInputError(errorLabel);
+            else
+                displayInputError(errorLabel, "Not Null!");
 
         } catch (NumberFormatException e){
             System.out.println(e.getMessage());
@@ -499,7 +504,6 @@ public class ControllerAddComponentWindow {
      * @return Database variable Name, Changed Value
      */
     private HashMap<String, String> getEditChanges(){
-        // TODO key stokes for the date, if the date is changed
         HashMap<String, String> changes = new HashMap<>();
         HashMap<TextField, String> inputs = new HashMap<>();
         inputs.put(componentName, selectedComponent.getComponentName());
