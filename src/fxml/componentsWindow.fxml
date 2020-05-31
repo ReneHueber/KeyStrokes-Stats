@@ -144,7 +144,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <TableView fx:id="componentTV" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/style.css">
+            <TableView fx:id="componentTV" prefHeight="200.0" prefWidth="200.0" stylesheets="@../css/tabelView.css">
               <columns>
                 <TableColumn fx:id="typeColumn" editable="false" prefWidth="101.0" resizable="false" sortable="false" text="Type" />
                 <TableColumn fx:id="nameColumn" editable="false" prefWidth="96.0" resizable="false" sortable="false" text="Name" />

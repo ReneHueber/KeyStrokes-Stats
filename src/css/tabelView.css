@@ -1,0 +1,51 @@
+/* style menu items at context menu */
+.menu-item:focused {
+    -fx-background-color: #5887d1;
+}
+.menu-item .label {
+    -fx-text-fill: #fbfbfb;
+}
+
+.context-menu {
+    -fx-background-color: #3d3d3d;
+}
+
+
+
+/* no focus ring at table view */
+.table-view:focused {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5, 4, 3;
+}
+
+/* style Table view */
+.table-view .column-header,
+.table-view .column-header-background .filler {
+    -fx-background-color:  #3d3d3d;
+}
+.table-view .column-header .label{
+   -fx-text-fill: #fbfbfb;
+   -fx-alignment: CENTER;
+}
+
+.table-view .table-cell{
+    -fx-alignment: CENTER;
+}
+
+.table-row-cell {
+    -fx-background-color: -fx-table-cell-border-color, #fbfbfb;
+    -fx-text-fill: #3d3d3d;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -fx-table-cell-border-color, #e3e3e3;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #5887d1;
+    -fx-text-fill: #fbfbfb;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+

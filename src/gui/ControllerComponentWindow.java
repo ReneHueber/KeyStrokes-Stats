@@ -4,9 +4,12 @@ import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import objects.Component;
 import objects.Keyboard;
@@ -92,6 +95,20 @@ public class ControllerComponentWindow {
             updateTableView();
         });
 
+        ContextMenu menu = createContextMenu();
+
+        componentTV.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent t) {
+                if(t.getButton() == MouseButton.SECONDARY) {
+                    menu.show(componentTV, t.getScreenX(), t.getScreenY());
+                }
+                if (t.getButton() == MouseButton.PRIMARY) {
+                    menu.hide();
+                }
+            }
+        });
 
         setupTableView();
         componentFilterCB.setItems(componentFilterOptionsList);
@@ -126,7 +143,10 @@ public class ControllerComponentWindow {
         addedColumn.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
         retiredColumn.setCellValueFactory(new PropertyValueFactory<>("retiredDate"));
         keyStrokesColumn.setCellValueFactory(new PropertyValueFactory<>("keyStrokes"));
-        componentTV.setContextMenu(createContextMenu());
+        ContextMenu menu = new ContextMenu();
+        MenuItem test = new MenuItem("Test");
+        menu.getItems().add(test);
+        // componentTV.setContextMenu(menu);
     }
 
     /**
@@ -135,6 +155,7 @@ public class ControllerComponentWindow {
      */
     private ContextMenu createContextMenu(){
         // TODO finish contextMenu change style
+        // TODO if component is retired disable retired
         MenuItem retire = new MenuItem("Retire");
         MenuItem delete = new MenuItem("Delete");
         MenuItem edit = new MenuItem("Edit");
@@ -181,6 +202,7 @@ public class ControllerComponentWindow {
         menu.getItems().add(delete);
         menu.getItems().add(edit);
         menu.getItems().add(details);
+
 
         return menu;
     }
