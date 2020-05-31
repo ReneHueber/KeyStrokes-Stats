@@ -41,6 +41,7 @@ public class ControllerAddComponentWindow {
 
     private boolean editComponent = false;
     private boolean dateAdded = false;
+    private ControllerComponentWindow controller;
 
     @FXML
     private Label heading;
@@ -224,6 +225,10 @@ public class ControllerAddComponentWindow {
         // closes the stage if the vales are correct and saved to the db
         saveBtn.setOnAction(event -> {
             if (checkValues()){
+                // update the table view at the component window, if the call comes from this window
+                if (controller != null)
+                    controller.updateTableView();
+
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.close();
             }
@@ -236,6 +241,14 @@ public class ControllerAddComponentWindow {
      */
     public void setSelectedKeyboard(Keyboard selectedKeyboard){
         this.selectedKeyboard = selectedKeyboard;
+    }
+
+    /**
+     * Get's the controller from the Component window, to update the Table view if a new Component is added.
+     * @param controller ControllerComponentWindow class
+     */
+    public void setController(ControllerComponentWindow controller){
+        this.controller = controller;
     }
 
     /**

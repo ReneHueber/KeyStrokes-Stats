@@ -88,6 +88,7 @@ public class ControllerComponentWindow {
             ProcessFxmlFiles addComponentWindow = new ProcessFxmlFiles("../fxml/addComponentWindow.fxml", "Add Component");
             ControllerAddComponentWindow controller = (ControllerAddComponentWindow) addComponentWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
+            controller.setController(this);
             controller.checkComponentExisting("Key Switches");
         });
 
@@ -211,7 +212,7 @@ public class ControllerComponentWindow {
      * Updates the Table view depending on the filter option chosen.
      * Reads the values again from the Table.
      */
-    private void updateTableView(){
+    protected void updateTableView(){
         String selectedOption = componentFilterCB.getSelectionModel().getSelectedItem();
         String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel, keyStrokes, addDate, retiredDate, " +
                 "isActive FROM components WHERE keyboardId = " + selectedKeyboard.getKeyboardId();
