@@ -23,6 +23,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Stats">
                <items>
+                  <MenuItem fx:id="reload" mnemonicParsing="false" text="Reload" />
                   <MenuItem fx:id="detail" mnemonicParsing="false" text="Detail" />
                </items>
             </Menu>

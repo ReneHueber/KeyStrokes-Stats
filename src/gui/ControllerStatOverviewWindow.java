@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import keylogger.KeyLogger;
 import objects.Component;
 import objects.Keyboard;
 
@@ -24,10 +25,15 @@ public class ControllerStatOverviewWindow {
     private ObservableList<Keyboard> allKeyboards;
     private HashMap<Integer, ArrayList<Component>> keyboardComponents;
 
+    private boolean keyLoggerStarted;
+    private KeyLogger keyLogger;
+
     @FXML
     MenuBar menuBar;
     @FXML
     MenuItem selectKeyboard;
+    @FXML
+    MenuItem reload;
     @FXML
     MenuItem detail;
     @FXML
@@ -71,7 +77,16 @@ public class ControllerStatOverviewWindow {
         selectKeyboard.setOnAction(actionEvent -> {
             ProcessFxmlFiles selectKeyboardWindow = new ProcessFxmlFiles("../fxml/selectKeyboardWindow.fxml", "Select Keyboard");
             Stage stage = (Stage) menuBar.getScene().getWindow();
-            selectKeyboardWindow.openInExistingStage(stage);
+            ControllerSelectKeyboardWindow controller = (ControllerSelectKeyboardWindow) selectKeyboardWindow.openInExistingStage(stage);
+            // only if the keylogger started we have to disable the menu bar items
+            if (keyLoggerStarted)
+                controller.disableAddKeyboardsAndComponents(true);
+            controller.setKeyLogger(keyLogger);
+        });
+
+        reload.setOnAction(event -> {
+            allKeyboards = getKeyboardValues();
+            setKeyboardTableValue(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()));
         });
 
         // updates the stat values if the keyboard is changed
@@ -137,7 +152,7 @@ public class ControllerStatOverviewWindow {
         // goes throw all the available keyboards and saves all keySwitch Components
         for (Keyboard keyboard : allKeyboards){
             String sqlStmt = "SELECT id, keyboardId, componentType, componentName, componentBrand, keyPressure, keyTravel," +
-                    "keyStrokes, addDate, isActive FROM components WHERE keyboardId = " + keyboard.getKeyboardId() +
+                    "keyStrokes, addDate, retiredDate, isActive FROM components WHERE keyboardId = " + keyboard.getKeyboardId() +
                     " AND componentType = 'Key Switches'";
             // list of all keySwitch components
             ObservableList<Component> readComponent = ReadDb.selectAllValuesComponents(sqlStmt);
@@ -158,6 +173,22 @@ public class ControllerStatOverviewWindow {
     protected void setKeyboardTableValue(Keyboard selectedKeyboard){
         setStatValues(selectedKeyboard);
         selectKeyboardCB.setValue(selectedKeyboard.getKeyboardName());
+    }
+
+    /**
+     * Set's the value if the keylogger is started at the select keyboard class.
+     * @param keyLoggerStarted If keylogger started
+     */
+    protected void setKeyLoggerStarted(boolean keyLoggerStarted){
+        this.keyLoggerStarted = keyLoggerStarted;
+    }
+
+    /**
+     * Set's the instance of the keylogger class, to stop the keylogger at the select keyboard window.
+     * @param keyLogger Instance of the keylogger class
+     */
+    protected void setKeyLogger(KeyLogger keyLogger){
+        this.keyLogger = keyLogger;
     }
 
     /**

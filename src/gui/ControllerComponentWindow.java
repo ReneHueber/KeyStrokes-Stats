@@ -102,6 +102,13 @@ public class ControllerComponentWindow {
 
             @Override
             public void handle(MouseEvent t) {
+                // disables the retire and edit option if the keyboard is not active
+                Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+                if (selectedComponent != null){
+                    menu.getItems().get(0).setDisable(!selectedComponent.getIsActive());
+                    menu.getItems().get(2).setDisable(!selectedComponent.getIsActive());
+                }
+
                 if(t.getButton() == MouseButton.SECONDARY) {
                     menu.show(componentTV, t.getScreenX(), t.getScreenY());
                 }
@@ -144,10 +151,6 @@ public class ControllerComponentWindow {
         addedColumn.setCellValueFactory(new PropertyValueFactory<>("addedDate"));
         retiredColumn.setCellValueFactory(new PropertyValueFactory<>("retiredDate"));
         keyStrokesColumn.setCellValueFactory(new PropertyValueFactory<>("keyStrokes"));
-        ContextMenu menu = new ContextMenu();
-        MenuItem test = new MenuItem("Test");
-        menu.getItems().add(test);
-        // componentTV.setContextMenu(menu);
     }
 
     /**
@@ -155,7 +158,6 @@ public class ControllerComponentWindow {
      * @return Context Menu for Table View
      */
     private ContextMenu createContextMenu(){
-        // TODO finish contextMenu change style
         // TODO if component is retired disable retired
         MenuItem retire = new MenuItem("Retire");
         MenuItem delete = new MenuItem("Delete");
@@ -203,7 +205,6 @@ public class ControllerComponentWindow {
         menu.getItems().add(delete);
         menu.getItems().add(edit);
         menu.getItems().add(details);
-
 
         return menu;
     }

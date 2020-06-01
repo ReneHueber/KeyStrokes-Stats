@@ -20,7 +20,7 @@ public class Main extends Application {
         javax.swing.SwingUtilities.invokeLater(systemTray::addAppToTray);
 
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/selectKeyboardWindow.fxml"));
-        primaryStage.setTitle("Key Strokes");
+        primaryStage.setTitle("Select Keyboard");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

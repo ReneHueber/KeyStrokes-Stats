@@ -35,6 +35,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     // Menu Key Logger
     @FXML
     private MenuItem start, stop;
+    @FXML
+    private MenuItem reloadValues;
 
     // Menu Stats
     @FXML
@@ -109,41 +111,44 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             Stage stage = (Stage) menuBar.getScene().getWindow();
             ControllerStatOverviewWindow controller = (ControllerStatOverviewWindow) overviewWindow.openInExistingStage(stage);
             controller.setKeyboardTableValue(selectedKeyboard);
+            controller.setKeyLoggerStarted(keyLoggerStarted);
+            controller.setKeyLogger(keyLogger);
         });
 
         about.setOnAction(event -> {
-            String sql = "SELECT SUM(keyStrokes) FROM totalToday";
-            System.out.println(ReadDb.sumDateSpecificKeyStrokes(sql));
         });
 
         // start the key logger if a keyboard is selected
         start.setOnAction(actionEvent -> {
             if (selectedKeyboard != null){
-                start.setDisable(true);
-                stop.setDisable(false);
                 CustomDialogWindow dialogWindow = new CustomDialogWindow("Started Key Logger for the Keyboard:", selectedKeyboard.getKeyboardName());
                 keyLogger = new KeyLogger();
                 keyLogger.setupKeyListener(selectedKeyboard.getKeyboardId());
                 dialogWindow.show();
+                disableAddKeyboardsAndComponents(true);
             }
-            disableAddKeyboardsAndComponents(true);
         });
 
         stop.setOnAction(event -> {
             keyLogger.stopKeylogger();
-            start.setDisable(false);
-            stop.setDisable(true);
             disableAddKeyboardsAndComponents(false);
+            setupListView();
+        });
+
+        reloadValues.setOnAction(event -> {
+            setupListView();
         });
 
         // get's the selected item if the selection is changed
         keyboardLv.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             selectedKeyboard = newValue;
-            // enables the menu items
-            start.setDisable(false);
-            overview.setDisable(false);
-            showComponents.setDisable(false);
-            addComponents.setDisable(false);
+            if (!keyLoggerStarted){
+                // enables the menu items
+                start.setDisable(false);
+                overview.setDisable(false);
+                showComponents.setDisable(false);
+                addComponents.setDisable(false);
+            }
         });
     }
 
@@ -164,10 +169,20 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      * Disable / Enables the menuItem to add a Keyboard or Component if the keyLogger is Running or not Running.
      * @param keyLoggerStarted Keylogger is Running or not.
      */
-    private void disableAddKeyboardsAndComponents(boolean keyLoggerStarted) {
-            addNew.setDisable(keyLoggerStarted);
-            addComponents.setDisable(keyLoggerStarted);
-            this.keyLoggerStarted = keyLoggerStarted;
+    protected void disableAddKeyboardsAndComponents(boolean keyLoggerStarted) {
+        start.setDisable(keyLoggerStarted);
+        stop.setDisable(!keyLoggerStarted);
+        addNew.setDisable(keyLoggerStarted);
+        addComponents.setDisable(keyLoggerStarted);
+        this.keyLoggerStarted = keyLoggerStarted;
+    }
+
+    /**
+     * Get's the Keylogger instance from the stat overview class, to stop it.
+     * @param keyLogger Instance of KeyLogger class
+     */
+    protected void setKeyLogger(KeyLogger keyLogger){
+        this.keyLogger = keyLogger;
     }
 
     /**
