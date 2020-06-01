@@ -10,12 +10,15 @@ import keylogger.KeyLogger;
 import objects.Component;
 import objects.Keyboard;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ControllerStatOverviewWindow {
 
     private final ObservableList<String> dateOptions = FXCollections.observableArrayList(
+            "all",
+            "today",
             "last 7 days",
             "last 30 days",
             "this year",
@@ -68,7 +71,7 @@ public class ControllerStatOverviewWindow {
 
         // set's the options for the checkboxes
         selectDateCB.setItems(dateOptions);
-        selectDateCB.setValue(dateOptions.get(1));
+        selectDateCB.setValue(dateOptions.get(0));
 
         selectKeyboardCB.setItems(createSelectKeyboardOptions());
         setupDatePicker();
@@ -99,8 +102,13 @@ public class ControllerStatOverviewWindow {
         });
 
         selectDateCB.setOnAction(event -> {
+            // set's the new stat values
+            setStatValues(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()));
             // checks if the date picker should be displayed
             customDateSelected();
+        });
+
+        about.setOnAction(event -> {
         });
     }
 
@@ -142,6 +150,7 @@ public class ControllerStatOverviewWindow {
         return null;
     }
 
+    // TODO add date options
     /**
      * Reads all KeySwitch Components from all available Keyboards.
      * Active and not Active Components.
@@ -198,11 +207,44 @@ public class ControllerStatOverviewWindow {
     private void setStatValues(Keyboard selectedKeyboard){
         keyboardName.setText(selectedKeyboard.getKeyboardName());
         keyboardType.setText(selectedKeyboard.getKeyboardType());
-        timeTyped.setText(formatTimeTyped(selectedKeyboard.getTotalTimeKeyPressed()));
-        keyStrokes.setText(Integer.toString(selectedKeyboard.getTotalKeyStrokes()));
+        getKeyStrokesAndTimeTyped(selectedKeyboard.getKeyboardId());
         setKeyTravelPressure(selectedKeyboard.getKeyboardId());
     }
 
+    // TODO date option for custom date, date picker select to values
+    /**
+     * Sum's the KeyStrokes and the timePressed from the totalToday Table, depending on the dateOption chosen.
+     * @param keyboardId The id of the selected Keyboard
+     */
+    private void getKeyStrokesAndTimeTyped(int keyboardId){
+        String dateOption = selectDateCB.getSelectionModel().getSelectedItem();
+        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE keyboardId = " + keyboardId;
+
+        // add's the right dates to the sql String
+        switch(dateOption){
+            case "today": sqlStmt += " AND date = '" + LocalDate.now().toString() + "'";
+                          break;
+            case "last 7 days": sqlStmt += " AND date >= '" + LocalDate.now().minusDays(7).toString() + "'";
+                                break;
+            case "last 30 days": sqlStmt += " AND date >= '" + LocalDate.now().minusDays(30).toString() + "'";
+                                 break;
+            case "this year": LocalDate date = LocalDate.now();
+                              int dayOfYear = date.getDayOfYear();
+                              sqlStmt += " AND date >= '" + date.minusDays(dayOfYear - 1).toString() + "'";
+        }
+        int keyStrokesValue = ReadDb.executeIntSumFunction(sqlStmt);
+        sqlStmt = sqlStmt.replace("keyStrokes", "timePressed");
+        float timePressedValue = ReadDb.executeFloatSumFunction(sqlStmt);
+
+        // set's the labels
+        keyStrokes.setText(Integer.toString(keyStrokesValue));
+        timeTyped.setText(formatTimeTyped(timePressedValue));
+    }
+
+    /**
+     * Set's the values for the key Travel and key Pressure Labels.
+     * @param keyboardId The keyboard id to get the values from the selected Keyboard
+     */
     private void setKeyTravelPressure(int keyboardId){
         String[] totalValues = calculateTotalValues(keyboardId);
 
@@ -217,6 +259,11 @@ public class ControllerStatOverviewWindow {
     }
 
 
+    /**
+     * Calculates the key Travel and key Pressure values, with the values from the table.
+     * @param keyboardId The keyboard id to get the values from the selected Keyboard
+     * @return KeyTravel, KeyPressure and if components are existing (all as String)
+     */
     private String[] calculateTotalValues(int keyboardId){
         ArrayList<Component> components = keyboardComponents.get(keyboardId);
         int keyTravel = 0;

@@ -102,11 +102,11 @@ public class ReadDb {
     }
 
     /**
-     * Sum's the Keystrokes form the totalToday Table since a specific Date.
+     * Sum's the wished Int Values and returns the total Value.
      * @param sqlStmt Sql Statement with the selected start Date.
-     * @return The Total Keystrokes since the specific Date.
+     * @return The Total int Values since the specific Date.
      */
-    public static int sumDateSpecificKeyStrokes(String sqlStmt){
+    public static int executeIntSumFunction(String sqlStmt){
         try(Connection conn = ConnectDb.connect(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStmt)){
@@ -114,6 +114,22 @@ public class ReadDb {
         } catch (SQLException e){
             System.out.println(e.getMessage());
             return 0;
+        }
+    }
+
+    /**
+     * Sum's the wished Float Values and returns the total Value.
+     * @param sqlStmt Sql Statement with the selected start Date.
+     * @return The Total float Values since the specific Date.
+     */
+    public static float executeFloatSumFunction(String sqlStmt){
+        try(Connection conn = ConnectDb.connect(url);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlStmt)){
+            return rs.getFloat(1);
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            return 0.0f;
         }
     }
 

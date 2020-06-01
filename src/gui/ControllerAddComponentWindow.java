@@ -14,7 +14,6 @@ import objects.Keyboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -422,7 +421,7 @@ public class ControllerAddComponentWindow {
      */
     private int getDateSpecificKeyStrokes(String selectedDate){
         String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
-        return ReadDb.sumDateSpecificKeyStrokes(sqlStmt);
+        return ReadDb.executeIntSumFunction(sqlStmt);
     }
 
     /**
