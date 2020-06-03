@@ -3,8 +3,11 @@ package gui;
 import database.ReadDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
 import objects.Component;
@@ -12,6 +15,7 @@ import objects.Keyboard;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ControllerStatOverviewWindow {
@@ -27,6 +31,9 @@ public class ControllerStatOverviewWindow {
 
     private ObservableList<Keyboard> allKeyboards;
     private HashMap<Integer, ArrayList<Component>> keyboardComponents;
+    private ObservableList<LocalDate> selectedDates = FXCollections.observableArrayList();
+    private LocalDate[] clickedDates = new LocalDate[2];
+    private int arrayPos = 0;
 
     private boolean keyLoggerStarted;
     private KeyLogger keyLogger;
@@ -321,12 +328,110 @@ public class ControllerStatOverviewWindow {
         }
     }
 
+    // TODO finish multi date picker
+    // https://stackoverflow.com/questions/60571764/select-multiple-dates-with-datepicker
     /**
      * Set up the properties of the date picker.
      */
     private void setupDatePicker(){
         customDate.setConverter(datePickerConverter.getConverter());
         customDate.setEditable(false);
+
+        EventHandler<MouseEvent> mouseClickedEventHandler = (MouseEvent clickEvent) ->
+        {
+            if (clickEvent.getButton() == MouseButton.PRIMARY) {
+                if (arrayPos >= 2)
+                    arrayPos = 0;
+                clickedDates[arrayPos] = customDate.getValue();
+                System.out.println(Arrays.toString(clickedDates));
+                /*
+                if (!selectedDates.contains(customDate.getValue())) {
+                    selectedDates.add(customDate.getValue());
+                }
+                else {
+                    selectedDates.remove(customDate.getValue());
+
+                    customDate.setValue(customDate.getValue());
+                }
+
+                 */
+                addDaysBetween();
+                System.out.println(selectedDates.toString());
+            }
+            customDate.show();
+            clickEvent.consume();
+            arrayPos++;
+        };
+
+        customDate.setDayCellFactory((DatePicker param) -> new DateCell()
+        {
+            @Override
+            public void updateItem(LocalDate item, boolean empty)
+            {
+                super.updateItem(item, empty);
+
+                if (item != null && !empty) {
+
+                    addEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
+                }
+                else {
+                    removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
+                }
+
+                if (selectedDates.contains(item)) {
+                    setStyle("-fx-background-color: rgba(3, 169, 244, 0.7);");
+
+                }
+                else {
+                    setStyle(null);
+                }
+            }
+        });
+
     }
 
+    private void addDaysBetween(){
+
+        if (clickedDates[0] != null && clickedDates[1] != null){
+            if (clickedDates[0].getDayOfYear() != clickedDates[1].getDayOfYear()){
+                selectedDates.clear();
+                for (int i = clickedDates[0].getDayOfYear(); i <= clickedDates[1].getDayOfYear(); i++){
+                    LocalDate addDate = LocalDate.ofYearDay(clickedDates[0].getYear(), i);
+                    if (!selectedDates.contains(addDate))
+                        selectedDates.add(addDate);
+                }
+            }
+            else {
+                selectedDates.clear();
+            }
+
+        }
+
+        /*
+        if (selectedDates.size() >= 2){
+            LocalDate min = selectedDates.get(0);
+            LocalDate max = min;
+            for (LocalDate date : selectedDates){
+                if (date.getDayOfYear() < min.getDayOfYear()){
+                    min = date;
+                }
+                else if (date.getDayOfYear() > max.getDayOfYear()){
+                    max = date;
+                }
+            }
+
+            if (clicked.getDayOfYear() < min.getDayOfYear())
+                min = clicked;
+            else
+                max = clicked;
+
+            selectedDates.clear();
+            for (int i = min.getDayOfYear(); i <= max.getDayOfYear(); i++){
+                LocalDate addDate = LocalDate.ofYearDay(min.getYear(), i);
+                if (!selectedDates.contains(addDate))
+                    selectedDates.add(addDate);
+            }
+        }
+        */
+    }
 }
