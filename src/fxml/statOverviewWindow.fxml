@@ -131,14 +131,22 @@
             <HBox spacing="5.0">
                <children>
                   <Separator orientation="VERTICAL" prefHeight="200.0" stylesheets="@../css/style.css" />
-                  <VBox spacing="60.0">
+                  <VBox spacing="10.0">
                      <children>
                         <Label fx:id="keyTravel" text="Label" textFill="#5887d1">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Label>
-                        <Label text="KEY TRAVEL (M)" />
+                        <Label text="KEY TRAVEL (M)">
+                           <VBox.margin>
+                              <Insets top="38.0" />
+                           </VBox.margin></Label>
+                        <Label text="All Time">
+                           <VBox.margin>
+                              <Insets top="-5.0" />
+                           </VBox.margin>
+                        </Label>
                      </children>
                      <padding>
                         <Insets top="5.0" />
@@ -149,14 +157,22 @@
             <HBox spacing="5.0">
                <children>
                   <Separator orientation="VERTICAL" prefHeight="200.0" stylesheets="@../css/style.css" />
-                  <VBox spacing="60.0">
+                  <VBox spacing="10.0">
                      <children>
                         <Label fx:id="keyPressure" text="Label" textFill="#5887d1">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
                         </Label>
-                        <Label text="KEY PRESSUR (N)" />
+                        <Label text="KEY PRESSUR (N)">
+                           <VBox.margin>
+                              <Insets top="38.0" />
+                           </VBox.margin></Label>
+                        <Label text="All Time">
+                           <VBox.margin>
+                              <Insets top="-5.0" />
+                           </VBox.margin>
+                        </Label>
                      </children>
                      <padding>
                         <Insets top="5.0" />

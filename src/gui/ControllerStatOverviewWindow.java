@@ -224,32 +224,31 @@ public class ControllerStatOverviewWindow {
         setKeyTravelPressure(selectedKeyboard.getKeyboardId());
     }
 
-    // TODO date option for custom date, date picker select to values
     /**
      * Sum's the KeyStrokes and the timePressed from the totalToday Table, depending on the dateOption chosen.
      * @param keyboardId The id of the selected Keyboard
      */
     private void setKeyStrokesAndTimeTyped(int keyboardId){
         String dateOption = selectDateCB.getSelectionModel().getSelectedItem();
-        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE keyboardId = " + keyboardId;
+        String sqlKeyStrokesTimeStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE keyboardId = " + keyboardId;
         boolean readTable = true;
 
         // add's the right dates to the sql String
         switch(dateOption){
-            case "today": sqlStmt += " AND date = '" + LocalDate.now().toString() + "'";
+            case "today": sqlKeyStrokesTimeStmt += " AND date = '" + LocalDate.now().toString() + "'";
                           break;
-            case "last 7 days": sqlStmt += " AND date >= '" + LocalDate.now().minusDays(7).toString() + "'";
+            case "last 7 days": sqlKeyStrokesTimeStmt += " AND date >= '" + LocalDate.now().minusDays(7).toString() + "'";
                                 break;
-            case "last 30 days": sqlStmt += " AND date >= '" + LocalDate.now().minusDays(30).toString() + "'";
+            case "last 30 days": sqlKeyStrokesTimeStmt += " AND date >= '" + LocalDate.now().minusDays(30).toString() + "'";
                                  break;
             case "this year": LocalDate date = LocalDate.now();
                               int dayOfYear = date.getDayOfYear();
-                              sqlStmt += " AND date >= '" + date.minusDays(dayOfYear - 1).toString() + "'";
+                              sqlKeyStrokesTimeStmt += " AND date >= '" + date.minusDays(dayOfYear - 1).toString() + "'";
                               break;
             case "custom date": if (startDate != null && endDate != null)
-                                    sqlStmt += " AND date >= '" + startDate.toString() + "' AND date <= '" + endDate.toString() + "'";
+                                    sqlKeyStrokesTimeStmt += " AND date >= '" + startDate.toString() + "' AND date <= '" + endDate.toString() + "'";
                                 else if (startDate != null)
-                                    sqlStmt += " AND date >= '" + startDate.toString() + "'";
+                                    sqlKeyStrokesTimeStmt += " AND date >= '" + startDate.toString() + "'";
                                 else
                                     readTable = false;
                                 break;
@@ -257,9 +256,9 @@ public class ControllerStatOverviewWindow {
         int keyStrokesValue = 0;
         float timePressedValue = 0.0f;
         if (readTable){
-            keyStrokesValue = ReadDb.executeIntSumFunction(sqlStmt);
-            sqlStmt = sqlStmt.replace("keyStrokes", "timePressed");
-            timePressedValue = ReadDb.executeFloatSumFunction(sqlStmt);
+            keyStrokesValue = ReadDb.executeIntSumFunction(sqlKeyStrokesTimeStmt);
+            sqlKeyStrokesTimeStmt = sqlKeyStrokesTimeStmt.replace("keyStrokes", "timePressed");
+            timePressedValue = ReadDb.executeFloatSumFunction(sqlKeyStrokesTimeStmt);
         }
 
         // set's the labels
