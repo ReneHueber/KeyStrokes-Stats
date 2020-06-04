@@ -15,7 +15,6 @@ import objects.Keyboard;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class ControllerStatOverviewWindow {
@@ -31,9 +30,9 @@ public class ControllerStatOverviewWindow {
 
     private ObservableList<Keyboard> allKeyboards;
     private HashMap<Integer, ArrayList<Component>> keyboardComponents;
-    private ObservableList<LocalDate> selectedDates = FXCollections.observableArrayList();
-    private LocalDate[] clickedDates = new LocalDate[2];
-    private int arrayPos = 0;
+    ObservableList<LocalDate> selectedDates = FXCollections.observableArrayList();
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private boolean keyLoggerStarted;
     private KeyLogger keyLogger;
@@ -54,7 +53,13 @@ public class ControllerStatOverviewWindow {
     @FXML
     private ComboBox<String> selectKeyboardCB;
     @FXML
-    private DatePicker customDate;
+    private DatePicker startDatePicker;
+    @FXML
+    private DatePicker endDatePicker;
+    @FXML
+    private Label startLabel;
+    @FXML
+    private Label endLabel;
 
     @FXML
     private Label keyboardType;
@@ -81,7 +86,8 @@ public class ControllerStatOverviewWindow {
         selectDateCB.setValue(dateOptions.get(0));
 
         selectKeyboardCB.setItems(createSelectKeyboardOptions());
-        setupDatePicker();
+        setupStartDate();
+        setupEndDate();
 
         // changes the scene to the select keyboard window
         selectKeyboard.setOnAction(actionEvent -> {
@@ -320,118 +326,183 @@ public class ControllerStatOverviewWindow {
      */
     private void customDateSelected(){
         if (selectDateCB.getSelectionModel().getSelectedItem().equals("custom Date")){
-            customDate.setVisible(true);
+            startDatePicker.setVisible(true);
+            endDatePicker.setVisible(true);
+            startLabel.setVisible(true);
+            endLabel.setVisible(true);
         }
         else{
-            customDate.setVisible(false);
-            customDate.setValue(null);
+            startDatePicker.setVisible(false);
+            startDatePicker.setValue(null);
+            endDatePicker.setVisible(false);
+            endDatePicker.setValue(null);
+            startLabel.setVisible(false);
+            endLabel.setVisible(false);
         }
     }
 
     // TODO finish multi date picker
     // https://stackoverflow.com/questions/60571764/select-multiple-dates-with-datepicker
     /**
-     * Set up the properties of the date picker.
+     * Set up the properties of the start datePicker.
      */
-    private void setupDatePicker(){
-        customDate.setConverter(datePickerConverter.getConverter());
-        customDate.setEditable(false);
+    private void setupStartDate(){
+        startDatePicker.setConverter(datePickerConverter.getConverter());
+        startDatePicker.setEditable(false);
 
-        EventHandler<MouseEvent> mouseClickedEventHandler = (MouseEvent clickEvent) ->
-        {
-            if (clickEvent.getButton() == MouseButton.PRIMARY) {
-                if (arrayPos >= 2)
-                    arrayPos = 0;
-                clickedDates[arrayPos] = customDate.getValue();
-                System.out.println(Arrays.toString(clickedDates));
-                /*
-                if (!selectedDates.contains(customDate.getValue())) {
-                    selectedDates.add(customDate.getValue());
-                }
-                else {
-                    selectedDates.remove(customDate.getValue());
+        // set's the start value, opens the endDate DatePicker
+        startDatePicker.setOnAction(event -> {
+            startDate = startDatePicker.getValue();
+            selectedDates.add(startDate);
+            addDaysBetween();
+            endDatePicker.show();
+        });
 
-                    customDate.setValue(customDate.getValue());
-                }
-
-                 */
-                addDaysBetween();
-                System.out.println(selectedDates.toString());
-            }
-            customDate.show();
-            clickEvent.consume();
-            arrayPos++;
-        };
-
-        customDate.setDayCellFactory((DatePicker param) -> new DateCell()
+        startDatePicker.setDayCellFactory((DatePicker param) -> new DateCell()
         {
             @Override
             public void updateItem(LocalDate item, boolean empty)
             {
                 super.updateItem(item, empty);
 
-                if (item != null && !empty) {
-
-                    addEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
-                }
-                else {
-                    removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
-                }
-
+                // highlight the days that are selected
                 if (selectedDates.contains(item)) {
-                    setStyle("-fx-background-color: rgba(3, 169, 244, 0.7);");
-
+                    setStyle("-fx-background-color: rgba(88, 134, 209 0.7);");
                 }
                 else {
                     setStyle(null);
+                    setStyle("-fx-text-fill: black;");
                 }
             }
         });
-
     }
 
-    private void addDaysBetween(){
+    /**
+     * Setup the properties of the end datePicker.
+     */
+    private void setupEndDate(){
+        endDatePicker.setConverter(datePickerConverter.getConverter());
+        endDatePicker.setEditable(false);
 
-        if (clickedDates[0] != null && clickedDates[1] != null){
-            if (clickedDates[0].getDayOfYear() != clickedDates[1].getDayOfYear()){
-                selectedDates.clear();
-                for (int i = clickedDates[0].getDayOfYear(); i <= clickedDates[1].getDayOfYear(); i++){
-                    LocalDate addDate = LocalDate.ofYearDay(clickedDates[0].getYear(), i);
-                    if (!selectedDates.contains(addDate))
-                        selectedDates.add(addDate);
+        // event handler to keep the datePicker window open, a day has been chosen
+        EventHandler<MouseEvent> mouseClickedEventHandler = (MouseEvent clickEvent) -> {
+            boolean equalDates = false;
+            if (clickEvent.getButton() == MouseButton.PRIMARY) {
+                endDate = endDatePicker.getValue();
+                equalDates = addDaysBetween();
+            }
+            // if dates are not equal the datePicker stays open
+            if (!equalDates){
+                endDatePicker.show();
+                clickEvent.consume();
+            }
+        };
+
+        // to add the eventHandler, disable the not possible days and set a different color for the selected days
+        endDatePicker.setDayCellFactory((DatePicker param) -> new DateCell(){
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item != null && !empty){
+                    addEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
+
+                    // days that are smaller as the startDate get disabled
+                    if (item.getDayOfYear() < startDate.getDayOfYear() && item.getYear() <= startDate.getYear()){
+                        setDisable(true);
+                    }
+                    else {
+                        setDisable(false);
+                        // highlight the days that are selected
+                        if (selectedDates.contains(item)) {
+                            setStyle("-fx-background-color: rgba(88, 134, 209 0.7);");
+                        }
+                        else {
+                            setStyle(null);
+                            setStyle("-fx-text-fill: black;");
+                        }
+                    }
                 }
+                else
+                    removeEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
+            }
+        });
+    }
+
+    /**
+     * If the start & endDate are equal the Values of the endDatePicker get's cleared.
+     * If the startDate is bigger than the endDate, the value of the endDate is the startDate plus one Day.
+     * Otherwise all the days between start & endDate are selected.
+     * @return True if the Dates are Equal
+     */
+    private boolean addDaysBetween() {
+        // only check the days if both Dates are not null
+        if (startDate != null && endDate != null){
+            selectedDates.clear();
+            // if the days are equal the vales of the end date are cleared
+            if (startDate.toString().equals(endDate.toString())){
+                endDate = null;
+                endDatePicker.setValue(null);
+                endDatePicker.getEditor().setText("");
+                selectedDates.add(startDate);
+                return true;
             }
             else {
-                selectedDates.clear();
+                // if the start date is bigger than the end date, the end date is set to start date plus one day.
+                if (startDate.getDayOfYear() > endDate.getDayOfYear() && (startDate.getYear() > endDate.getYear() || startDate.getYear() == endDate.getYear())){
+                    selectedDates.add(startDate);
+                    endDate = LocalDate.ofYearDay(startDate.getYear(), startDate.getDayOfYear() + 1);
+                    endDatePicker.setValue(endDate);
+                    selectedDates.add(endDate);
+                }
+                else{
+                    for (int year = startDate.getYear(); year <= endDate.getYear(); year++){
+                        // all values between the start & endDate are added to selected Dates
+                        if (startDate.getYear() != endDate.getYear()){
+                            int startDay = 1;
+                            int endDay = 1;
+
+                            LocalDate currentYear = LocalDate.ofYearDay(year, 1);
+                            if (year == startDate.getYear()){
+                                startDay = startDate.getDayOfYear();
+                                endDay = currentYear.lengthOfYear();
+                            }
+                            else if (year == endDate.getYear()){
+                                endDay = endDate.getDayOfYear();
+                            }
+                            else {
+                                endDay = currentYear.lengthOfYear();
+                            }
+
+                            for (int day = startDay; day <= endDay; day++){
+                                LocalDate addDate = LocalDate.ofYearDay(year, day);
+                                if (!selectedDates.contains(addDate)) {
+                                    selectedDates.add(addDate);
+                                }
+                            }
+
+                        }
+                        else {
+                            for (int i = startDate.getDayOfYear(); i <= endDate.getDayOfYear(); i++) {
+                                LocalDate addDate = LocalDate.ofYearDay(year, i);
+                                if (!selectedDates.contains(addDate)) {
+                                    selectedDates.add(addDate);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-
         }
-
         /*
-        if (selectedDates.size() >= 2){
-            LocalDate min = selectedDates.get(0);
-            LocalDate max = min;
-            for (LocalDate date : selectedDates){
-                if (date.getDayOfYear() < min.getDayOfYear()){
-                    min = date;
-                }
-                else if (date.getDayOfYear() > max.getDayOfYear()){
-                    max = date;
-                }
-            }
-
-            if (clicked.getDayOfYear() < min.getDayOfYear())
-                min = clicked;
-            else
-                max = clicked;
-
-            selectedDates.clear();
-            for (int i = min.getDayOfYear(); i <= max.getDayOfYear(); i++){
-                LocalDate addDate = LocalDate.ofYearDay(min.getYear(), i);
-                if (!selectedDates.contains(addDate))
-                    selectedDates.add(addDate);
-            }
-        }
+        * after the values are equal, end date is set null
+        * so the list has the be cleared because otherwise, if you only change the startDate,
+        * the values are always added to the lis
         */
+        else if (startDate != null){
+            selectedDates.clear();
+            selectedDates.add(startDate);
+        }
+        return false;
     }
 }
