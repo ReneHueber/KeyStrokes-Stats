@@ -25,7 +25,7 @@ public class ControllerStatOverviewWindow {
             "last 7 days",
             "last 30 days",
             "this year",
-            "custom Date"
+            "custom date"
     );
 
     private ObservableList<Keyboard> allKeyboards;
@@ -220,7 +220,7 @@ public class ControllerStatOverviewWindow {
     private void setStatValues(Keyboard selectedKeyboard){
         keyboardName.setText(selectedKeyboard.getKeyboardName());
         keyboardType.setText(selectedKeyboard.getKeyboardType());
-        getKeyStrokesAndTimeTyped(selectedKeyboard.getKeyboardId());
+        setKeyStrokesAndTimeTyped(selectedKeyboard.getKeyboardId());
         setKeyTravelPressure(selectedKeyboard.getKeyboardId());
     }
 
@@ -229,9 +229,10 @@ public class ControllerStatOverviewWindow {
      * Sum's the KeyStrokes and the timePressed from the totalToday Table, depending on the dateOption chosen.
      * @param keyboardId The id of the selected Keyboard
      */
-    private void getKeyStrokesAndTimeTyped(int keyboardId){
+    private void setKeyStrokesAndTimeTyped(int keyboardId){
         String dateOption = selectDateCB.getSelectionModel().getSelectedItem();
         String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE keyboardId = " + keyboardId;
+        boolean readTable = true;
 
         // add's the right dates to the sql String
         switch(dateOption){
@@ -244,10 +245,22 @@ public class ControllerStatOverviewWindow {
             case "this year": LocalDate date = LocalDate.now();
                               int dayOfYear = date.getDayOfYear();
                               sqlStmt += " AND date >= '" + date.minusDays(dayOfYear - 1).toString() + "'";
+                              break;
+            case "custom date": if (startDate != null && endDate != null)
+                                    sqlStmt += " AND date >= '" + startDate.toString() + "' AND date <= '" + endDate.toString() + "'";
+                                else if (startDate != null)
+                                    sqlStmt += " AND date >= '" + startDate.toString() + "'";
+                                else
+                                    readTable = false;
+                                break;
         }
-        int keyStrokesValue = ReadDb.executeIntSumFunction(sqlStmt);
-        sqlStmt = sqlStmt.replace("keyStrokes", "timePressed");
-        float timePressedValue = ReadDb.executeFloatSumFunction(sqlStmt);
+        int keyStrokesValue = 0;
+        float timePressedValue = 0.0f;
+        if (readTable){
+            keyStrokesValue = ReadDb.executeIntSumFunction(sqlStmt);
+            sqlStmt = sqlStmt.replace("keyStrokes", "timePressed");
+            timePressedValue = ReadDb.executeFloatSumFunction(sqlStmt);
+        }
 
         // set's the labels
         keyStrokes.setText(Integer.toString(keyStrokesValue));
@@ -325,7 +338,7 @@ public class ControllerStatOverviewWindow {
      * Displays or hides the date picker.
      */
     private void customDateSelected(){
-        if (selectDateCB.getSelectionModel().getSelectedItem().equals("custom Date")){
+        if (selectDateCB.getSelectionModel().getSelectedItem().equals("custom date")){
             startDatePicker.setVisible(true);
             endDatePicker.setVisible(true);
             startLabel.setVisible(true);
@@ -333,16 +346,12 @@ public class ControllerStatOverviewWindow {
         }
         else{
             startDatePicker.setVisible(false);
-            startDatePicker.setValue(null);
             endDatePicker.setVisible(false);
-            endDatePicker.setValue(null);
             startLabel.setVisible(false);
             endLabel.setVisible(false);
         }
     }
 
-    // TODO finish multi date picker
-    // https://stackoverflow.com/questions/60571764/select-multiple-dates-with-datepicker
     /**
      * Set up the properties of the start datePicker.
      */
@@ -356,6 +365,7 @@ public class ControllerStatOverviewWindow {
             selectedDates.add(startDate);
             addDaysBetween();
             endDatePicker.show();
+            setKeyStrokesAndTimeTyped(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()).getKeyboardId());
         });
 
         startDatePicker.setDayCellFactory((DatePicker param) -> new DateCell()
@@ -365,13 +375,21 @@ public class ControllerStatOverviewWindow {
             {
                 super.updateItem(item, empty);
 
-                // highlight the days that are selected
-                if (selectedDates.contains(item)) {
-                    setStyle("-fx-background-color: rgba(88, 134, 209 0.7);");
-                }
-                else {
-                    setStyle(null);
-                    setStyle("-fx-text-fill: black;");
+                if (item != null && !empty){
+                    LocalDate currentDate = LocalDate.now();
+                    if (item.getDayOfYear() > currentDate.getDayOfYear() || item.getYear() > currentDate.getYear()){
+                        setDisable(true);
+                    }
+                    else {
+                        // highlight the days that are selected
+                        if (selectedDates.contains(item)) {
+                            setStyle("-fx-background-color: rgba(88, 134, 209 0.7);");
+                        }
+                        else {
+                            setStyle(null);
+                            setStyle("-fx-text-fill: black;");
+                        }
+                    }
                 }
             }
         });
@@ -396,6 +414,7 @@ public class ControllerStatOverviewWindow {
                 endDatePicker.show();
                 clickEvent.consume();
             }
+            setKeyStrokesAndTimeTyped(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()).getKeyboardId());
         };
 
         // to add the eventHandler, disable the not possible days and set a different color for the selected days
@@ -407,8 +426,10 @@ public class ControllerStatOverviewWindow {
                 if (item != null && !empty){
                     addEventHandler(MouseEvent.MOUSE_CLICKED, mouseClickedEventHandler);
 
+                    LocalDate currentDate = LocalDate.now();
                     // days that are smaller as the startDate get disabled
-                    if (item.getDayOfYear() < startDate.getDayOfYear() && item.getYear() <= startDate.getYear()){
+                    if ((item.getDayOfYear() < startDate.getDayOfYear() || item.getYear() < startDate.getYear()) ||
+                            (item.getDayOfYear() > currentDate.getDayOfYear() || item.getYear() > currentDate.getYear())){
                         setDisable(true);
                     }
                     else {
