@@ -6,10 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import keylogger.KeyLogger;
 import objects.Keyboard;
@@ -157,12 +154,52 @@ public class ControllerSelectKeyboardWindow implements Initializable {
      */
     public void setupListView(){
         keyboardLv.setCellFactory(KeyboardsListViewCell -> new KeyboardsListViewCell());
+        updateListView();
+        keyboardLv.setPlaceholder(new Label("No Keyboards added"));
+        keyboardLv.setContextMenu(createContextMenu());
+    }
+
+    private void updateListView(){
         String sqlStmt = "SELECT id, keyboardName, keyboardType, layout, totKeystrokes, totTimePressed, usedSince, lastUsed " +
                 "FROM keyboards";
         keyboardsObservableList = ReadDb.selectAllValuesKeyboard(sqlStmt);
 
         keyboardLv.setItems(keyboardsObservableList);
-        keyboardLv.setPlaceholder(new Label("No Keyboards added"));
+    }
+
+    /**
+     * Crates the Context Menu for the Keyboard List View.
+     * @return Created Context Menu
+     */
+    private ContextMenu createContextMenu(){
+        ContextMenu cm = new ContextMenu();
+
+        MenuItem edit = new MenuItem("Edit");
+        MenuItem delete = new MenuItem("Delete");
+
+        edit.setOnAction(event -> {
+            System.out.println("edit");
+            ProcessFxmlFiles openEditWindow;
+            if (keyboardLv.getSelectionModel().getSelectedItem().getLayout().equals("split")){
+                openEditWindow = new ProcessFxmlFiles("../fxml/splitSelectedWindow.fxml", "Edit Keyboard");
+            }
+            else{
+                openEditWindow = new ProcessFxmlFiles("../fxml/standardSelectedWindow.fxml", "Edit Keyboard");
+            }
+
+
+            ControllerAddKeyboardWindow controller = (ControllerAddKeyboardWindow) openEditWindow.openInNewStage();
+            controller.setSelectedKeyboard(keyboardLv.getSelectionModel().getSelectedItem());
+            controller.changeGuiEditKeyboard();
+        });
+
+        delete.setOnAction(event -> {
+            WriteDb.deleteById("keyboards", keyboardLv.getSelectionModel().getSelectedItem().getKeyboardId());
+            updateListView();
+        });
+
+        cm.getItems().addAll(edit, delete);
+        return cm;
     }
 
     /**

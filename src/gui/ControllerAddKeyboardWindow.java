@@ -25,6 +25,8 @@ public class ControllerAddKeyboardWindow {
     private String keyboardStyle = "split";
     protected Stage parentStage;
     private ObservableList<Keyboard> allKeyboards = FXCollections.observableArrayList();
+    private boolean editKeyboard = false;
+    private Keyboard selectedKeyboard;
 
     @FXML
     private ImageView splitLayoutIv, standardLayoutIv;
@@ -122,8 +124,37 @@ public class ControllerAddKeyboardWindow {
     }
 
     /**
+     * Set's the Selected Keyboard Variable.
+     * @param selectedKeyboard Selected Keyboard
+     */
+    protected void setSelectedKeyboard(Keyboard selectedKeyboard){
+        this.selectedKeyboard = selectedKeyboard;
+    }
+
+    /**
+     * Changes the Gui to Edit the Keyboard, and set's the Values of the selected Keyboard if the keyboard styles are equal.
+     */
+    protected void changeGuiEditKeyboard(){
+        confirm.setText("Edit");
+        if (selectedKeyboard.getLayout().equals(keyboardStyle)){
+            setKeyboardValues();
+        }
+
+        editKeyboard = true;
+    }
+
+    /**
+     * Set's the Values of the Selected Keyboard
+     */
+    private void setKeyboardValues(){
+        name.setText(selectedKeyboard.getKeyboardName());
+        type.setText(selectedKeyboard.getKeyboardType());
+        datePicker.setValue(LocalDate.parse(selectedKeyboard.getInUseSince()));
+    }
+
+    /**
      * Changes the Scenes in the current window.
-     * Passes the Keyboard Style String
+     * Passes the needed Values to the new Controller.
      * @param event The Mouse click event of the Image View
      * @param fxmlLayout Path to fxml file that should be loaded
      */
@@ -131,14 +162,20 @@ public class ControllerAddKeyboardWindow {
         // get's the current stage and changes the scene
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlLayout));
-            Parent rootSplitSelected = fxmlLoader.load();
+            Parent root = fxmlLoader.load();
             // passes the keyboard Style Value to the new controller to save the value
             ControllerAddKeyboardWindow controller = fxmlLoader.getController();
             controller.keyboardStyle = this.keyboardStyle;
             controller.parentStage = this.parentStage;
+            controller.editKeyboard = this.editKeyboard;
+            controller.selectedKeyboard = this.selectedKeyboard;
+
+            // changes the gui and set's the Keyboard values if the keyboard gets edit
+            if (editKeyboard)
+                controller.changeGuiEditKeyboard();
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(rootSplitSelected));
+            stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e){
             e.printStackTrace();

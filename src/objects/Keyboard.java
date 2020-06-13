@@ -87,6 +87,10 @@ public class Keyboard {
         return formatStringDate(inUseSince);
     }
 
+    public String getLayout(){
+        return layout;
+    }
+
     public int getKeyboardId(){
         return id;
     }
