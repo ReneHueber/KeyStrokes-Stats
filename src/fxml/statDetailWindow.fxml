@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.ControllerStatDetailWindow">
+   <children>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="40.0">
+         <children>
+            <Label text="Select Statistic">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="statistic" prefWidth="150.0" stylesheets="@../css/style.css" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </HBox>
+      <BarChart fx:id="daysChar" title="Key Strokes Per Day">
+        <xAxis>
+          <CategoryAxis fx:id="daysX" label="Days" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="daysY" label="Key Strokes" side="LEFT" />
+        </yAxis>
+      </BarChart>
+      <BarChart fx:id="monthsChar" title="Key Strokes Per Month">
+        <xAxis>
+          <CategoryAxis fx:id="monthsX" label="Months" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="monthsY" label="Key Strokes" side="LEFT" />
+        </yAxis>
+      </BarChart>
+   </children>
+</VBox>

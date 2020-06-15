@@ -38,6 +38,8 @@ public class ControllerSelectKeyboardWindow implements Initializable {
     // Menu Stats
     @FXML
     private MenuItem overview;
+    @FXML
+    private MenuItem detail;
 
     // Menu Help
     @FXML
@@ -72,6 +74,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
         start.setDisable(true);
         stop.setDisable(true);
         overview.setDisable(true);
+        detail.setDisable(true);
         showComponents.setDisable(true);
         addComponents.setDisable(true);
 
@@ -112,6 +115,12 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             controller.setKeyLogger(keyLogger);
         });
 
+        detail.setOnAction(event -> {
+            ProcessFxmlFiles detailWindow = new ProcessFxmlFiles("../fxml/statDetailWindow.fxml", "Detail Statistic");
+            Stage stage = (Stage) menuBar.getScene().getWindow();
+            ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInExistingStage(stage);
+        });
+
         about.setOnAction(event -> {
         });
 
@@ -143,6 +152,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
                 // enables the menu items
                 start.setDisable(false);
                 overview.setDisable(false);
+                detail.setDisable(false);
                 showComponents.setDisable(false);
                 addComponents.setDisable(false);
             }
