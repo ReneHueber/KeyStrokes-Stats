@@ -189,8 +189,9 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
 
             ControllerAddKeyboardWindow controller = (ControllerAddKeyboardWindow) openEditWindow.openInNewStage();
+            controller.parentStage = (Stage) menuBar.getScene().getWindow();
             controller.setSelectedKeyboard(keyboardLv.getSelectionModel().getSelectedItem());
-            controller.changeGuiEditKeyboard();
+            controller.changeGuiEditKeyboard(true);
         });
 
         delete.setOnAction(event -> {

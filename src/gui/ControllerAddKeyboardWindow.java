@@ -18,7 +18,12 @@ import javafx.stage.Stage;
 import objects.Keyboard;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ControllerAddKeyboardWindow {
@@ -77,12 +82,34 @@ public class ControllerAddKeyboardWindow {
                     !checkKeyboardNameExisting(name.getText())){
                 String date = datePicker.getValue().toString();
 
-                // creates a new database entrance for the keyboard
-                String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totKeystrokes," +
-                        "totTimePressed, usedSince, lastUsed) " +
-                        "VALUES(?,?,?,?,?,?,?)";
-                WriteDb.executeWriteSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
-                "0.0", date, "0000-00-00");
+                // a new keyboard is created
+                if (!editKeyboard){
+                    // creates a new database entrance for the keyboard
+                    String sqlStatement = "INSERT INTO keyboards(keyboardName, keyboardType, layout, totKeystrokes," +
+                            "totTimePressed, usedSince, lastUsed) " +
+                            "VALUES(?,?,?,?,?,?,?)";
+                    WriteDb.executeWriteSqlStmt(sqlStatement, name.getText(), type.getText(), keyboardStyle, "0",
+                            "0.0", date, "0000-00-00");
+                }
+                // a keyboards get's edited
+                else {
+                    HashMap<String, String> changes = new HashMap<>();
+                    changes.put("keyboardName", name.getText());
+                    changes.put("keyboardType", type.getText());
+                    changes.put("layout", keyboardStyle);
+                    String sqlStatement = "UPDATE keyboards SET ";
+                    // date changed
+                    // get's the new values
+                    if (!date.equals(selectedKeyboard.getInUseSince())){
+                        changes.put("totKeystrokes", Integer.toString(getDateSpecificKeyStrokes(date)));
+                        changes.put("totTimePressed", Float.toString(getDateSpecificTimePressed(date)));
+                        changes.put("usedSince", date);
+                        changes.put("lastUsed", checkLastUsedDate(date));
+                    }
+                    sqlStatement += addEditToSqlString(changes) + " WHERE id = " + selectedKeyboard.getKeyboardId();
+
+                    WriteDb.executeWriteSqlStmt(sqlStatement, changes.values().toArray(new String[0]));
+                }
 
                 reloadSelectKeyboardWindow();
                 // closes the stage after the values are saved
@@ -134,11 +161,12 @@ public class ControllerAddKeyboardWindow {
     /**
      * Changes the Gui to Edit the Keyboard, and set's the Values of the selected Keyboard if the keyboard styles are equal.
      */
-    protected void changeGuiEditKeyboard(){
+    protected void changeGuiEditKeyboard(boolean override){
         confirm.setText("Edit");
-        if (selectedKeyboard.getLayout().equals(keyboardStyle)){
+        if (selectedKeyboard.getLayout().equals(keyboardStyle))
             setKeyboardValues();
-        }
+        else if (override)
+            setKeyboardValues();
 
         editKeyboard = true;
     }
@@ -172,7 +200,7 @@ public class ControllerAddKeyboardWindow {
 
             // changes the gui and set's the Keyboard values if the keyboard gets edit
             if (editKeyboard)
-                controller.changeGuiEditKeyboard();
+                controller.changeGuiEditKeyboard(false);
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -239,7 +267,7 @@ public class ControllerAddKeyboardWindow {
      * @return True if the name exist, false if not
      */
     private boolean checkKeyboardNameExisting(String keyboardName){
-        if (allKeyboards.size() != 0){
+        if (allKeyboards.size() != 0 && !editKeyboard){
             for (Keyboard keyboard : allKeyboards){
                 if (keyboard.getKeyboardName().equals(keyboardName))
                     return true;
@@ -247,5 +275,59 @@ public class ControllerAddKeyboardWindow {
             return false;
         }
         return false;
+    }
+
+    /**
+     * Reads the sum of the keystrokes form the totalToday Tables since a specific Date.
+     * @return The total keyStrokes since a specific Date.
+     */
+    private int getDateSpecificKeyStrokes(String selectedDate){
+        String sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
+        return ReadDb.executeIntSumFunction(sqlStmt);
+    }
+
+    /**
+     * Reads the sum of the timePressed form the totalToday Tables since a specific Date.
+     * @return The total timePressed since a specific Date.
+     */
+    private float getDateSpecificTimePressed(String selectedDate){
+        String sqlStmt = "SELECT SUM(timePressed) FROM totalToday WHERE date >= '" + selectedDate + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
+        return ReadDb.executeIntSumFunction(sqlStmt);
+    }
+
+    /**
+     * Check is the new inUseSinceDate is bigger than the lastUsedDate
+     * @param date Date since the keyboard is in use
+     * @return Date the keyboards has last been used
+     */
+    private String checkLastUsedDate(String date){
+        try{
+            LocalDate usedSince = LocalDate.parse(date);
+            LocalDate lastUsed = LocalDate.parse(selectedKeyboard.getLastUsed());
+
+            if (usedSince.getDayOfYear() > lastUsed.getDayOfYear() && usedSince.getYear() >= lastUsed.getYear()){
+                return "0000-00-00";
+            }
+            else {
+                return selectedKeyboard.getLastUsed();
+            }
+        } catch (DateTimeParseException e){
+            return selectedKeyboard.getLastUsed();
+        }
+    }
+
+    /**
+     * Get all the database Variables that are chancing and returns them in the format:
+     * "Value = ?, Value = ?"
+     * @param changes The changes made
+     * @return String with the changes in the format for Sql
+     */
+    private String addEditToSqlString(HashMap<String, String> changes){
+        // adds all the changes database variables to the sql String
+        String sqlValues = changes.entrySet()
+                .stream()
+                .map(e -> e.getKey() + " = ?")
+                .collect(Collectors.joining(", "));
+        return sqlValues;
     }
 }
