@@ -15,8 +15,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import objects.Keyboard;
 import objects.TotalToday;
 
+import java.security.Key;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -26,6 +29,8 @@ public class ControllerStatDetailWindow {
             "Key Strokes",
             "Time Pressed"
     );
+
+    private Keyboard selectedKeyboard;
 
     @FXML
     protected ComboBox<String> statistic;
@@ -63,12 +68,16 @@ public class ControllerStatDetailWindow {
             Stage stage = (Stage) daysChar.getScene().getWindow();
             ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInExistingStage(stage);
             if (statistic.getSelectionModel().getSelectedItem().equals("Key Strokes")) {
+                controller.setSelectedKeyboard(selectedKeyboard);
                 controller.renameChars("Key Strokes");
                 controller.setDailyValueSet("Key Strokes");
+                controller.setWeeklyValueSet("Key Strokes");
             }
             else {
+                controller.setSelectedKeyboard(selectedKeyboard);
                 controller.renameChars("Time Pressed");
                 controller.setDailyValueSet("Time Pressed");
+                controller.setWeeklyValueSet("Time Pressed");
             }
         });
 
@@ -78,7 +87,10 @@ public class ControllerStatDetailWindow {
         weeksChar.setAnimated(false);
         monthsChar.setLegendVisible(false);
         monthsChar.setAnimated(false);
+    }
 
+    protected void setSelectedKeyboard(Keyboard selectedKeyboard){
+        this.selectedKeyboard = selectedKeyboard;
     }
 
     /**
@@ -103,8 +115,14 @@ public class ControllerStatDetailWindow {
      * @return XYChar.Data with the passed Values and a Node with the Value as Text
      */
     private XYChart.Data<String, Number> createData(String date, Number value) {
-        XYChart.Data<String, Number> data = new XYChart.Data<>(date, value);
+        // rounds the number if it is a decimal number
+        if (value.toString().contains(".")){
+            DecimalFormat df = new DecimalFormat("#.00");
+            String roundNumber = df.format(value);
+            value = Float.parseFloat(roundNumber.replace(",", "."));
+        }
 
+        XYChart.Data<String, Number> data = new XYChart.Data<>(date, value);
         String text = value + "";
 
         StackPane node = new StackPane();
@@ -120,7 +138,7 @@ public class ControllerStatDetailWindow {
     }
 
     /**
-     * Get's the Values of the last 7 days, for the daily char.
+     * Set's the Values of the last 7 days.
      * @param selectedValue What value is selected, to get the right one
      */
     protected void setDailyValueSet(String selectedValue){
@@ -130,7 +148,8 @@ public class ControllerStatDetailWindow {
         LocalDate start = LocalDate.now().minusDays(7);
 
         // reads all the values form the db in the range from start to end date
-        String sqlStmt = "SELECT keyboardId, date, keyStrokes, timePressed FROM totalToday WHERE date >= '" + start + "' AND date <= '" + end + "'";
+        String sqlStmt = "SELECT keyboardId, date, keyStrokes, timePressed FROM " +
+                        "totalToday WHERE date >= '" + start + "' AND date <= '" + end + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
         ArrayList<TotalToday> dates = ReadDb.selectAllValuesTotalToday(sqlStmt);
 
         int year = start.getYear();
@@ -169,6 +188,50 @@ public class ControllerStatDetailWindow {
         }
 
         daysChar.getData().add(daysValues);
+    }
+
+    /**
+     * Set's the values for the last 7 weeks.
+     * @param selectedValue What value is selected, to get the right one
+     */
+    protected void setWeeklyValueSet(String selectedValue){
+        // creates the basic sqlStmt
+        String sqlStmt = "";
+        if (selectedValue.equals("Key Strokes")){
+            sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date > '";
+        }
+        else{
+            sqlStmt = "SELECT SUM(timePressed) FROM totalToday WHERE date > '";
+        }
+
+        // list of all the sqlStmt
+        ArrayList<String> sqlStatements = new ArrayList<>();
+        // list of all the dates
+        ArrayList<LocalDate> dates = new ArrayList<>();
+        dates.add(LocalDate.now());
+        // start dates of all the weeks
+        for(int i = 1; i <= 7; i++){
+            dates.add(dates.get(0).minusWeeks(i));
+        }
+
+        // creates the sqlStmt in reverse order
+        for(int i = dates.size() - 1; i > 0; i--){
+            sqlStatements.add(sqlStmt + dates.get(i).toString() + "' AND date <= '" + dates.get(i - 1) +
+                    "' AND keyboardId = " + selectedKeyboard.getKeyboardId());
+        }
+
+        XYChart.Series<String, Number> weekValues = new XYChart.Series<>();
+        int week = 1;
+        // get's the sum values and adds them to the char series
+        for(String stmt : sqlStatements){
+            if (selectedValue.equals("Key Strokes"))
+                weekValues.getData().add(createData(Integer.toString(week), ReadDb.executeIntSumFunction(stmt)));
+            else
+                weekValues.getData().add(createData(Integer.toString(week), ReadDb.executeFloatSumFunction(stmt)));
+            week++;
+        }
+
+        weeksChar.getData().add(weekValues);
     }
 
 }
