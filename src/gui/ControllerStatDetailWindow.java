@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import objects.Keyboard;
 import objects.TotalToday;
 
-import java.security.Key;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -68,16 +67,10 @@ public class ControllerStatDetailWindow {
             Stage stage = (Stage) daysChar.getScene().getWindow();
             ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInExistingStage(stage);
             if (statistic.getSelectionModel().getSelectedItem().equals("Key Strokes")) {
-                controller.setSelectedKeyboard(selectedKeyboard);
-                controller.renameChars("Key Strokes");
-                controller.setDailyValueSet("Key Strokes");
-                controller.setWeeklyValueSet("Key Strokes");
+                reloadWindow(controller, "Key Strokes");
             }
             else {
-                controller.setSelectedKeyboard(selectedKeyboard);
-                controller.renameChars("Time Pressed");
-                controller.setDailyValueSet("Time Pressed");
-                controller.setWeeklyValueSet("Time Pressed");
+                reloadWindow(controller, "Time Pressed");
             }
         });
 
@@ -87,6 +80,14 @@ public class ControllerStatDetailWindow {
         weeksChar.setAnimated(false);
         monthsChar.setLegendVisible(false);
         monthsChar.setAnimated(false);
+    }
+
+    protected void reloadWindow(ControllerStatDetailWindow controller, String statisticName){
+        controller.setSelectedKeyboard(selectedKeyboard);
+        controller.renameChars(statisticName);
+        controller.setDailyValueSet(statisticName);
+        controller.setWeeklyMonthlyValues(statisticName, false);
+        controller.setWeeklyMonthlyValues(statisticName, true);
     }
 
     protected void setSelectedKeyboard(Keyboard selectedKeyboard){
@@ -191,10 +192,11 @@ public class ControllerStatDetailWindow {
     }
 
     /**
-     * Set's the values for the last 7 weeks.
+     * Set's the values for the last 7 weeks or 7 month.
      * @param selectedValue What value is selected, to get the right one
+     * @param month True the last 7 months are selected, else the last 7 weeks
      */
-    protected void setWeeklyValueSet(String selectedValue){
+    protected void setWeeklyMonthlyValues(String selectedValue, boolean month){
         // creates the basic sqlStmt
         String sqlStmt = "";
         if (selectedValue.equals("Key Strokes")){
@@ -208,10 +210,29 @@ public class ControllerStatDetailWindow {
         ArrayList<String> sqlStatements = new ArrayList<>();
         // list of all the dates
         ArrayList<LocalDate> dates = new ArrayList<>();
-        dates.add(LocalDate.now());
-        // start dates of all the weeks
-        for(int i = 1; i <= 7; i++){
-            dates.add(dates.get(0).minusWeeks(i));
+
+        // get the dates if month is selected
+        if (month){
+            LocalDate date = LocalDate.now();
+            dates.add(date.plusDays(date.lengthOfMonth() - date.getDayOfMonth()));
+
+            for(int i = 1; i <= 7; i++){
+                LocalDate calcDate = dates.get(0).minusMonths(i);
+                if (calcDate.lengthOfMonth() > calcDate.getDayOfMonth()){
+                    calcDate = calcDate.plusDays(1);
+                }
+                else if (calcDate.getDayOfMonth() == 1){
+                    calcDate = calcDate.minusDays(1);
+                }
+                dates.add(calcDate);
+            }
+        }
+        else{
+            dates.add(LocalDate.now());
+            // start dates of all the weeks
+            for(int i = 1; i <= 7; i++){
+                dates.add(dates.get(0).minusWeeks(i));
+            }
         }
 
         // creates the sqlStmt in reverse order
@@ -222,16 +243,35 @@ public class ControllerStatDetailWindow {
 
         XYChart.Series<String, Number> weekValues = new XYChart.Series<>();
         int week = 1;
+        int months = dates.get(dates.size() - 1).getMonthValue() + 1;
         // get's the sum values and adds them to the char series
         for(String stmt : sqlStatements){
+            // get's the description for the month and the weeks
+            String description = "";
+            if (month){
+                description = Integer.toString(months);
+                months++;
+                if (months > 12)
+                    months = 1;
+            }
+            else {
+                description = Integer.toString(week);
+                week++;
+            }
+
+            // reads the values from the db
             if (selectedValue.equals("Key Strokes"))
-                weekValues.getData().add(createData(Integer.toString(week), ReadDb.executeIntSumFunction(stmt)));
+                weekValues.getData().add(createData(description, ReadDb.executeIntSumFunction(stmt)));
             else
-                weekValues.getData().add(createData(Integer.toString(week), ReadDb.executeFloatSumFunction(stmt)));
+                weekValues.getData().add(createData(description, ReadDb.executeFloatSumFunction(stmt)));
             week++;
         }
 
-        weeksChar.getData().add(weekValues);
+        // adds the values to the right chart
+        if (month)
+            monthsChar.getData().add(weekValues);
+        else
+            weeksChar.getData().add(weekValues);
     }
 
 }

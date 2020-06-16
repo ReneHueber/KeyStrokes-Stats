@@ -120,8 +120,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             Stage stage = (Stage) menuBar.getScene().getWindow();
             ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInExistingStage(stage);
             controller.setSelectedKeyboard(selectedKeyboard);
-            controller.setDailyValueSet("Key Strokes");
-            controller.setWeeklyValueSet("Key Strokes");
+            controller.reloadWindow(controller, "Key Strokes");
         });
 
         about.setOnAction(event -> {
