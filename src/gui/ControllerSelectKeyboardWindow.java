@@ -117,8 +117,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
 
         detail.setOnAction(event -> {
             ProcessFxmlFiles detailWindow = new ProcessFxmlFiles("../fxml/statDetailWindow.fxml", "Detail Statistic");
-            Stage stage = (Stage) menuBar.getScene().getWindow();
-            ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInExistingStage(stage);
+            ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInNewStage();
             controller.setSelectedKeyboard(selectedKeyboard);
             controller.reloadWindow(controller, "Key Strokes");
         });

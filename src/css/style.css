@@ -149,3 +149,7 @@
     -fx-border-color: #c4c4c4;
     -fx-border-radius: 3;
 }
+
+.chart-bar {
+    -fx-bar-fill: #5887d1;
+}

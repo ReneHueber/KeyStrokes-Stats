@@ -25,7 +25,7 @@
             <Insets bottom="20.0" top="10.0" />
          </VBox.margin>
       </HBox>
-      <BarChart fx:id="daysChar" title="Key Strokes Per Day">
+      <BarChart fx:id="daysChar" stylesheets="@../css/style.css" title="Key Strokes Per Day">
         <xAxis>
           <CategoryAxis fx:id="daysX" label="Days" side="BOTTOM" />
         </xAxis>
@@ -33,7 +33,7 @@
           <NumberAxis fx:id="daysY" label="Key Strokes" side="LEFT" />
         </yAxis>
       </BarChart>
-      <BarChart fx:id="weeksChar" title="Key Strokes Per Week">
+      <BarChart fx:id="weeksChar" stylesheets="@../css/style.css" title="Key Strokes Per Week">
         <xAxis>
           <CategoryAxis fx:id="weeksX" label="Weeks" side="BOTTOM" />
         </xAxis>
@@ -41,7 +41,7 @@
           <NumberAxis fx:id="weeksY" label="Key Strokes" side="LEFT" />
         </yAxis>
       </BarChart>
-      <BarChart fx:id="monthsChar" title="Key Strokes Per Month">
+      <BarChart fx:id="monthsChar" stylesheets="@../css/style.css" title="Key Strokes Per Month">
         <xAxis>
           <CategoryAxis fx:id="monthsX" label="Months" side="BOTTOM" />
         </xAxis>

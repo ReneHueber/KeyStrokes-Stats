@@ -100,9 +100,18 @@ public class ControllerStatOverviewWindow {
             controller.setKeyLogger(keyLogger);
         });
 
+        // reloads the db values
         reload.setOnAction(event -> {
             allKeyboards = getKeyboardValues();
             setKeyboardTableValue(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()));
+        });
+
+        // show de detail information of the keyboard
+        detail.setOnAction(event -> {
+            ProcessFxmlFiles detailWindow = new ProcessFxmlFiles("../fxml/statDetailWindow.fxml", "Detail Statistic");
+            ControllerStatDetailWindow controller = (ControllerStatDetailWindow) detailWindow.openInNewStage();
+            controller.setSelectedKeyboard(allKeyboards.get(selectKeyboardCB.getSelectionModel().getSelectedIndex()));
+            controller.reloadWindow(controller, "Key Strokes");
         });
 
         // updates the stat values if the keyboard is changed
@@ -163,7 +172,6 @@ public class ControllerStatOverviewWindow {
         return null;
     }
 
-    // TODO add date options
     /**
      * Reads all KeySwitch Components from all available Keyboards.
      * Active and not Active Components.

@@ -74,6 +74,7 @@ public class ControllerStatDetailWindow {
             }
         });
 
+        // disable the Animations and Legends
         daysChar.setLegendVisible(false);
         daysChar.setAnimated(false);
         weeksChar.setLegendVisible(false);
@@ -82,6 +83,11 @@ public class ControllerStatDetailWindow {
         monthsChar.setAnimated(false);
     }
 
+    /**
+     * Set's the Values for the Statistics if the Window get's reloaded.
+     * @param controller Controller to call the functions that are setting the Statistics
+     * @param statisticName To get the right Statistic and rename the bar chart
+     */
     protected void reloadWindow(ControllerStatDetailWindow controller, String statisticName){
         controller.setSelectedKeyboard(selectedKeyboard);
         controller.renameChars(statisticName);
@@ -90,6 +96,10 @@ public class ControllerStatDetailWindow {
         controller.setWeeklyMonthlyValues(statisticName, true);
     }
 
+    /**
+     * Passes the selected Keyboard from the other Controller.
+     * @param selectedKeyboard Selected Keyboard
+     */
     protected void setSelectedKeyboard(Keyboard selectedKeyboard){
         this.selectedKeyboard = selectedKeyboard;
     }
@@ -116,15 +126,18 @@ public class ControllerStatDetailWindow {
      * @return XYChar.Data with the passed Values and a Node with the Value as Text
      */
     private XYChart.Data<String, Number> createData(String date, Number value) {
+        String text = "";
         // rounds the number if it is a decimal number
         if (value.toString().contains(".")){
             DecimalFormat df = new DecimalFormat("#.00");
             String roundNumber = df.format(value);
             value = Float.parseFloat(roundNumber.replace(",", "."));
+            text = value + "s";
         }
+        else
+            text = value + "";
 
         XYChart.Data<String, Number> data = new XYChart.Data<>(date, value);
-        String text = value + "";
 
         StackPane node = new StackPane();
         Label label = new Label(text);
