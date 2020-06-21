@@ -142,9 +142,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             setupListView();
         });
 
-        reloadValues.setOnAction(event -> {
-            setupListView();
-        });
+        reloadValues.setOnAction(event -> setupListView());
 
         // get's the selected item if the selection is changed
         keyboardLv.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {

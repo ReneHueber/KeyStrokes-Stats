@@ -488,7 +488,7 @@ public class ControllerStatOverviewWindow {
                         // all values between the start & endDate are added to selected Dates
                         if (startDate.getYear() != endDate.getYear()){
                             int startDay = 1;
-                            int endDay = 1;
+                            int endDay;
 
                             LocalDate currentYear = LocalDate.ofYearDay(year, 1);
                             if (year == startDate.getYear()){

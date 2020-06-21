@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
@@ -45,21 +44,15 @@ public class ControllerStatDetailWindow {
     @FXML
     private BarChart <String, Number> daysChar;
     @FXML
-    private CategoryAxis daysX;
-    @FXML
     private NumberAxis daysY;
 
     @FXML
     private BarChart<String, Number> weeksChar;
     @FXML
-    private CategoryAxis weeksX;
-    @FXML
     private NumberAxis weeksY;
 
     @FXML
     private BarChart<String, Number> monthsChar;
-    @FXML
-    private CategoryAxis monthsX;
     @FXML
     private NumberAxis monthsY;
 
@@ -145,7 +138,7 @@ public class ControllerStatDetailWindow {
      * @return XYChar.Data with the passed Values and a Node with the Value as Text
      */
     private XYChart.Data<String, Number> createData(String date, Number value) {
-        String text = "";
+        String text;
         // rounds the number if it is a decimal number
         if (value.toString().contains(".")){
             DecimalFormat df = new DecimalFormat("#.00");
@@ -230,7 +223,7 @@ public class ControllerStatDetailWindow {
      */
     protected void setWeeklyMonthlyValues(String selectedValue, boolean month){
         // creates the basic sqlStmt
-        String sqlStmt = "";
+        String sqlStmt;
         if (selectedValue.equals("Key Strokes")){
             sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '";
         }
@@ -264,7 +257,7 @@ public class ControllerStatDetailWindow {
         // get's the sum values and adds them to the char series
         for(String stmt : sqlStatements){
             // get's the description for the month and the weeks
-            String description = "";
+            String description;
             if (month){
                 description = Integer.toString(months);
                 months++;

@@ -4,7 +4,6 @@ import database.ReadDb;
 import database.WriteDb;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,7 +25,6 @@ public class ControllerComponentWindow {
     );
 
     private Keyboard selectedKeyboard;
-    private Stage stage;
 
     @FXML
     MenuBar menuBar;
@@ -92,29 +90,23 @@ public class ControllerComponentWindow {
             controller.checkComponentExisting("Key Switches");
         });
 
-        componentFilterCB.setOnAction(event -> {
-            updateTableView();
-        });
+        componentFilterCB.setOnAction(event -> updateTableView());
 
         ContextMenu menu = createContextMenu();
 
-        componentTV.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+        componentTV.addEventHandler(MouseEvent.MOUSE_CLICKED, t -> {
+            // disables the retire and edit option if the keyboard is not active
+            Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
+            if (selectedComponent != null) {
+                menu.getItems().get(0).setDisable(!selectedComponent.getIsActive());
+                menu.getItems().get(2).setDisable(!selectedComponent.getIsActive());
+            }
 
-            @Override
-            public void handle(MouseEvent t) {
-                // disables the retire and edit option if the keyboard is not active
-                Component selectedComponent = componentTV.getSelectionModel().getSelectedItem();
-                if (selectedComponent != null){
-                    menu.getItems().get(0).setDisable(!selectedComponent.getIsActive());
-                    menu.getItems().get(2).setDisable(!selectedComponent.getIsActive());
-                }
-
-                if(t.getButton() == MouseButton.SECONDARY) {
-                    menu.show(componentTV, t.getScreenX(), t.getScreenY());
-                }
-                if (t.getButton() == MouseButton.PRIMARY) {
-                    menu.hide();
-                }
+            if (t.getButton() == MouseButton.SECONDARY) {
+                menu.show(componentTV, t.getScreenX(), t.getScreenY());
+            }
+            if (t.getButton() == MouseButton.PRIMARY) {
+                menu.hide();
             }
         });
 
