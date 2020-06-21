@@ -201,6 +201,7 @@ public class ControllerSelectKeyboardWindow implements Initializable {
             controller.parentStage = (Stage) menuBar.getScene().getWindow();
             controller.setSelectedKeyboard(keyboardLv.getSelectionModel().getSelectedItem());
             controller.changeGuiEditKeyboard(true);
+            // because the global variable is split
             controller.keyboardStyle = selectedKeyboard.getLayout();
         });
 

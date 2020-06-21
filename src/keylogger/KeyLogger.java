@@ -55,9 +55,7 @@ public class KeyLogger implements NativeKeyListener {
      * @param key the pressed key
      */
     public void nativeKeyTyped(NativeKeyEvent key) {
-        // System.out.println("Key Typed: " + key.getKeyChar());
         keyLogData.addKeyValue(String.valueOf(key.getKeyChar()), key.getRawCode());
-        // System.out.println(keyLogData.getKeyValues());
     }
 
     /**
@@ -70,7 +68,6 @@ public class KeyLogger implements NativeKeyListener {
         int keyCode = key.getKeyCode();
         Long keyPressedMillis = System.currentTimeMillis();
         keyStrokes.put(keyCode, keyPressedMillis);
-        System.out.println(keyCode);
     }
 
     /**

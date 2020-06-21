@@ -51,7 +51,7 @@ public class DbUpdateSchedule {
             }
         };
 
-        t.scheduleAtFixedRate(tt, 30000, 30000);
+        t.scheduleAtFixedRate(tt, 10000, 10000);
     }
 
     public void stopSchedule(){
@@ -72,7 +72,6 @@ public class DbUpdateSchedule {
         updateHeatmapTable(currentDate, keyValues);
         updateKeyStrokesComponents(keyStrokes);
 
-        System.out.println("update db");
         firstUpdate = false;
     }
 
