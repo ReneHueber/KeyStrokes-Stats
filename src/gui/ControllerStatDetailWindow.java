@@ -18,9 +18,6 @@ import javafx.stage.Stage;
 import objects.Keyboard;
 import objects.TotalToday;
 
-import javax.management.DynamicMBean;
-import javax.xml.stream.events.EndDocument;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -105,6 +102,7 @@ public class ControllerStatDetailWindow {
         controller.setDailyValueSet(statisticName);
         controller.setWeeklyMonthlyValues(statisticName, false);
         controller.setWeeklyMonthlyValues(statisticName, true);
+        controller.setMaxValues(statisticName);
     }
 
     /**
@@ -128,6 +126,16 @@ public class ControllerStatDetailWindow {
 
         monthsChar.setTitle(statisticName + " per Month");
         monthsY.setLabel(statisticName);
+    }
+
+    /**
+     * Set's the max Value Labels.
+     * @param statisticName Name of the statistic chosen
+     */
+    protected void setMaxValues(String statisticName){
+        setDayMaxValue(statisticName);
+        setWeekMonthMaxValues(statisticName, false);
+        setWeekMonthMaxValues(statisticName, true);
     }
 
     /**
@@ -280,6 +288,88 @@ public class ControllerStatDetailWindow {
             monthsChar.getData().add(weekValues);
         else
             weeksChar.getData().add(weekValues);
+    }
+
+    /**
+     * Get's the max Value per Day and set's it to the maxDay Label.
+     * @param statisticName Name of the statistic choosen
+     */
+    private void setDayMaxValue(String statisticName){
+        int maxKeyStroke = 0;
+        float maxTimePressed = 0.0f;
+
+        String sqlStmt = "SELECT keyboardId, date, keyStrokes, timePressed FROM " +
+                "totalToday WHERE date >= '" + selectedKeyboard.getInUseSince() + "' AND date <= '"
+                + LocalDate.now().toString() + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
+
+        ArrayList<TotalToday> values = ReadDb.selectAllValuesTotalToday(sqlStmt);
+
+        for (TotalToday value : values){
+            if (value.getKeyStrokes() > maxKeyStroke)
+                maxKeyStroke = value.getKeyStrokes();
+
+            if (value.getTimePressed() > maxTimePressed)
+                maxTimePressed = value.getTimePressed();
+        }
+
+        if (statisticName.equals("Key Strokes"))
+            maxDay.setText(Integer.toString(maxKeyStroke));
+        else
+            maxDay.setText(Float.toString(maxTimePressed));
+    }
+
+    /**
+     * Get's the max Week or Month value and set's the belonging Label.
+     * @param statisticName Name of the statistic chosen
+     * @param month True the max month Value is searched and set
+     */
+    private void setWeekMonthMaxValues(String statisticName, boolean month){
+        int maxKeyStrokes = 0;
+        float maxTimePressed = 0.0f;
+
+        // creates the basic sql Stmt
+        String sqlStmt;
+        if (statisticName.equals("Key Strokes")){
+            sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '";
+        }
+        else{
+            sqlStmt = "SELECT SUM(timePressed) FROM totalToday WHERE date >= '";
+        }
+
+        ArrayList<LocalDate[]> dates;
+        if (month)
+            dates = getAllMonthValues(LocalDate.parse(selectedKeyboard.getInUseSince()), false);
+        else
+            dates = getAllWeekDates(LocalDate.parse(selectedKeyboard.getInUseSince()), false);
+
+        // get's the max Values depending of the wished Value
+        for (LocalDate[] dateValues : dates){
+            String stmt = sqlStmt + dateValues[0].toString() + "' AND date <= '" + dateValues[1].toString()
+                    + "' AND keyboardId = " + selectedKeyboard.getKeyboardId();
+            if (statisticName.equals("Key Strokes")){
+                int sumValue = ReadDb.executeIntSumFunction(stmt);
+                if (sumValue > maxKeyStrokes)
+                    maxKeyStrokes = sumValue;
+            }
+            else{
+                float sumValue = ReadDb.executeFloatSumFunction(stmt);
+                if (sumValue > maxTimePressed)
+                    maxTimePressed = sumValue;
+            }
+        }
+
+        if (statisticName.equals("Key Strokes")){
+            if (month)
+                maxMonth.setText(Integer.toString(maxKeyStrokes));
+            else
+                maxWeek.setText(Integer.toString(maxKeyStrokes));
+        }
+        else{
+            if (month)
+                maxMonth.setText(Float.toString(maxTimePressed));
+            else
+                maxWeek.setText(Float.toString(maxTimePressed));
+        }
     }
 
     /**
