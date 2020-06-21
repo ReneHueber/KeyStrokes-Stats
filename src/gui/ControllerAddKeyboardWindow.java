@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 
 public class ControllerAddKeyboardWindow {
-    private String keyboardStyle = "split";
+    protected String keyboardStyle = "split";
     protected Stage parentStage;
     private ObservableList<Keyboard> allKeyboards = FXCollections.observableArrayList();
     private boolean editKeyboard = false;
