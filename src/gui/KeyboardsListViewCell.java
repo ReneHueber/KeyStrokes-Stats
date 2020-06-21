@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import objects.Keyboard;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 /**
  * Set's the custom Items for every Cell in the List View.
@@ -69,7 +70,7 @@ public class KeyboardsListViewCell extends ListCell<Keyboard> {
             // set's the values for the gui elements
             labelKeyboardName.setText(keyboard.getKeyboardName());
             labelKeyStrokes.setText(String.valueOf(keyboard.getTotalKeyStrokes()));
-            labelTimePressed.setText(String.valueOf(keyboard.getRoundedTotalTimeKeyPressed()));
+            labelTimePressed.setText(roundFloat(keyboard.getTotalTimeKeyPressed() / 60) + " min");
             labelLastUsed.setText(keyboard.getFormattedLastUsed());
             labelInUseSince.setText(keyboard.getFormattedInUseSince());
             imageViewKeyboard.setImage(keyboard.getKeyboardImage());
@@ -78,6 +79,17 @@ public class KeyboardsListViewCell extends ListCell<Keyboard> {
             setText(null);
             setGraphic(vBox);
         }
+    }
+
+    /**
+     * Rounds a float Number to two decimal places
+     * @param number Number to round
+     * @return rounded Number
+     */
+    private float roundFloat(float number){
+        DecimalFormat df = new DecimalFormat("#.00");
+        String roundNumber = df.format(number);
+        return Float.parseFloat(roundNumber.replace(",", "."));
     }
 }
 

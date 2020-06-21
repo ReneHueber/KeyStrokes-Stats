@@ -326,7 +326,7 @@ public class ControllerStatDetailWindow {
         if (statisticName.equals("Key Strokes"))
             maxDay.setText(Integer.toString(maxKeyStroke));
         else
-            maxDay.setText(roundFloat(maxTimePressed / 60) + "min");
+            maxDay.setText(roundFloat(maxTimePressed / 60) + " min");
     }
 
     /**
@@ -377,9 +377,9 @@ public class ControllerStatDetailWindow {
         }
         else{
             if (month)
-                maxMonth.setText(roundFloat(maxTimePressed / 60) + "min");
+                maxMonth.setText(roundFloat(maxTimePressed / 60) + " min");
             else
-                maxWeek.setText(roundFloat(maxTimePressed / 60) + "min");
+                maxWeek.setText(roundFloat(maxTimePressed / 60) + " min");
         }
     }
 
