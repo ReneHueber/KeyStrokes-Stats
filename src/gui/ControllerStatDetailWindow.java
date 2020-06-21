@@ -18,7 +18,11 @@ import javafx.stage.Stage;
 import objects.Keyboard;
 import objects.TotalToday;
 
+import javax.management.DynamicMBean;
+import javax.xml.stream.events.EndDocument;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -35,25 +39,32 @@ public class ControllerStatDetailWindow {
     protected ComboBox<String> statistic;
 
     @FXML
-    BarChart <String, Number> daysChar;
+    private Label maxDay;
     @FXML
-    CategoryAxis daysX;
+    private Label maxWeek;
     @FXML
-    NumberAxis daysY;
+    private Label maxMonth;
 
     @FXML
-    BarChart<String, Number> weeksChar;
+    private BarChart <String, Number> daysChar;
     @FXML
-    CategoryAxis weeksX;
+    private CategoryAxis daysX;
     @FXML
-    NumberAxis weeksY;
+    private NumberAxis daysY;
 
     @FXML
-    BarChart<String, Number> monthsChar;
+    private BarChart<String, Number> weeksChar;
     @FXML
-    CategoryAxis monthsX;
+    private CategoryAxis weeksX;
     @FXML
-    NumberAxis monthsY;
+    private NumberAxis weeksY;
+
+    @FXML
+    private BarChart<String, Number> monthsChar;
+    @FXML
+    private CategoryAxis monthsX;
+    @FXML
+    private NumberAxis monthsY;
 
 
     public void initialize(){
@@ -213,50 +224,35 @@ public class ControllerStatDetailWindow {
         // creates the basic sqlStmt
         String sqlStmt = "";
         if (selectedValue.equals("Key Strokes")){
-            sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date > '";
+            sqlStmt = "SELECT SUM(keyStrokes) FROM totalToday WHERE date >= '";
         }
         else{
-            sqlStmt = "SELECT SUM(timePressed) FROM totalToday WHERE date > '";
+            sqlStmt = "SELECT SUM(timePressed) FROM totalToday WHERE date >= '";
         }
 
         // list of all the sqlStmt
         ArrayList<String> sqlStatements = new ArrayList<>();
         // list of all the dates
-        ArrayList<LocalDate> dates = new ArrayList<>();
+        ArrayList<LocalDate[]> dates;
 
-        // get the dates if month is selected
-        if (month){
-            LocalDate date = LocalDate.now();
-            dates.add(date.plusDays(date.lengthOfMonth() - date.getDayOfMonth()));
+        // get's all first 7 values, in use Since is decreased because it is not need, and so we always get 7 results.
+        if (month)
+            dates = getAllMonthValues(LocalDate.parse(selectedKeyboard.getInUseSince()).minusYears(1), true);
+        else
+            dates = getAllWeekDates(LocalDate.parse(selectedKeyboard.getInUseSince()).minusYears(1), true);
 
-            for(int i = 1; i <= 7; i++){
-                LocalDate calcDate = dates.get(0).minusMonths(i);
-                if (calcDate.lengthOfMonth() > calcDate.getDayOfMonth()){
-                    calcDate = calcDate.plusDays(1);
-                }
-                else if (calcDate.getDayOfMonth() == 1){
-                    calcDate = calcDate.minusDays(1);
-                }
-                dates.add(calcDate);
-            }
-        }
-        else{
-            dates.add(LocalDate.now());
-            // start dates of all the weeks
-            for(int i = 1; i <= 7; i++){
-                dates.add(dates.get(0).minusWeeks(i));
-            }
-        }
 
         // creates the sqlStmt in reverse order
-        for(int i = dates.size() - 1; i > 0; i--){
-            sqlStatements.add(sqlStmt + dates.get(i).toString() + "' AND date <= '" + dates.get(i - 1) +
+        for(int i = dates.size() - 1; i >= 0; i--){
+            sqlStatements.add(sqlStmt + dates.get(i)[0].toString() + "' AND date <= '" + dates.get(i)[1].toString() +
                     "' AND keyboardId = " + selectedKeyboard.getKeyboardId());
         }
 
+        // creates the description of the X Axis
         XYChart.Series<String, Number> weekValues = new XYChart.Series<>();
-        int week = 1;
-        int months = dates.get(dates.size() - 1).getMonthValue() + 1;
+        // we start with the last week
+        int week = -6;
+        int months = dates.get(dates.size() - 1)[0].getMonthValue();
         // get's the sum values and adds them to the char series
         for(String stmt : sqlStatements){
             // get's the description for the month and the weeks
@@ -269,7 +265,6 @@ public class ControllerStatDetailWindow {
             }
             else {
                 description = Integer.toString(week);
-                week++;
             }
 
             // reads the values from the db
@@ -287,4 +282,87 @@ public class ControllerStatDetailWindow {
             weeksChar.getData().add(weekValues);
     }
 
+    /**
+     * Get's all start and the end Dates of the Weeks from the current Date until the passed Date.
+     * @param useSince Stop Date
+     * @param first7 Only the first 7 Dates
+     * @return Start and End Dates of all the Weeks between the current and the stop Date, or only the first 7
+     */
+    private ArrayList<LocalDate[]> getAllWeekDates(LocalDate useSince, boolean first7){
+        ArrayList<LocalDate[]> dates = new ArrayList<>();
+
+        DayOfWeek day = LocalDate.now().getDayOfWeek();
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = LocalDate.now();
+
+        switch(day){
+            case MONDAY: endDate = endDate.plusDays(6);
+                         break;
+            case TUESDAY: startDate = startDate.minusDays(1);
+                          endDate = endDate.plusDays(5);
+                          break;
+            case WEDNESDAY: startDate = startDate.minusDays(2);
+                            endDate = endDate.plusDays(4);
+                            break;
+            case THURSDAY: startDate = startDate.minusDays(3);
+                           endDate = endDate.plusDays(3);
+                           break;
+            case FRIDAY: startDate = startDate.minusDays(4);
+                         endDate = endDate.plusDays(2);
+                         break;
+            case SATURDAY: startDate = startDate.minusDays(5);
+                           endDate = endDate.plusDays(1);
+                           break;
+            case SUNDAY: startDate = startDate.minusDays(6);
+                         break;
+        }
+
+        dates.add(new LocalDate[]{startDate, endDate});
+
+        // get's executed as long as startDate is bigger than useSince
+        while (startDate.isAfter(useSince)){
+            startDate = startDate.minusWeeks(1);
+            endDate = endDate.minusWeeks(1);
+            dates.add(new LocalDate[]{startDate, endDate});
+
+            if (first7 && dates.size() == 7)
+                break;
+        }
+
+        return dates;
+    }
+
+    /**
+     * Get's all the start and End Dates of the Months from the current Date until the passed Date.
+     * @param useSince Stop Date
+     * @param first7 Only the first 7 Dates
+     * @return Start and End Dates of all the Month between the current and the stop Date, or only the first 7
+     */
+    private ArrayList<LocalDate[]> getAllMonthValues(LocalDate useSince, boolean first7){
+        ArrayList<LocalDate[]> dates = new ArrayList<>();
+
+        int dayOfMonth = LocalDate.now().getDayOfMonth();
+        int daysMonth = LocalDate.now().lengthOfMonth();
+        LocalDate startDate;
+        LocalDate endDate = LocalDate.now();
+
+        endDate = endDate.plusDays(daysMonth - dayOfMonth);
+        startDate = endDate.minusDays(daysMonth - 1);
+
+        dates.add(new LocalDate[]{startDate, endDate});
+
+        while (startDate.isAfter(useSince)){
+            startDate = startDate.minusMonths(1);
+            endDate = endDate.minusMonths(1);
+            if (endDate.getDayOfMonth() < endDate.lengthOfMonth()){
+                endDate = endDate.plusDays(endDate.lengthOfMonth() - endDate.getDayOfMonth());
+            }
+            dates.add(new LocalDate[]{startDate, endDate});
+
+            if (first7 && dates.size() == 7)
+                break;
+        }
+
+        return dates;
+    }
 }
