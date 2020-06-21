@@ -13,6 +13,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import objects.Keyboard;
 import objects.TotalToday;
@@ -111,14 +112,23 @@ public class ControllerStatDetailWindow {
      * @param statisticName Displayed Name
      */
     protected void renameChars(String statisticName){
+        String yAxisName;
+        if (statisticName.equals("Time Pressed"))
+            yAxisName = statisticName + "\n       (min)";
+        else
+            yAxisName = statisticName;
+
         daysChar.setTitle(statisticName + " per Day");
-        daysY.setLabel(statisticName);
+        daysY.setLabel(yAxisName);
 
         weeksChar.setTitle(statisticName + " per Week");
-        weeksY.setLabel(statisticName);
+        weeksY.setLabel(yAxisName);
 
         monthsChar.setTitle(statisticName + " per Month");
-        monthsY.setLabel(statisticName);
+        monthsY.setLabel(yAxisName);
+
+
+
     }
 
     /**
@@ -141,18 +151,15 @@ public class ControllerStatDetailWindow {
         String text;
         // rounds the number if it is a decimal number
         if (value.toString().contains(".")){
-            DecimalFormat df = new DecimalFormat("#.00");
-            String roundNumber = df.format(value);
-            value = Float.parseFloat(roundNumber.replace(",", "."));
-            text = value + "s";
+            value = roundFloat(value.floatValue());
         }
-        else
-            text = value + "";
+        text = value + "";
 
         XYChart.Data<String, Number> data = new XYChart.Data<>(date, value);
 
         StackPane node = new StackPane();
         Label label = new Label(text);
+        label.setFont(new Font(11));
         // label.setRotate(-90);
         Group group = new Group(label);
         StackPane.setAlignment(group, Pos.BOTTOM_CENTER);
@@ -161,6 +168,17 @@ public class ControllerStatDetailWindow {
         data.setNode(node);
 
         return data;
+    }
+
+    /**
+     * Rounds a float Number to two decimal places
+     * @param number Number to round
+     * @return rounded Number
+     */
+    private float roundFloat(float number){
+        DecimalFormat df = new DecimalFormat("#.00");
+        String roundNumber = df.format(number);
+        return Float.parseFloat(roundNumber.replace(",", "."));
     }
 
     /**
@@ -196,7 +214,7 @@ public class ControllerStatDetailWindow {
                     if (selectedValue.equals("Key Strokes"))
                         daysValues.getData().add(createData(date, value.getKeyStrokes()));
                     else
-                        daysValues.getData().add(createData(date, value.getTimePressed()));
+                        daysValues.getData().add(createData(date, value.getTimePressed() / 60));
                     inDb = true;
                     break;
                 }
@@ -272,7 +290,7 @@ public class ControllerStatDetailWindow {
             if (selectedValue.equals("Key Strokes"))
                 weekValues.getData().add(createData(description, ReadDb.executeIntSumFunction(stmt)));
             else
-                weekValues.getData().add(createData(description, ReadDb.executeFloatSumFunction(stmt)));
+                weekValues.getData().add(createData(description, ReadDb.executeFloatSumFunction(stmt) / 60));
             week++;
         }
 
@@ -285,7 +303,7 @@ public class ControllerStatDetailWindow {
 
     /**
      * Get's the max Value per Day and set's it to the maxDay Label.
-     * @param statisticName Name of the statistic choosen
+     * @param statisticName Name of the statistic chosen
      */
     private void setDayMaxValue(String statisticName){
         int maxKeyStroke = 0;
@@ -308,7 +326,7 @@ public class ControllerStatDetailWindow {
         if (statisticName.equals("Key Strokes"))
             maxDay.setText(Integer.toString(maxKeyStroke));
         else
-            maxDay.setText(Float.toString(maxTimePressed));
+            maxDay.setText(roundFloat(maxTimePressed / 60) + "min");
     }
 
     /**
@@ -359,9 +377,9 @@ public class ControllerStatDetailWindow {
         }
         else{
             if (month)
-                maxMonth.setText(Float.toString(maxTimePressed));
+                maxMonth.setText(roundFloat(maxTimePressed / 60) + "min");
             else
-                maxWeek.setText(Float.toString(maxTimePressed));
+                maxWeek.setText(roundFloat(maxTimePressed / 60) + "min");
         }
     }
 
